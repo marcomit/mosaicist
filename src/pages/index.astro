@@ -4,147 +4,622 @@ import "../styles/global.css";
 ---
 
 <Layout title="Mosaic - Clean Architecture for Flutter">
-  <main class="min-h-screen bg-stone-50 text-stone-800">
+  <main class="min-h-screen bg-gradient-to-br from-stone-100 via-stone-50 to-neutral-100 text-stone-700 overflow-hidden">
+    <!-- Animated Mosaic Background -->
+    <div class="fixed inset-0 pointer-events-none">
+      <div class="mosaic-container">
+        <!-- Large fragments -->
+        <div class="mosaic-fragment fragment-1"></div>
+        <div class="mosaic-fragment fragment-2"></div>
+        <div class="mosaic-fragment fragment-3"></div>
+        <div class="mosaic-fragment fragment-4"></div>
+        <div class="mosaic-fragment fragment-5"></div>
+        <div class="mosaic-fragment fragment-6"></div>
+        <div class="mosaic-fragment fragment-7"></div>
+        <div class="mosaic-fragment fragment-8"></div>
+        
+        <!-- Small connecting pieces -->
+        <div class="mosaic-fragment fragment-small-1"></div>
+        <div class="mosaic-fragment fragment-small-2"></div>
+        <div class="mosaic-fragment fragment-small-3"></div>
+        <div class="mosaic-fragment fragment-small-4"></div>
+        <div class="mosaic-fragment fragment-small-5"></div>
+        <div class="mosaic-fragment fragment-small-6"></div>
+      </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="relative px-6 py-24 md:py-32">
-      <div class="max-w-4xl mx-auto text-center">
-        <!-- Logo/Icon -->
-        <div class="mb-12">
-          <div class="w-20 h-20 mx-auto bg-stone-200 rounded-full flex items-center justify-center shadow-inner">
-            <div class="w-12 h-12 bg-stone-300 rounded-sm transform rotate-12 shadow-sm"></div>
+    <section class="relative px-6 py-32 md:py-40 z-10">
+      <div class="max-w-5xl mx-auto text-center">
+        <!-- Central Mosaic Logo - Letter M -->
+        <div class="mb-16 relative">
+          <div class="mosaic-logo mx-auto">
+            <!-- Left column of M -->
+            <div class="logo-fragment m-left-1"></div>
+            <div class="logo-fragment m-left-2"></div>
+            <div class="logo-fragment m-left-3"></div>
+            <div class="logo-fragment m-left-4"></div>
+            <div class="logo-fragment m-left-5"></div>
+            
+            <!-- Center diagonal pieces -->
+            <div class="logo-fragment m-center-1"></div>
+            <div class="logo-fragment m-center-2"></div>
+            <div class="logo-fragment m-center-3"></div>
+            
+            <!-- Right column of M -->
+            <div class="logo-fragment m-right-1"></div>
+            <div class="logo-fragment m-right-2"></div>
+            <div class="logo-fragment m-right-3"></div>
+            <div class="logo-fragment m-right-4"></div>
+            <div class="logo-fragment m-right-5"></div>
+            
+            <!-- Small connecting debris -->
+            <div class="logo-fragment m-debris-1"></div>
+            <div class="logo-fragment m-debris-2"></div>
+            <div class="logo-fragment m-debris-3"></div>
           </div>
         </div>
         
-        <!-- Main Heading -->
-        <h1 class="text-5xl md:text-7xl font-light tracking-tight mb-8 text-stone-700">
-          Mosaic
+        <!-- Main Heading with Zen Typography -->
+        <h1 class="text-6xl md:text-8xl font-extralight tracking-[0.05em] mb-8 text-stone-800 relative">
+          <span class="relative z-10">Mosaic</span>
+          <div class="absolute inset-0 text-stone-300 transform translate-x-2 translate-y-2 -z-10">Mosaic</div>
         </h1>
         
-        <!-- Subtitle -->
-        <p class="text-xl md:text-2xl font-light text-stone-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Clean architecture framework for Flutter.
-          <br class="hidden md:block">
-          Build with clarity, compose with purpose.
-        </p>
+        <!-- Zen Subtitle -->
+        <div class="relative mb-16">
+          <p class="text-xl md:text-2xl font-light text-stone-600 mb-4 leading-relaxed">
+            Clean Architecture for Flutter
+          </p>
+          <p class="text-lg md:text-xl font-extralight text-stone-500 max-w-3xl mx-auto leading-relaxed">
+            Like fragments of clay coming together to form beautiful pottery,
+            <br class="hidden md:block">
+            build applications with harmonious, modular precision.
+          </p>
+        </div>
         
-        <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <!-- Zen CTA -->
+        <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <a href="/docs" 
-             class="px-8 py-4 bg-stone-200 hover:bg-stone-300 text-stone-700 font-medium rounded-sm transition-all duration-300 shadow-sm hover:shadow-md border border-stone-300">
-            Get Started
+             class="group px-12 py-4 bg-stone-200 hover:bg-stone-300 text-stone-700 font-light rounded-none transition-all duration-700 shadow-inner hover:shadow-lg border border-stone-300 relative overflow-hidden ceramic-button">
+            <span class="relative z-10">Begin Journey</span>
+            <div class="absolute inset-0 bg-gradient-to-r from-stone-300 to-stone-200 transform translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
           </a>
-          <a href="#principles" 
-             class="px-8 py-4 text-stone-600 hover:text-stone-800 font-medium transition-colors duration-300">
-            Learn More
+          <a href="#philosophy" 
+             class="px-12 py-4 text-stone-600 hover:text-stone-800 font-light transition-colors duration-700 border-b border-transparent hover:border-stone-400">
+            Explore Philosophy
           </a>
         </div>
       </div>
     </section>
 
-    <!-- Principles Section -->
-    <section id="principles" class="px-6 py-20 bg-stone-100">
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="relative px-6 py-24 bg-gradient-to-r from-stone-200/30 to-neutral-200/30 backdrop-blur-sm z-10">
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-light text-center text-stone-700 mb-16">
-          Principles
+        <h2 class="text-4xl md:text-5xl font-extralight text-center text-stone-800 mb-20 tracking-wide">
+          The Way of Clean Code
         </h2>
         
-        <div class="grid md:grid-cols-3 gap-12">
-          <!-- Clean -->
-          <div class="text-center group">
-            <div class="w-16 h-16 mx-auto mb-6 bg-stone-200 rounded-sm flex items-center justify-center shadow-inner group-hover:bg-stone-300 transition-colors duration-300">
-              <div class="w-8 h-8 bg-stone-400 rounded-full"></div>
+        <div class="grid md:grid-cols-3 gap-16">
+          <!-- Harmony -->
+          <div class="text-center group relative">
+            <div class="principle-icon harmony-icon mx-auto mb-8">
+              <div class="harmony-circle"></div>
+              <div class="harmony-center"></div>
             </div>
-            <h3 class="text-xl font-medium text-stone-700 mb-4">Clean</h3>
-            <p class="text-stone-600 leading-relaxed">
-              Separation of concerns through clear architectural boundaries and dependencies.
+            <h3 class="text-2xl font-light text-stone-800 mb-6">Harmony</h3>
+            <p class="text-stone-600 leading-relaxed font-light">
+              Each layer flows seamlessly into the next, like water finding its natural course through carefully arranged stones.
             </p>
           </div>
           
-          <!-- Modular -->
-          <div class="text-center group">
-            <div class="w-16 h-16 mx-auto mb-6 bg-stone-200 rounded-sm flex items-center justify-center shadow-inner group-hover:bg-stone-300 transition-colors duration-300">
-              <div class="grid grid-cols-2 gap-1">
-                <div class="w-3 h-3 bg-stone-400 rounded-sm"></div>
-                <div class="w-3 h-3 bg-stone-400 rounded-sm"></div>
-                <div class="w-3 h-3 bg-stone-400 rounded-sm"></div>
-                <div class="w-3 h-3 bg-stone-400 rounded-sm"></div>
-              </div>
+          <!-- Simplicity -->
+          <div class="text-center group relative">
+            <div class="principle-icon simplicity-icon mx-auto mb-8">
+              <div class="simplicity-line"></div>
             </div>
-            <h3 class="text-xl font-medium text-stone-700 mb-4">Modular</h3>
-            <p class="text-stone-600 leading-relaxed">
-              Compose your application from independent, reusable modules.
+            <h3 class="text-2xl font-light text-stone-800 mb-6">Simplicity</h3>
+            <p class="text-stone-600 leading-relaxed font-light">
+              True elegance emerges from removing the unnecessary, leaving only what serves the greater purpose.
             </p>
           </div>
           
-          <!-- Testable -->
-          <div class="text-center group">
-            <div class="w-16 h-16 mx-auto mb-6 bg-stone-200 rounded-sm flex items-center justify-center shadow-inner group-hover:bg-stone-300 transition-colors duration-300">
-              <div class="w-8 h-1 bg-stone-400 rounded-full"></div>
+          <!-- Balance -->
+          <div class="text-center group relative">
+            <div class="principle-icon balance-icon mx-auto mb-8">
+              <div class="balance-stone balance-stone-1"></div>
+              <div class="balance-stone balance-stone-2"></div>
+              <div class="balance-stone balance-stone-3"></div>
             </div>
-            <h3 class="text-xl font-medium text-stone-700 mb-4">Testable</h3>
-            <p class="text-stone-600 leading-relaxed">
-              Built-in testability through dependency injection and clear contracts.
+            <h3 class="text-2xl font-light text-stone-800 mb-6">Balance</h3>
+            <p class="text-stone-600 leading-relaxed font-light">
+              Dependencies flow in perfect equilibrium, each component supporting the whole without overwhelming it.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="px-6 py-20">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-light text-center text-stone-700 mb-16">
-          Features
+    <!-- Features with Zen Aesthetics -->
+    <section class="relative px-6 py-24 z-10">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-extralight text-center text-stone-800 mb-20">
+          Architectural Elements
         </h2>
         
-        <div class="space-y-16">
-          <!-- Feature 1 -->
-          <div class="flex flex-col md:flex-row items-center gap-12">
-            <div class="flex-1">
-              <h3 class="text-2xl font-light text-stone-700 mb-4">Layer Separation</h3>
-              <p class="text-stone-600 leading-relaxed mb-6">
-                Clear boundaries between presentation, domain, and data layers ensure maintainable and scalable code architecture.
+        <div class="space-y-24">
+          <!-- Clean Layers -->
+          <div class="flex flex-col lg:flex-row items-center gap-16">
+            <div class="flex-1 space-y-6">
+              <h3 class="text-3xl font-light text-stone-800">Layer Meditation</h3>
+              <p class="text-stone-600 leading-relaxed text-lg font-light">
+                Like the deliberate placement of stones in a zen garden, each architectural layer has its purpose and place. 
+                Presentation flows to domain, domain to data, in perfect natural order.
               </p>
-            </div>
-            <div class="w-48 h-32 bg-stone-200 rounded-sm shadow-inner flex items-center justify-center">
-              <div class="space-y-2">
-                <div class="w-32 h-3 bg-stone-300 rounded-sm"></div>
-                <div class="w-32 h-3 bg-stone-400 rounded-sm"></div>
-                <div class="w-32 h-3 bg-stone-500 rounded-sm"></div>
+              <div class="flex space-x-4 text-sm text-stone-600">
+                <span class="px-4 py-2 bg-stone-100 rounded-full ceramic-tag">Presentation</span>
+                <span class="px-4 py-2 bg-stone-200 rounded-full ceramic-tag">Domain</span>
+                <span class="px-4 py-2 bg-stone-300 rounded-full ceramic-tag">Data</span>
               </div>
+            </div>
+            <div class="layer-visualization">
+              <div class="layer layer-presentation"></div>
+              <div class="layer layer-domain"></div>
+              <div class="layer layer-data"></div>
             </div>
           </div>
           
-          <!-- Feature 2 -->
-          <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-            <div class="flex-1">
-              <h3 class="text-2xl font-light text-stone-700 mb-4">Dependency Injection</h3>
-              <p class="text-stone-600 leading-relaxed mb-6">
-                Built-in service locator pattern makes testing effortless and dependencies explicit.
+          <!-- Dependency Flow -->
+          <div class="flex flex-col lg:flex-row-reverse items-center gap-16">
+            <div class="flex-1 space-y-6">
+              <h3 class="text-3xl font-light text-stone-800">Dependency Flow</h3>
+              <p class="text-stone-600 leading-relaxed text-lg font-light">
+                Dependencies flow like water through carefully crafted channels, always moving inward toward the essential core, 
+                never creating turbulence or circular patterns.
               </p>
-            </div>
-            <div class="w-48 h-32 bg-stone-200 rounded-sm shadow-inner flex items-center justify-center">
-              <div class="relative">
-                <div class="w-16 h-16 bg-stone-400 rounded-full"></div>
-                <div class="absolute -top-2 -right-2 w-8 h-8 bg-stone-300 rounded-full"></div>
-                <div class="absolute -bottom-2 -left-2 w-8 h-8 bg-stone-300 rounded-full"></div>
+              <div class="text-sm text-stone-600 space-y-2">
+                <div>→ Inward dependency flow</div>
+                <div>→ Stable abstractions</div>
+                <div>→ Testable boundaries</div>
               </div>
+            </div>
+            <div class="dependency-visualization">
+              <div class="dependency-node node-1"></div>
+              <div class="dependency-node node-2"></div>
+              <div class="dependency-node node-3"></div>
+              <div class="dependency-arrow arrow-1"></div>
+              <div class="dependency-arrow arrow-2"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="px-6 py-16 bg-stone-100 border-t border-stone-200">
+    <!-- Zen Footer -->
+    <footer class="relative px-6 py-20 bg-gradient-to-t from-stone-200/50 to-transparent z-10">
       <div class="max-w-4xl mx-auto text-center">
-        <div class="w-12 h-12 mx-auto mb-6 bg-stone-200 rounded-sm shadow-inner flex items-center justify-center">
-          <div class="w-6 h-6 bg-stone-400 rounded-sm transform rotate-12"></div>
+        <div class="footer-mosaic mx-auto mb-8">
+          <div class="footer-fragment"></div>
+          <div class="footer-fragment"></div>
+          <div class="footer-fragment"></div>
         </div>
-        <p class="text-stone-600 font-light">
+        <p class="text-stone-600 font-light text-lg mb-4">
+          Building in Stillness
+        </p>
+        <p class="text-stone-500 font-extralight">
           Mosaic Framework
         </p>
       </div>
     </footer>
   </main>
+
+  <style>
+    /* Ceramic texture base */
+    .ceramic-button {
+      background: linear-gradient(145deg, #e7e5e4, #d6d3d1);
+      box-shadow: 
+        inset 8px 8px 16px #d1cfc6,
+        inset -8px -8px 16px #f5f3f0,
+        0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .ceramic-button:hover {
+      box-shadow: 
+        inset 12px 12px 20px #cbc8c5,
+        inset -12px -12px 20px #f9f7f4,
+        0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ceramic-tag {
+      background: linear-gradient(145deg, #f5f5f4, #e7e5e4);
+      box-shadow: 
+        inset 3px 3px 6px #d6d3d1,
+        inset -3px -3px 6px #fafaf9;
+    }
+
+    /* Mosaic Background Animation */
+    .mosaic-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.3;
+    }
+
+    .mosaic-fragment {
+      position: absolute;
+      background: linear-gradient(145deg, #e7e5e4, #d6d3d1, #a8a29e);
+      border-radius: 1px;
+      animation: float 10s ease-in-out infinite;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.7),
+        inset -2px -2px 4px rgba(168, 162, 158, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Large Fragments */
+    .fragment-1 { width: 80px; height: 60px; top: 10%; left: 15%; animation-delay: 0s; }
+    .fragment-2 { width: 60px; height: 80px; top: 20%; right: 20%; animation-delay: 1.5s; }
+    .fragment-3 { width: 100px; height: 40px; top: 60%; left: 10%; animation-delay: 3s; }
+    .fragment-4 { width: 70px; height: 70px; top: 70%; right: 15%; animation-delay: 4.5s; }
+    .fragment-5 { width: 90px; height: 50px; top: 30%; left: 60%; animation-delay: 6s; }
+    .fragment-6 { width: 50px; height: 90px; top: 80%; left: 70%; animation-delay: 7.5s; }
+    .fragment-7 { width: 65px; height: 65px; top: 15%; left: 80%; animation-delay: 9s; }
+    .fragment-8 { width: 85px; height: 45px; top: 45%; right: 30%; animation-delay: 10.5s; }
+
+    /* Small Connecting Pieces */
+    .fragment-small-1 { width: 20px; height: 20px; top: 25%; left: 25%; animation-delay: 1s; }
+    .fragment-small-2 { width: 15px; height: 25px; top: 35%; right: 35%; animation-delay: 2.5s; }
+    .fragment-small-3 { width: 25px; height: 15px; top: 55%; left: 40%; animation-delay: 4s; }
+    .fragment-small-4 { width: 18px; height: 18px; top: 75%; right: 40%; animation-delay: 5.5s; }
+    .fragment-small-5 { width: 22px; height: 20px; top: 40%; left: 45%; animation-delay: 7s; }
+    .fragment-small-6 { width: 20px; height: 22px; top: 65%; right: 25%; animation-delay: 8.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(1deg); }
+    }
+
+    /* Logo Mosaic - Letter M */
+    .mosaic-logo {
+      width: 140px;
+      height: 120px;
+      position: relative;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+    }
+
+    .logo-fragment {
+      position: absolute;
+      background: linear-gradient(145deg, #78716c, #57534e, #44403c);
+      border-radius: 2px;
+      animation: logoFloat 6s ease-in-out infinite;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Left column of M */
+    .m-left-1 { width: 18px; height: 25px; top: 0; left: 0; animation-delay: 0s; }
+    .m-left-2 { width: 16px; height: 20px; top: 30px; left: 2px; animation-delay: 0.3s; }
+    .m-left-3 { width: 20px; height: 22px; top: 55px; left: 0; animation-delay: 0.6s; }
+    .m-left-4 { width: 17px; height: 18px; top: 82px; left: 3px; animation-delay: 0.9s; }
+    .m-left-5 { width: 19px; height: 15px; top: 105px; left: 1px; animation-delay: 1.2s; }
+
+    /* Center diagonal pieces forming the middle of M */
+    .m-center-1 { 
+      width: 15px; height: 25px; top: 20px; left: 35px; 
+      animation-delay: 1.5s; 
+      background: linear-gradient(145deg, #a8a29e, #78716c, #57534e);
+      transform: rotate(15deg);
+    }
+    .m-center-2 { 
+      width: 12px; height: 20px; top: 45px; left: 50px; 
+      animation-delay: 1.8s;
+      transform: rotate(-10deg);
+    }
+    .m-center-3 { 
+      width: 14px; height: 18px; top: 65px; left: 70px; 
+      animation-delay: 2.1s;
+      transform: rotate(20deg);
+    }
+
+    /* Right column of M */
+    .m-right-1 { width: 18px; height: 25px; top: 0; right: 0; animation-delay: 2.4s; }
+    .m-right-2 { width: 16px; height: 20px; top: 30px; right: 2px; animation-delay: 2.7s; }
+    .m-right-3 { width: 20px; height: 22px; top: 55px; right: 0; animation-delay: 3s; }
+    .m-right-4 { width: 17px; height: 18px; top: 82px; right: 3px; animation-delay: 3.3s; }
+    .m-right-5 { width: 19px; height: 15px; top: 105px; right: 1px; animation-delay: 3.6s; }
+
+    /* Small debris around the M */
+    .m-debris-1 { 
+      width: 8px; height: 8px; top: 10px; left: 25px; 
+      animation-delay: 4s;
+      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
+    }
+    .m-debris-2 { 
+      width: 6px; height: 10px; top: 90px; left: 40px; 
+      animation-delay: 4.3s;
+      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
+    }
+    .m-debris-3 { 
+      width: 7px; height: 7px; top: 15px; right: 25px; 
+      animation-delay: 4.6s;
+      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-6px) scale(1.02); }
+    }
+
+    /* Principle Icons */
+    .principle-icon {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      transition: transform 0.7s ease;
+    }
+
+    .group:hover .principle-icon {
+      transform: scale(1.05);
+    }
+
+    /* Harmony Icon */
+    .harmony-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .harmony-circle {
+      width: 60px;
+      height: 60px;
+      border: 3px solid #78716c;
+      border-radius: 50%;
+      animation: rotate 12s linear infinite;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 4px rgba(120, 113, 108, 0.3);
+    }
+
+    .harmony-center {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(145deg, #a8a29e, #78716c);
+      border-radius: 50%;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.3),
+        inset -1px -1px 2px rgba(120, 113, 108, 0.3);
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Simplicity Icon */
+    .simplicity-line {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #78716c, #a8a29e, #78716c);
+      animation: pulse 4s ease-in-out infinite;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.3),
+        inset -1px -1px 2px rgba(120, 113, 108, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scaleX(1); }
+      50% { opacity: 1; transform: scaleX(1.1); }
+    }
+
+    /* Balance Icon */
+    .balance-icon {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .balance-stone {
+      background: linear-gradient(145deg, #78716c, #57534e);
+      border-radius: 1px;
+      animation: balance 5s ease-in-out infinite;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+        inset -1px -1px 2px rgba(87, 83, 78, 0.3);
+    }
+
+    .balance-stone-1 { width: 16px; height: 20px; animation-delay: 0s; }
+    .balance-stone-2 { width: 20px; height: 35px; animation-delay: 0.7s; }
+    .balance-stone-3 { width: 18px; height: 25px; animation-delay: 1.4s; }
+
+    @keyframes balance {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Layer Visualization */
+    .layer-visualization {
+      width: 200px;
+      height: 150px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .layer {
+      position: absolute;
+      width: 180px;
+      height: 40px;
+      border-radius: 2px;
+      animation: layerFloat 8s ease-in-out infinite;
+      box-shadow: 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+        inset -4px -4px 8px rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .layer-presentation {
+      background: linear-gradient(145deg, #f5f5f4, #e7e5e4);
+      top: 0;
+      animation-delay: 0s;
+    }
+
+    .layer-domain {
+      background: linear-gradient(145deg, #e7e5e4, #d6d3d1);
+      top: 50px;
+      animation-delay: 1.5s;
+    }
+
+    .layer-data {
+      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
+      top: 100px;
+      animation-delay: 3s;
+    }
+
+    @keyframes layerFloat {
+      0%, 100% { transform: translateY(0px) rotateX(0deg); }
+      50% { transform: translateY(-8px) rotateX(3deg); }
+    }
+
+    /* Dependency Visualization */
+    .dependency-visualization {
+      width: 200px;
+      height: 150px;
+      position: relative;
+    }
+
+    .dependency-node {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(145deg, #78716c, #57534e);
+      border-radius: 50%;
+      animation: nodeGlow 6s ease-in-out infinite;
+      box-shadow: 
+        inset 3px 3px 6px rgba(255, 255, 255, 0.2),
+        inset -3px -3px 6px rgba(87, 83, 78, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .node-1 { top: 0; left: 0; animation-delay: 0s; }
+    .node-2 { top: 0; right: 0; animation-delay: 1.5s; }
+    .node-3 { bottom: 0; left: 75px; animation-delay: 3s; }
+
+    .dependency-arrow {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(to bottom, #78716c, #a8a29e);
+      transform-origin: top;
+      animation: arrowFlow 4s ease-in-out infinite;
+      box-shadow: 0 0 4px rgba(120, 113, 108, 0.3);
+    }
+
+    .arrow-1 {
+      height: 70px;
+      top: 45px;
+      left: 25px;
+      transform: rotate(35deg);
+      animation-delay: 0.5s;
+    }
+
+    .arrow-2 {
+      height: 70px;
+      top: 45px;
+      right: 25px;
+      transform: rotate(-35deg);
+      animation-delay: 2s;
+    }
+
+    @keyframes nodeGlow {
+      0%, 100% { 
+        box-shadow: 
+          inset 3px 3px 6px rgba(255, 255, 255, 0.2),
+          inset -3px -3px 6px rgba(87, 83, 78, 0.3),
+          0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1); 
+      }
+      50% { 
+        box-shadow: 
+          inset 3px 3px 6px rgba(255, 255, 255, 0.3),
+          inset -3px -3px 6px rgba(87, 83, 78, 0.4),
+          0 6px 12px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05); 
+      }
+    }
+
+    @keyframes arrowFlow {
+      0% { opacity: 0; transform: scale(0.7) rotate(35deg); }
+      50% { opacity: 1; transform: scale(1) rotate(35deg); }
+      100% { opacity: 0; transform: scale(0.7) rotate(35deg); }
+    }
+
+    .arrow-2 {
+      animation-name: arrowFlow2;
+    }
+
+    @keyframes arrowFlow2 {
+      0% { opacity: 0; transform: scale(0.7) rotate(-35deg); }
+      50% { opacity: 1; transform: scale(1) rotate(-35deg); }
+      100% { opacity: 0; transform: scale(0.7) rotate(-35deg); }
+    }
+
+    /* Footer Mosaic */
+    .footer-mosaic {
+      width: 60px;
+      height: 20px;
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .footer-fragment {
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(145deg, #78716c, #57534e);
+      border-radius: 1px;
+      animation: footerFloat 4s ease-in-out infinite;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+        inset -1px -1px 2px rgba(87, 83, 78, 0.3);
+    }
+
+    .footer-fragment:nth-child(1) { animation-delay: 0s; }
+    .footer-fragment:nth-child(2) { animation-delay: 0.7s; }
+    .footer-fragment:nth-child(3) { animation-delay: 1.4s; }
+
+    @keyframes footerFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .mosaic-fragment {
+        transform: scale(0.7);
+      }
+      
+      .mosaic-logo {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .layer-visualization,
+      .dependency-visualization {
+        width: 150px;
+        height: 120px;
+      }
+      
+      .layer {
+        width: 140px;
+        height: 30px;
+      }
+      
+      .layer-domain { top: 40px; }
+      .layer-data { top: 80px; }
+    }
+  </style>
 </Layout>

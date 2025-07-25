@@ -1,0 +1,621 @@
+---
+layout: ../../layouts/DocsLayout.astro
+title: Architecture Overview
+description: Understanding the clean architecture principles behind Mosaic framework
+---
+
+# Architecture Overview
+
+Mosaic framework is built upon the principles of **Clean Architecture** as defined by Robert C. Martin (Uncle Bob). This architecture promotes separation of concerns, testability, and maintainability through well-defined layer boundaries.
+
+## Core Principles
+
+### 1. Independence of Frameworks
+The architecture doesn't depend on the existence of some library of feature-laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
+
+### 2. Testable
+The business rules can be tested without the UI, Database, Web Server, or any other external element.
+
+### 3. Independent of UI
+The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
+
+### 4. Independent of Database
+You can swap out Oracle or SQL Server, for MongoDB, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
+
+### 5. Independent of External Agency
+Your business rules simply don't know anything at all about the outside world.
+
+## The Layers
+
+Mosaic organizes code into four distinct layers, each with specific responsibilities and dependencies flowing inward:
+
+```
+┌─────────────────────────────────────┐
+│          Presentation               │
+│    (UI, Widgets, State Management)  │
+├─────────────────────────────────────┤
+│           Domain                    │
+│   (Entities, Use Cases, Contracts)  │
+├─────────────────────────────────────┤
+│            Data                     │
+│  (Repositories, Data Sources, DTOs) │
+├─────────────────────────────────────┤
+│          Infrastructure             │
+│    (Platform, Network, Storage)     │
+└─────────────────────────────────────┘
+```
+
+### Presentation Layer
+
+The **outermost layer** contains everything related to the user interface:
+
+- **Widgets**: Flutter UI components
+- **Pages/Screens**: Complete screen implementations
+- **State Management**: BLoC, Cubit, or other state management solutions
+- **View Models**: Data transformation for UI consumption
+
+**Responsibilities:**
+- Handle user interactions
+- Display data to the user
+- Manage UI state
+- Navigate between screens
+
+**Dependencies:** Can depend on Domain layer only
+
+```dart
+// Example: Login BLoC
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final LoginUseCase _loginUseCase;
+  
+  LoginBloc({required LoginUseCase loginUseCase}) 
+    : _loginUseCase = loginUseCase,
+      super(LoginInitial());
+
+  @override
+  Stream<LoginState> mapEventToState(LoginEvent event) async* {
+    if (event is LoginSubmitted) {
+      yield LoginLoading();
+      
+      final result = await _loginUseCase(LoginParams(
+        email: event.email,
+        password: event.password,
+      ));
+      
+      yield result.fold(
+        (failure) => LoginFailure(failure.message),
+        (user) => LoginSuccess(user),
+      );
+    }
+  }
+}
+```
+
+### Domain Layer
+
+The **heart** of the application containing business logic:
+
+- **Entities**: Core business objects
+- **Use Cases**: Application-specific business rules
+- **Repository Contracts**: Abstract definitions of data access
+- **Value Objects**: Immutable objects representing domain concepts
+
+**Responsibilities:**
+- Define business entities
+- Implement business rules
+- Define contracts for data access
+- Remain independent of external concerns
+
+**Dependencies:** Has no dependencies on other layers
+
+```dart
+// Example: Entity
+class User extends Equatable {
+  final String id;
+  final String email;
+  final String name;
+  final UserRole role;
+  
+  const User({
+    required this.id,
+    required this.email,
+    required this.name,
+    required this.role,
+  });
+
+  @override
+  List<Object?> get props => [id, email, name, role];
+}
+
+// Example: Use Case
+class LoginUseCase implements UseCase<User, LoginParams> {
+  final AuthRepository repository;
+  
+  LoginUseCase(this.repository);
+
+  @override
+  Future<Either<Failure, User>> call(LoginParams params) async {
+    if (!EmailValidator.isValid(params.email)) {
+      return Left(ValidationFailure('Invalid email format'));
+    }
+    
+    if (params.password.length < 6) {
+      return Left(ValidationFailure('Password too short'));
+    }
+    
+    return await repository.login(params.email, params.password);
+  }
+}
+```
+
+### Data Layer
+
+Implements the **data access contracts** defined in the domain layer:
+
+- **Repository Implementations**: Concrete implementations of domain contracts
+- **Data Sources**: Local and remote data access
+- **Data Transfer Objects (DTOs)**: Data models for external APIs
+- **Mappers**: Convert between DTOs and domain entities
+
+**Responsibilities:**
+- Fetch data from various sources
+- Cache and persist data
+- Transform external data formats to domain entities
+- Handle data-related errors
+
+**Dependencies:** Can depend on Domain layer only
+
+```dart
+// Example: Repository Implementation
+class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
+  final NetworkInfo networkInfo;
+  
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+    required this.networkInfo,
+  });
+
+  @override
+  Future<Either<Failure, User>> login(String email, String password) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final userDto = await remoteDataSource.login(email, password);
+        await localDataSource.cacheUser(userDto);
+        return Right(UserMapper.fromDto(userDto));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      }
+    } else {
+      return Left(ConnectionFailure('No internet connection'));
+    }
+  }
+}
+
+// Example: Data Source
+abstract class AuthRemoteDataSource {
+  Future<UserDto> login(String email, String password);
+  Future<void> logout();
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final ApiClient client;
+  
+  AuthRemoteDataSourceImpl({required this.client});
+
+  @override
+  Future<UserDto> login(String email, String password) async {
+    final response = await client.post('/auth/login', data: {
+      'email': email,
+      'password': password,
+    });
+    
+    if (response.statusCode == 200) {
+      return UserDto.fromJson(response.data);
+    } else {
+      throw ServerException('Login failed');
+    }
+  }
+}
+```
+
+### Infrastructure Layer
+
+The **outermost layer** handling platform-specific implementations:
+
+- **Network**: HTTP clients, API configurations
+- **Database**: Local storage implementations
+- **Platform Services**: Device-specific functionality
+- **External Services**: Third-party integrations
+
+**Responsibilities:**
+- Handle platform-specific code
+- Manage external service integrations
+- Provide infrastructure implementations
+- Handle low-level system operations
+
+**Dependencies:** Can depend on all other layers
+
+```dart
+// Example: Network Implementation
+class ApiClient {
+  final Dio _dio;
+  
+  ApiClient() : _dio = Dio() {
+    _dio.options.baseUrl = EnvConfig.baseUrl;
+    _dio.options.connectTimeout = Duration(seconds: 30);
+    _dio.options.receiveTimeout = Duration(seconds: 30);
+    
+    _dio.interceptors.add(LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+    ));
+    
+    _dio.interceptors.add(AuthInterceptor());
+  }
+  
+  Future<Response> get(String path, {Map<String, dynamic>? queryParams}) {
+    return _dio.get(path, queryParameters: queryParams);
+  }
+  
+  Future<Response> post(String path, {dynamic data}) {
+    return _dio.post(path, data: data);
+  }
+}
+
+// Example: Local Storage
+class LocalStorageImpl implements LocalStorage {
+  final SharedPreferences _prefs;
+  
+  LocalStorageImpl(this._prefs);
+
+  @override
+  Future<void> setString(String key, String value) async {
+    await _prefs.setString(key, value);
+  }
+
+  @override
+  String? getString(String key) {
+    return _prefs.getString(key);
+  }
+}
+```
+
+## Dependency Rule
+
+The **Dependency Rule** is the overriding principle that makes clean architecture work:
+
+> **Source code dependencies can only point inward**
+
+This means:
+
+- **Presentation** can depend on **Domain**
+- **Data** can depend on **Domain** 
+- **Infrastructure** can depend on **Domain** and **Data**
+- **Domain** depends on nothing else
+
+### Dependency Inversion
+
+When an outer layer needs to call an inner layer, we use **Dependency Inversion**:
+
+```dart
+// Domain layer defines the contract
+abstract class UserRepository {
+  Future<Either<Failure, User>> getUser(String id);
+  Future<Either<Failure, void>> saveUser(User user);
+}
+
+// Data layer implements the contract
+class UserRepositoryImpl implements UserRepository {
+  final UserRemoteDataSource remoteDataSource;
+  final UserLocalDataSource localDataSource;
+  
+  UserRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
+  
+  @override
+  Future<Either<Failure, User>> getUser(String id) async {
+    // Implementation details...
+  }
+}
+
+// Presentation layer uses the abstraction
+class UserBloc extends Bloc<UserEvent, UserState> {
+  final UserRepository _repository; // Depends on abstraction, not implementation
+  
+  UserBloc(this._repository) : super(UserInitial());
+}
+```
+
+## Data Flow
+
+Understanding how data flows through the layers:
+
+### 1. User Interaction
+```dart
+// User taps login button
+ElevatedButton(
+  onPressed: () => context.read<LoginBloc>().add(
+    LoginSubmitted(email: email, password: password)
+  ),
+  child: Text('Login'),
+)
+```
+
+### 2. Presentation Layer Processing
+```dart
+// BLoC receives event and calls use case
+Stream<LoginState> mapEventToState(LoginEvent event) async* {
+  if (event is LoginSubmitted) {
+    yield LoginLoading();
+    
+    final result = await _loginUseCase(LoginParams(
+      email: event.email,
+      password: event.password,
+    ));
+    
+    yield result.fold(
+      (failure) => LoginFailure(failure.message),
+      (user) => LoginSuccess(user),
+    );
+  }
+}
+```
+
+### 3. Domain Layer Business Logic
+```dart
+// Use case validates and calls repository
+Future<Either<Failure, User>> call(LoginParams params) async {
+  // Business rules validation
+  if (!EmailValidator.isValid(params.email)) {
+    return Left(ValidationFailure('Invalid email'));
+  }
+  
+  // Delegate to repository
+  return await repository.login(params.email, params.password);
+}
+```
+
+### 4. Data Layer Implementation
+```dart
+// Repository coordinates data sources
+Future<Either<Failure, User>> login(String email, String password) async {
+  try {
+    // Check network connectivity
+    if (await networkInfo.isConnected) {
+      // Fetch from remote
+      final userDto = await remoteDataSource.login(email, password);
+      // Cache locally
+      await localDataSource.cacheUser(userDto);
+      // Transform to domain entity
+      return Right(UserMapper.fromDto(userDto));
+    } else {
+      // Try local cache
+      final cachedUser = await localDataSource.getLastUser();
+      return Right(UserMapper.fromDto(cachedUser));
+    }
+  } catch (e) {
+    return Left(ServerFailure(e.toString()));
+  }
+}
+```
+
+### 5. Infrastructure Layer Execution
+```dart
+// Remote data source makes API call
+Future<UserDto> login(String email, String password) async {
+  final response = await apiClient.post('/auth/login', data: {
+    'email': email,
+    'password': password,
+  });
+  
+  return UserDto.fromJson(response.data);
+}
+```
+
+## Error Handling
+
+Mosaic uses a structured approach to error handling:
+
+### Failure Classes
+```dart
+abstract class Failure extends Equatable {
+  final String message;
+  
+  const Failure(this.message);
+  
+  @override
+  List<Object> get props => [message];
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure(String message) : super(message);
+}
+
+class ConnectionFailure extends Failure {
+  const ConnectionFailure(String message) : super(message);
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure(String message) : super(message);
+}
+```
+
+### Either Pattern
+```dart
+// Use cases return Either<Failure, Success>
+Future<Either<Failure, User>> login(LoginParams params) async {
+  try {
+    final user = await repository.login(params.email, params.password);
+    return Right(user);
+  } on ValidationException catch (e) {
+    return Left(ValidationFailure(e.message));
+  } on NetworkException catch (e) {
+    return Left(ConnectionFailure(e.message));
+  } catch (e) {
+    return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+  }
+}
+
+// BLoCs handle both success and failure cases
+yield result.fold(
+  (failure) => LoginFailure(failure.message),
+  (user) => LoginSuccess(user),
+);
+```
+
+## Testing Strategy
+
+Each layer has specific testing strategies:
+
+### Domain Layer Testing
+```dart
+// Test use cases in isolation
+group('LoginUseCase', () {
+  late MockAuthRepository mockRepository;
+  late LoginUseCase useCase;
+
+  setUp(() {
+    mockRepository = MockAuthRepository();
+    useCase = LoginUseCase(mockRepository);
+  });
+
+  test('should return User when login is successful', () async {
+    // Arrange
+    const user = User(id: '1', email: 'test@test.com', name: 'Test');
+    when(() => mockRepository.login(any(), any()))
+        .thenAnswer((_) async => Right(user));
+
+    // Act
+    final result = await useCase(LoginParams(
+      email: 'test@test.com',
+      password: 'password',
+    ));
+
+    // Assert
+    expect(result, Right(user));
+    verify(() => mockRepository.login('test@test.com', 'password'));
+  });
+});
+```
+
+### Data Layer Testing
+```dart
+// Test repository implementations
+group('AuthRepositoryImpl', () {
+  late MockAuthRemoteDataSource mockRemoteDataSource;
+  late MockNetworkInfo mockNetworkInfo;
+  late AuthRepositoryImpl repository;
+
+  setUp(() {
+    mockRemoteDataSource = MockAuthRemoteDataSource();
+    mockNetworkInfo = MockNetworkInfo();
+    repository = AuthRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      networkInfo: mockNetworkInfo,
+    );
+  });
+
+  test('should return User when remote login is successful', () async {
+    // Arrange
+    when(() => mockNetworkInfo.isConnected)
+        .thenAnswer((_) async => true);
+    when(() => mockRemoteDataSource.login(any(), any()))
+        .thenAnswer((_) async => UserDto.test());
+
+    // Act
+    final result = await repository.login('test@test.com', 'password');
+
+    // Assert
+    expect(result, isA<Right<Failure, User>>());
+  });
+});
+```
+
+### Presentation Layer Testing
+```dart
+// Test BLoCs with mock dependencies
+group('LoginBloc', () {
+  late MockLoginUseCase mockLoginUseCase;
+  late LoginBloc loginBloc;
+
+  setUp(() {
+    mockLoginUseCase = MockLoginUseCase();
+    loginBloc = LoginBloc(loginUseCase: mockLoginUseCase);
+  });
+
+  blocTest<LoginBloc, LoginState>(
+    'emits [LoginLoading, LoginSuccess] when login succeeds',
+    build: () {
+      when(() => mockLoginUseCase(any()))
+          .thenAnswer((_) async => Right(User.test()));
+      return loginBloc;
+    },
+    act: (bloc) => bloc.add(LoginSubmitted(
+      email: 'test@test.com',
+      password: 'password',
+    )),
+    expect: () => [
+      LoginLoading(),
+      LoginSuccess(User.test()),
+    ],
+  );
+});
+```
+
+## Benefits of This Architecture
+
+### 1. **Testability**
+Each layer can be tested in isolation with clear boundaries and mocked dependencies.
+
+### 2. **Maintainability**
+Changes in one layer don't affect others, making the codebase easier to maintain.
+
+### 3. **Scalability**
+New features can be added following the same patterns without affecting existing code.
+
+### 4. **Flexibility**
+External dependencies can be swapped without changing business logic.
+
+### 5. **Separation of Concerns**
+Each layer has a single responsibility, making the code easier to understand.
+
+## Common Patterns
+
+### Repository Pattern
+Abstracts data access logic and provides a uniform interface for accessing data.
+
+### Use Case Pattern
+Encapsulates specific business rules and application logic.
+
+### Dependency Injection
+Provides dependencies to classes rather than having them create dependencies themselves.
+
+### Observer Pattern
+Used in state management to notify UI of state changes.
+
+## Best Practices
+
+1. **Keep entities pure**: Domain entities should not depend on external libraries
+2. **Use value objects**: Represent domain concepts with immutable objects
+3. **Fail fast**: Validate input at the boundaries
+4. **Test business rules**: Focus testing efforts on domain logic
+5. **Mock external dependencies**: Keep tests isolated and fast
+6. **Use meaningful names**: Make code self-documenting
+7. **Follow SOLID principles**: Apply SOLID principles at every layer
+
+## Next Steps
+
+Now that you understand the architecture:
+
+1. [Learn about Use Cases](/docs/use-cases)
+2. [Explore the Repository Pattern](/docs/repository-pattern)
+3. [Understand Dependency Injection](/docs/dependency-injection)
+4. [Build Your First Feature](/docs/your-first-app)
+
+---
+
+*"The architecture should scream the intent of the system"* - Robert C. Martin

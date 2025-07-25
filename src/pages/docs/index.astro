@@ -1,0 +1,585 @@
+---
+import Layout from '../../components/Layout.astro';
+import "../../styles/global.css";
+---
+
+<Layout title="Documentation - Mosaic Framework" description="Complete guide to building clean architecture Flutter applications with Mosaic">
+  <main class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 text-amber-900">
+    <!-- Docs Header -->
+    <header class="relative px-6 py-16 bg-gradient-to-r from-amber-100/40 to-orange-100/40 backdrop-blur-sm border-b border-amber-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-8 mb-8">
+          <!-- Mini Logo -->
+          <div class="mini-logo">
+            <div class="mini-fragment mini-left"></div>
+            <div class="mini-fragment mini-center"></div>
+            <div class="mini-fragment mini-right"></div>
+          </div>
+          
+          <div>
+            <h1 class="text-4xl md:text-5xl font-light text-amber-900 tracking-wide" style="font-family: 'Playfair Display', serif;">
+              Documentation
+            </h1>
+            <p class="text-lg text-amber-700 font-light mt-2" style="font-family: 'Crimson Text', serif;">
+              Master the art of clean architecture with Mosaic
+            </p>
+          </div>
+        </div>
+        
+        <!-- Navigation Pills -->
+        <nav class="flex flex-wrap gap-3">
+          <a href="/docs" class="nav-pill active">Overview</a>
+          <a href="/docs/getting-started" class="nav-pill">Getting Started</a>
+          <a href="/docs/architecture" class="nav-pill">Architecture</a>
+          <a href="/docs/examples" class="nav-pill">Examples</a>
+          <a href="/docs/api" class="nav-pill">API Reference</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid lg:grid-cols-4 gap-12">
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-1">
+          <nav class="sticky top-8 space-y-8">
+            <!-- Quick Start -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+                <div class="nav-icon quick-start-icon"></div>
+                Quick Start
+              </h3>
+              <ul class="space-y-2">
+                <li><a href="/docs/installation" class="nav-link">Installation</a></li>
+                <li><a href="/docs/your-first-app" class="nav-link">Your First App</a></li>
+                <li><a href="/docs/basic-concepts" class="nav-link">Basic Concepts</a></li>
+              </ul>
+            </div>
+
+            <!-- Architecture -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+                <div class="nav-icon architecture-icon"></div>
+                Architecture
+              </h3>
+              <ul class="space-y-2">
+                <li><a href="/docs/layers" class="nav-link">Layers Overview</a></li>
+                <li><a href="/docs/presentation-layer" class="nav-link">Presentation Layer</a></li>
+                <li><a href="/docs/domain-layer" class="nav-link">Domain Layer</a></li>
+                <li><a href="/docs/data-layer" class="nav-link">Data Layer</a></li>
+                <li><a href="/docs/dependency-injection" class="nav-link">Dependency Injection</a></li>
+              </ul>
+            </div>
+
+            <!-- Patterns -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+                <div class="nav-icon patterns-icon"></div>
+                Patterns
+              </h3>
+              <ul class="space-y-2">
+                <li><a href="/docs/repository-pattern" class="nav-link">Repository Pattern</a></li>
+                <li><a href="/docs/use-cases" class="nav-link">Use Cases</a></li>
+                <li><a href="/docs/entities" class="nav-link">Entities</a></li>
+                <li><a href="/docs/value-objects" class="nav-link">Value Objects</a></li>
+              </ul>
+            </div>
+
+            <!-- Testing -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+                <div class="nav-icon testing-icon"></div>
+                Testing
+              </h3>
+              <ul class="space-y-2">
+                <li><a href="/docs/unit-testing" class="nav-link">Unit Testing</a></li>
+                <li><a href="/docs/integration-testing" class="nav-link">Integration Testing</a></li>
+                <li><a href="/docs/widget-testing" class="nav-link">Widget Testing</a></li>
+              </ul>
+            </div>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lg:col-span-3">
+          <article class="prose-stone max-w-none">
+            <!-- Overview Content -->
+            <div class="content-section">
+              <h2 class="section-title">Welcome to Mosaic</h2>
+              <p class="text-xl text-stone-600 font-light leading-relaxed mb-8">
+                Mosaic is a clean architecture framework for Flutter that helps you build maintainable, 
+                testable, and scalable applications with clarity and purpose.
+              </p>
+
+              <!-- Feature Cards -->
+              <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div class="feature-card">
+                  <div class="feature-icon layer-icon"></div>
+                  <h3 class="text-xl font-medium text-stone-800 mb-3">Clean Separation</h3>
+                  <p class="text-stone-600 leading-relaxed">
+                    Clear boundaries between presentation, domain, and data layers ensure your code 
+                    remains organized and maintainable as your app grows.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-icon modular-icon"></div>
+                  <h3 class="text-xl font-medium text-stone-800 mb-3">Modular Design</h3>
+                  <p class="text-stone-600 leading-relaxed">
+                    Build your application from independent, reusable modules that can be easily 
+                    tested, modified, and extended without affecting other parts.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-icon dependency-icon"></div>
+                  <h3 class="text-xl font-medium text-stone-800 mb-3">Dependency Injection</h3>
+                  <p class="text-stone-600 leading-relaxed">
+                    Built-in service locator pattern makes testing effortless and dependencies 
+                    explicit throughout your application architecture.
+                  </p>
+                </div>
+
+                <div class="feature-card">
+                  <div class="feature-icon testing-icon-card"></div>
+                  <h3 class="text-xl font-medium text-stone-800 mb-3">Test-Driven</h3>
+                  <p class="text-stone-600 leading-relaxed">
+                    Every component is designed with testability in mind, making it easy to write 
+                    comprehensive unit, integration, and widget tests.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Quick Example -->
+              <div class="example-section">
+                <h3 class="text-2xl font-light text-stone-800 mb-6">Quick Example</h3>
+                <div class="code-block">
+                  <div class="code-header">
+                    <div class="code-dots">
+                      <div class="dot"></div>
+                      <div class="dot"></div>
+                      <div class="dot"></div>
+                    </div>
+                    <span class="code-title">main.dart</span>
+                  </div>
+                  <pre class="code-content">
+                    <code class="language-dart">
+{`import 'package:mosaic/mosaic.dart';
+
+void main() {
+  // Initialize Mosaic framework
+  Mosaic.initialize();
+  
+  // Register dependencies
+  Mosaic.register&lt;UserRepository&gt;(() => UserRepositoryImpl());
+  Mosaic.register&lt;GetUserUseCase&gt;(() => GetUserUseCase());
+  
+  runApp(MyApp());
+}`}
+
+{`class MyApp extends StatelessWidget {`}
+  @override
+ {` Widget build(BuildContext context) {`}
+    return MosaicApp(
+      title: 'My Clean App',
+      home: UserScreen(),
+    );
+  }
+}
+                  </code></pre>
+                </div>
+              </div>
+
+              <!-- Next Steps -->
+              <div class="next-steps">
+                <h3 class="text-2xl font-light text-stone-800 mb-6">Next Steps</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                  <a href="/docs/installation" class="step-card">
+                    <div class="step-number">1</div>
+                    <h4 class="font-medium text-stone-800">Install Mosaic</h4>
+                    <p class="text-sm text-stone-600">Add Mosaic to your Flutter project</p>
+                  </a>
+                  
+                  <a href="/docs/your-first-app" class="step-card">
+                    <div class="step-number">2</div>
+                    <h4 class="font-medium text-stone-800">Build Your First App</h4>
+                    <p class="text-sm text-stone-600">Follow our step-by-step tutorial</p>
+                  </a>
+                  
+                  <a href="/docs/architecture" class="step-card">
+                    <div class="step-number">3</div>
+                    <h4 class="font-medium text-stone-800">Learn Architecture</h4>
+                    <p class="text-sm text-stone-600">Understand the principles deeply</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    /* Import neoclassical fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+    /* Apply neoclassical typography */
+    body {
+      font-family: 'Crimson Text', serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .prose-stone {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Mini Logo for Header */
+    .mini-logo {
+      width: 40px;
+      height: 35px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .mini-fragment {
+      position: absolute;
+      background: linear-gradient(145deg, #92400e, #b45309, #d97706);
+      border-radius: 2px;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 4px rgba(146, 64, 14, 0.4),
+        0 3px 6px rgba(146, 64, 14, 0.2);
+    }
+
+    .mini-left { width: 8px; height: 30px; top: 0; left: 0; }
+    .mini-center { width: 6px; height: 15px; top: 8px; left: 12px; transform: rotate(20deg); }
+    .mini-right { width: 8px; height: 30px; top: 0; right: 0; }
+
+    /* Navigation Pills */
+    .nav-pill {
+      padding: 12px 20px;
+      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
+      color: #92400e;
+      font-weight: 500;
+      font-family: 'Crimson Text', serif;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      border: 1px solid #f59e0b;
+      box-shadow: 
+        inset 3px 3px 6px rgba(255, 255, 255, 0.8),
+        inset -3px -3px 6px rgba(245, 158, 11, 0.3),
+        0 4px 8px rgba(146, 64, 14, 0.1);
+    }
+
+    .nav-pill:hover {
+      background: linear-gradient(145deg, #fed7aa, #fdba74, #fb923c);
+      color: #7c2d12;
+      box-shadow: 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
+        inset -4px -4px 8px rgba(245, 158, 11, 0.4),
+        0 6px 12px rgba(146, 64, 14, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .nav-pill.active {
+      background: linear-gradient(145deg, #ea580c, #dc2626, #b91c1c);
+      color: #fef3c7;
+      box-shadow: 
+        inset 3px 3px 6px rgba(220, 38, 38, 0.3),
+        inset -3px -3px 6px rgba(185, 28, 28, 0.4),
+        0 4px 8px rgba(146, 64, 14, 0.3);
+    }
+
+    /* Sidebar Navigation */
+    .nav-section {
+      padding-bottom: 28px;
+      border-bottom: 2px solid #fed7aa;
+      margin-bottom: 24px;
+    }
+
+    .nav-section:last-child {
+      border-bottom: none;
+    }
+
+    .nav-section h3 {
+      font-family: 'Playfair Display', serif;
+      color: #92400e;
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(145deg, #d97706, #ea580c, #dc2626);
+      border-radius: 2px;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 2px rgba(220, 38, 38, 0.3),
+        0 2px 4px rgba(146, 64, 14, 0.2);
+    }
+
+    .nav-link {
+      display: block;
+      padding: 10px 0;
+      color: #b45309;
+      text-decoration: none;
+      font-weight: 400;
+      font-family: 'Crimson Text', serif;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      padding-left: 16px;
+    }
+
+    .nav-link:hover {
+      color: #92400e;
+      border-left-color: #f59e0b;
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), transparent);
+      padding-left: 20px;
+    }
+
+    /* Content Sections */
+    .content-section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 500;
+      font-family: 'Playfair Display', serif;
+      color: #7c2d12;
+      margin-bottom: 32px;
+      tracking: 0.02em;
+      text-shadow: 2px 2px 4px rgba(146, 64, 14, 0.1);
+    }
+
+    /* Feature Cards */
+    .feature-card {
+      padding: 32px;
+      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
+      border-radius: 6px;
+      border: 2px solid #f59e0b;
+      box-shadow: 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
+        inset -4px -4px 8px rgba(245, 158, 11, 0.3),
+        0 6px 12px rgba(146, 64, 14, 0.15);
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover {
+      box-shadow: 
+        inset 6px 6px 12px rgba(255, 255, 255, 0.8),
+        inset -6px -6px 12px rgba(245, 158, 11, 0.4),
+        0 8px 16px rgba(146, 64, 14, 0.25);
+      transform: translateY(-3px);
+    }
+
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      color: #92400e;
+      font-weight: 500;
+    }
+
+    .feature-card p {
+      font-family: 'Cormorant Garamond', serif;
+      color: #b45309;
+      line-height: 1.7;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 20px;
+      background: linear-gradient(145deg, #ea580c, #dc2626, #b91c1c);
+      border-radius: 4px;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 4px rgba(185, 28, 28, 0.4),
+        0 4px 8px rgba(146, 64, 14, 0.2);
+    }
+
+    /* Code Block */
+    .code-block {
+      background: linear-gradient(145deg, #451a03, #7c2d12, #92400e);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 32px 0;
+      box-shadow: 
+        0 10px 20px rgba(146, 64, 14, 0.3),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.1);
+      border: 2px solid #ea580c;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: linear-gradient(145deg, #7c2d12, #451a03);
+      border-bottom: 2px solid #ea580c;
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #fed7aa, #f59e0b);
+      box-shadow: inset 1px 1px 2px rgba(245, 158, 11, 0.3);
+    }
+
+    .code-title {
+      color: #fef3c7;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .code-content {
+      padding: 24px;
+      color: #fef3c7;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    /* Example Section */
+    .example-section {
+      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
+      padding: 40px;
+      border-radius: 8px;
+      border: 3px solid #f59e0b;
+      margin: 40px 0;
+      box-shadow: 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
+        inset -4px -4px 8px rgba(245, 158, 11, 0.3),
+        0 8px 16px rgba(146, 64, 14, 0.15);
+    }
+
+    .example-section h3 {
+      font-family: 'Playfair Display', serif;
+      color: #7c2d12;
+      font-weight: 500;
+    }
+
+    /* Next Steps */
+    .next-steps {
+      margin-top: 56px;
+    }
+
+    .next-steps h3 {
+      font-family: 'Playfair Display', serif;
+      color: #7c2d12;
+      font-weight: 500;
+    }
+
+    .step-card {
+      display: block;
+      padding: 28px;
+      background: linear-gradient(145deg, #fed7aa, #fdba74, #fb923c);
+      border-radius: 6px;
+      border: 2px solid #ea580c;
+      text-decoration: none;
+      transition: all 0.4s ease;
+      box-shadow: 
+        inset 3px 3px 6px rgba(255, 255, 255, 0.7),
+        inset -3px -3px 6px rgba(234, 88, 12, 0.4),
+        0 6px 12px rgba(146, 64, 14, 0.2);
+    }
+
+    .step-card:hover {
+      background: linear-gradient(145deg, #fb923c, #f97316, #ea580c);
+      box-shadow: 
+        inset 4px 4px 8px rgba(255, 255, 255, 0.7),
+        inset -4px -4px 8px rgba(234, 88, 12, 0.5),
+        0 8px 16px rgba(146, 64, 14, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .step-card h4 {
+      font-family: 'Playfair Display', serif;
+      color: #7c2d12;
+      font-weight: 500;
+    }
+
+    .step-card p {
+      font-family: 'Cormorant Garamond', serif;
+      color: #92400e;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(145deg, #dc2626, #b91c1c, #991b1b);
+      color: #fef3c7;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 16px;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 4px rgba(153, 27, 27, 0.4),
+        0 4px 8px rgba(146, 64, 14, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .grid.lg\\:grid-cols-4 {
+        grid-template-columns: 1fr;
+      }
+      
+      aside {
+        order: 2;
+      }
+      
+      main {
+        order: 1;
+      }
+      
+      .sticky {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mini-logo {
+        width: 30px;
+        height: 26px;
+      }
+      
+      .mini-left, .mini-right { width: 6px; height: 22px; }
+      .mini-center { width: 4px; height: 11px; top: 6px; left: 9px; }
+      
+      .section-title {
+        font-size: 2.5rem;
+      }
+      
+      .feature-card,
+      .step-card {
+        padding: 20px;
+      }
+      
+      .code-content {
+        font-size: 13px;
+        padding: 20px;
+      }
+      
+      .nav-pill {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</Layout>

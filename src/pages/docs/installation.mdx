@@ -1,0 +1,267 @@
+---
+layout: ../../layouts/DocsLayout.astro
+title: Installation Guide
+description: Get started with Mosaic framework in your Flutter project
+---
+
+# Installation
+
+Welcome to the Mosaic framework installation guide. Follow these steps to integrate clean architecture principles into your Flutter application.
+
+## Prerequisites
+
+Before installing Mosaic, ensure you have:
+
+- **Flutter SDK** 3.10.0 or higher
+- **Dart SDK** 3.0.0 or higher
+- A code editor (VS Code, Android Studio, or IntelliJ IDEA)
+
+## Quick Installation
+
+### 1. Add Mosaic to your pubspec.yaml
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  mosaic: ^1.0.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mosaic_test: ^1.0.0
+```
+
+### 2. Install Dependencies
+
+Run the following command in your project root:
+
+```bash
+flutter pub get
+```
+
+### 3. Initialize Mosaic
+
+Create a new file `lib/main.dart` and initialize the framework:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+
+void main() {
+  // Initialize Mosaic framework
+  Mosaic.initialize();
+  
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MosaicApp(
+      title: 'My Clean Architecture App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomeScreen(),
+    );
+  }
+}
+```
+
+## Project Structure Setup
+
+Mosaic follows a specific folder structure to maintain clean architecture principles:
+
+```
+lib/
+├── app/                    # Application Layer
+│   ├── di/                # Dependency Injection
+│   │   └── injection.dart
+│   ├── router/            # Navigation
+│   │   └── app_router.dart
+│   └── theme/             # Theming
+│       └── app_theme.dart
+├── core/                  # Core Utilities
+│   ├── constants/         # App Constants
+│   ├── errors/           # Error Handling
+│   ├── network/          # Network Configuration
+│   └── utils/            # Utility Functions
+├── features/             # Feature Modules
+│   └── auth/            # Example: Authentication Feature
+│       ├── data/        # Data Layer
+│       │   ├── datasources/
+│       │   ├── models/
+│       │   └── repositories/
+│       ├── domain/      # Domain Layer
+│       │   ├── entities/
+│       │   ├── repositories/
+│       │   └── usecases/
+│       └── presentation/ # Presentation Layer
+│           ├── bloc/
+│           ├── pages/
+│           └── widgets/
+└── main.dart
+```
+
+## Configuration
+
+### Dependency Injection Setup
+
+Create `lib/app/di/injection.dart`:
+
+```dart
+import 'package:mosaic/mosaic.dart';
+import 'package:get_it/get_it.dart';
+
+final sl = GetIt.instance;
+
+Future<void> initializeDependencies() async {
+  // Core
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
+  sl.registerLazySingleton<ApiClient>(() => ApiClient());
+  
+  // Data Sources
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(client: sl()),
+  );
+  
+  // Repositories
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+  
+  // Use Cases
+  sl.registerLazySingleton(() => LoginUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
+  
+  // BLoC
+  sl.registerFactory(() => AuthBloc(
+    loginUseCase: sl(),
+    logoutUseCase: sl(),
+  ));
+}
+```
+
+### Environment Configuration
+
+Create different environment configurations:
+
+```dart
+// lib/core/config/env_config.dart
+abstract class EnvConfig {
+  static const String baseUrl = String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: 'https://api.example.com',
+  );
+  
+  static const String apiKey = String.fromEnvironment(
+    'API_KEY',
+    defaultValue: 'your-api-key',
+  );
+  
+  static const bool isProduction = bool.fromEnvironment(
+    'PRODUCTION',
+    defaultValue: false,
+  );
+}
+```
+
+## Verification
+
+To verify your installation is working correctly:
+
+### 1. Run the App
+
+```bash
+flutter run
+```
+
+### 2. Check for Compilation Errors
+
+Ensure there are no import or dependency errors.
+
+### 3. Test Dependency Injection
+
+Create a simple test to verify DI is working:
+
+```dart
+// test/app/di/injection_test.dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:myapp/app/di/injection.dart';
+
+void main() {
+  group('Dependency Injection', () {
+    test('should initialize all dependencies without errors', () async {
+      // Act
+      await initializeDependencies();
+      
+      // Assert
+      expect(sl.isRegistered<NetworkInfo>(), true);
+      expect(sl.isRegistered<AuthRepository>(), true);
+      expect(sl.isRegistered<LoginUseCase>(), true);
+    });
+  });
+}
+```
+
+## Common Issues
+
+### Import Errors
+
+If you encounter import errors, ensure you have:
+
+1. Added the correct version in `pubspec.yaml`
+2. Run `flutter pub get`
+3. Restarted your IDE
+
+### Build Errors
+
+For build errors, try:
+
+```bash
+flutter clean
+flutter pub get
+flutter run
+```
+
+### Platform-Specific Issues
+
+**iOS:**
+Add the following to `ios/Runner/Info.plist` if using network requests:
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+```
+
+**Android:**
+Add internet permission in `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+## Next Steps
+
+Now that you have Mosaic installed and configured:
+
+1. [Create Your First Feature](/docs/your-first-app)
+2. [Understand the Architecture](/docs/architecture)
+3. [Learn About Use Cases](/docs/use-cases)
+
+## Additional Resources
+
+- [Flutter Documentation](https://docs.flutter.dev)
+- [Clean Architecture Principles](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Mosaic Examples Repository](https://github.com/mosaic/examples)
+
+---
+
+**Need help?** Join our [Discord community](https://discord.gg/mosaic) or check out our [FAQ section](/docs/faq).

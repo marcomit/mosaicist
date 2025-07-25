@@ -1,0 +1,403 @@
+---
+import Layout from '../components/Layout.astro';
+import "../styles/global.css";
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const fullTitle = `${title} - Mosaic Documentation`;
+---
+
+<Layout title={fullTitle} description={description}>
+  <main class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 text-amber-900">
+    <!-- Docs Header -->
+    <header class="relative px-6 py-12 bg-gradient-to-r from-amber-100/40 to-orange-100/40 backdrop-blur-sm border-b border-amber-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-6 mb-6">
+          <!-- Mini Logo -->
+          <div class="mini-logo">
+            <div class="mini-fragment mini-left"></div>
+            <div class="mini-fragment mini-center"></div>
+            <div class="mini-fragment mini-right"></div>
+          </div>
+          
+          <div>
+            <a href="/docs" class="text-2xl font-light text-amber-700 hover:text-amber-900 transition-colors" style="font-family: 'Playfair Display', serif;">
+              ← Documentation
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="grid lg:grid-cols-4 gap-12">
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-1">
+          <nav class="sticky top-8 space-y-6">
+            <!-- Quick Start -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+                <div class="nav-icon quick-start-icon"></div>
+                Quick Start
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/installation" class="nav-link">Installation</a></li>
+                <li><a href="/docs/your-first-app" class="nav-link">Your First App</a></li>
+                <li><a href="/docs/basic-concepts" class="nav-link">Basic Concepts</a></li>
+              </ul>
+            </div>
+
+            <!-- Architecture -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+                <div class="nav-icon architecture-icon"></div>
+                Architecture
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/layers" class="nav-link">Layers Overview</a></li>
+                <li><a href="/docs/presentation-layer" class="nav-link">Presentation Layer</a></li>
+                <li><a href="/docs/domain-layer" class="nav-link">Domain Layer</a></li>
+                <li><a href="/docs/data-layer" class="nav-link">Data Layer</a></li>
+                <li><a href="/docs/dependency-injection" class="nav-link">Dependency Injection</a></li>
+              </ul>
+            </div>
+
+            <!-- Patterns -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+                <div class="nav-icon patterns-icon"></div>
+                Patterns
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/repository-pattern" class="nav-link">Repository Pattern</a></li>
+                <li><a href="/docs/use-cases" class="nav-link">Use Cases</a></li>
+                <li><a href="/docs/entities" class="nav-link">Entities</a></li>
+                <li><a href="/docs/value-objects" class="nav-link">Value Objects</a></li>
+              </ul>
+            </div>
+
+            <!-- Testing -->
+            <div class="nav-section">
+              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+                <div class="nav-icon testing-icon"></div>
+                Testing
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/unit-testing" class="nav-link">Unit Testing</a></li>
+                <li><a href="/docs/integration-testing" class="nav-link">Integration Testing</a></li>
+                <li><a href="/docs/widget-testing" class="nav-link">Widget Testing</a></li>
+              </ul>
+            </div>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lg:col-span-3">
+          <article class="prose-mosaic max-w-none">
+            <slot />
+          </article>
+        </main>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    /* Import neoclassical fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+    /* Mini Logo for Header */
+    .mini-logo {
+      width: 32px;
+      height: 28px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .mini-fragment {
+      position: absolute;
+      background: linear-gradient(145deg, #92400e, #b45309, #d97706);
+      border-radius: 2px;
+      box-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 4px rgba(146, 64, 14, 0.4),
+        0 3px 6px rgba(146, 64, 14, 0.2);
+    }
+
+    .mini-left { width: 6px; height: 24px; top: 0; left: 0; }
+    .mini-center { width: 4px; height: 12px; top: 6px; left: 10px; transform: rotate(20deg); }
+    .mini-right { width: 6px; height: 24px; top: 0; right: 0; }
+
+    /* Sidebar Navigation */
+    .nav-section {
+      padding-bottom: 24px;
+      border-bottom: 2px solid #fed7aa;
+      margin-bottom: 20px;
+    }
+
+    .nav-section:last-child {
+      border-bottom: none;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(145deg, #d97706, #ea580c, #dc2626);
+      border-radius: 2px;
+      box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 2px rgba(220, 38, 38, 0.3),
+        0 2px 4px rgba(146, 64, 14, 0.2);
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 0;
+      color: #b45309;
+      text-decoration: none;
+      font-weight: 400;
+      font-family: 'Crimson Text', serif;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      padding-left: 16px;
+    }
+
+    .nav-link:hover {
+      color: #92400e;
+      border-left-color: #f59e0b;
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), transparent);
+      padding-left: 20px;
+    }
+
+    /* Prose Styling for MDX Content */
+    .prose-mosaic {
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1.7;
+      color: #92400e;
+    }
+
+    .prose-mosaic h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 500;
+      color: #7c2d12;
+      margin-bottom: 2rem;
+      margin-top: 0;
+      border-bottom: 3px solid #fed7aa;
+      padding-bottom: 1rem;
+    }
+
+    .prose-mosaic h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.25rem;
+      font-weight: 500;
+      color: #92400e;
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .prose-mosaic h2:before {
+      content: '';
+      position: absolute;
+      left: -1.5rem;
+      top: 0.5rem;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(145deg, #ea580c, #dc2626);
+      border-radius: 2px;
+    }
+
+    .prose-mosaic h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 500;
+      color: #b45309;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .prose-mosaic h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #d97706;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .prose-mosaic p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+    }
+
+    .prose-mosaic strong {
+      color: #7c2d12;
+      font-weight: 600;
+    }
+
+    .prose-mosaic em {
+      color: #b45309;
+      font-style: italic;
+    }
+
+    .prose-mosaic ul, .prose-mosaic ol {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+    }
+
+    .prose-mosaic li {
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    .prose-mosaic ul li:before {
+      content: '';
+      position: absolute;
+      left: -1.5rem;
+      top: 0.75rem;
+      width: 6px;
+      height: 6px;
+      background: linear-gradient(145deg, #f59e0b, #ea580c);
+      border-radius: 1px;
+    }
+
+    /* Code Blocks */
+    .prose-mosaic pre {
+      background: linear-gradient(145deg, #451a03, #7c2d12, #92400e);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      overflow-x: auto;
+      border: 2px solid #ea580c;
+      box-shadow: 
+        0 8px 16px rgba(146, 64, 14, 0.3),
+        inset 2px 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .prose-mosaic code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #fef3c7;
+      background: transparent;
+    }
+
+    .prose-mosaic :not(pre) > code {
+      background: linear-gradient(145deg, #fed7aa, #fdba74);
+      color: #7c2d12;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.85em;
+      border: 1px solid #f59e0b;
+      box-shadow: inset 1px 1px 2px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Blockquotes */
+    .prose-mosaic blockquote {
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(145deg, #fef3c7, #fde68a);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+      box-shadow: 
+        inset 3px 3px 6px rgba(255, 255, 255, 0.7),
+        inset -3px -3px 6px rgba(245, 158, 11, 0.2);
+    }
+
+    /* Tables */
+    .prose-mosaic table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      background: linear-gradient(145deg, #fef3c7, #fde68a);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(146, 64, 14, 0.15);
+    }
+
+    .prose-mosaic th {
+      background: linear-gradient(145deg, #ea580c, #dc2626);
+      color: #fef3c7;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .prose-mosaic td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #fed7aa;
+    }
+
+    .prose-mosaic tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Links */
+    .prose-mosaic a {
+      color: #ea580c;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .prose-mosaic a:hover {
+      color: #dc2626;
+      border-bottom-color: #ea580c;
+    }
+
+    /* Horizontal Rules */
+    .prose-mosaic hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #fed7aa, transparent);
+      margin: 3rem 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .grid.lg\\:grid-cols-4 {
+        grid-template-columns: 1fr;
+      }
+      
+      aside {
+        order: 2;
+      }
+      
+      main {
+        order: 1;
+      }
+      
+      .sticky {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .prose-mosaic h1 {
+        font-size: 2.5rem;
+      }
+      
+      .prose-mosaic h2 {
+        font-size: 2rem;
+      }
+      
+      .prose-mosaic h3 {
+        font-size: 1.5rem;
+      }
+      
+      .prose-mosaic pre {
+        padding: 1rem;
+      }
+      
+      .prose-mosaic table {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</Layout>
