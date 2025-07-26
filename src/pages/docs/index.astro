@@ -4,9 +4,9 @@ import "../../styles/global.css";
 ---
 
 <Layout title="Documentation - Mosaic Framework" description="Complete guide to building clean architecture Flutter applications with Mosaic">
-  <main class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 text-amber-900">
-    <!-- Docs Header -->
-    <header class="relative px-6 py-16 bg-gradient-to-r from-amber-100/40 to-orange-100/40 backdrop-blur-sm border-b border-amber-200">
+  <main class="min-h-screen bg-cream text-charcoal">
+    <!-- Sketchy Header -->
+    <header class="relative px-6 py-16 bg-slate-50 border-b-2 border-charcoal">
       <div class="max-w-7xl mx-auto">
         <div class="flex items-center gap-8 mb-8">
           <!-- Mini Logo -->
@@ -17,11 +17,11 @@ import "../../styles/global.css";
           </div>
           
           <div>
-            <h1 class="text-4xl md:text-5xl font-light text-amber-900 tracking-wide" style="font-family: 'Playfair Display', serif;">
+            <h1 class="text-4xl md:text-5xl font-bold text-charcoal tracking-wide font-styrene">
               Documentation
             </h1>
-            <p class="text-lg text-amber-700 font-light mt-2" style="font-family: 'Crimson Text', serif;">
-              Master the art of clean architecture with Mosaic
+            <p class="text-lg text-slate-600 font-light mt-2 font-tiempos">
+              Master the art of modular Flutter architecture with Mosaic
             </p>
           </div>
         </div>
@@ -29,7 +29,7 @@ import "../../styles/global.css";
         <!-- Navigation Pills -->
         <nav class="flex flex-wrap gap-3">
           <a href="/docs" class="nav-pill active">Overview</a>
-          <a href="/docs/getting-started" class="nav-pill">Getting Started</a>
+          <a href="/docs/installation" class="nav-pill">Installation</a>
           <a href="/docs/architecture" class="nav-pill">Architecture</a>
           <a href="/docs/examples" class="nav-pill">Examples</a>
           <a href="/docs/api" class="nav-pill">API Reference</a>
@@ -37,63 +37,76 @@ import "../../styles/global.css";
       </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="max-w-7xl mx-auto px-6 py-8">
       <div class="grid lg:grid-cols-4 gap-12">
         <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1">
-          <nav class="sticky top-8 space-y-8">
+          <nav class="sticky top-8 space-y-6">
             <!-- Quick Start -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon quick-start-icon"></div>
                 Quick Start
               </h3>
-              <ul class="space-y-2">
+              <ul class="space-y-1">
                 <li><a href="/docs/installation" class="nav-link">Installation</a></li>
-                <li><a href="/docs/your-first-app" class="nav-link">Your First App</a></li>
+                <li><a href="/docs/quick-start" class="nav-link">Quick Start</a></li>
                 <li><a href="/docs/basic-concepts" class="nav-link">Basic Concepts</a></li>
               </ul>
             </div>
 
             <!-- Architecture -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon architecture-icon"></div>
                 Architecture
               </h3>
-              <ul class="space-y-2">
-                <li><a href="/docs/layers" class="nav-link">Layers Overview</a></li>
-                <li><a href="/docs/presentation-layer" class="nav-link">Presentation Layer</a></li>
-                <li><a href="/docs/domain-layer" class="nav-link">Domain Layer</a></li>
-                <li><a href="/docs/data-layer" class="nav-link">Data Layer</a></li>
-                <li><a href="/docs/dependency-injection" class="nav-link">Dependency Injection</a></li>
+              <ul class="space-y-1">
+                <li><a href="/docs/architecture" class="nav-link">Overview</a></li>
+                <li><a href="/docs/modules" class="nav-link">Modules</a></li>
+                <li><a href="/docs/events" class="nav-link">Event System</a></li>
+                <li><a href="/docs/ui-injection" class="nav-link">UI Injection</a></li>
+                <li><a href="/docs/navigation" class="nav-link">Navigation</a></li>
               </ul>
             </div>
 
-            <!-- Patterns -->
+            <!-- Features -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
-                <div class="nav-icon patterns-icon"></div>
-                Patterns
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon core-concepts-icon"></div>
+                Features
               </h3>
-              <ul class="space-y-2">
-                <li><a href="/docs/repository-pattern" class="nav-link">Repository Pattern</a></li>
-                <li><a href="/docs/use-cases" class="nav-link">Use Cases</a></li>
-                <li><a href="/docs/entities" class="nav-link">Entities</a></li>
-                <li><a href="/docs/value-objects" class="nav-link">Value Objects</a></li>
+              <ul class="space-y-1">
+                <li><a href="/docs/logging" class="nav-link">Logging</a></li>
+                <li><a href="/docs/thread-safety" class="nav-link">Thread Safety</a></li>
+                <li><a href="/docs/auto-queue" class="nav-link">Auto Queue</a></li>
+                <li><a href="/docs/testing" class="nav-link">Testing</a></li>
               </ul>
             </div>
 
-            <!-- Testing -->
+            <!-- Examples -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-stone-800 mb-4 flex items-center gap-2">
-                <div class="nav-icon testing-icon"></div>
-                Testing
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon examples-icon"></div>
+                Examples
               </h3>
-              <ul class="space-y-2">
-                <li><a href="/docs/unit-testing" class="nav-link">Unit Testing</a></li>
-                <li><a href="/docs/integration-testing" class="nav-link">Integration Testing</a></li>
-                <li><a href="/docs/widget-testing" class="nav-link">Widget Testing</a></li>
+              <ul class="space-y-1">
+                <li><a href="/docs/examples/todo-app" class="nav-link">Todo App</a></li>
+                <li><a href="/docs/examples/authentication" class="nav-link">Authentication</a></li>
+                <li><a href="/docs/examples/api-integration" class="nav-link">API Integration</a></li>
+              </ul>
+            </div>
+
+            <!-- API Reference -->
+            <div class="nav-section">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon api-icon"></div>
+                API Reference
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/api/core" class="nav-link">Core Classes</a></li>
+                <li><a href="/docs/api/utilities" class="nav-link">Utilities</a></li>
+                <li><a href="/docs/api/widgets" class="nav-link">Widgets</a></li>
               </ul>
             </div>
           </nav>
@@ -101,118 +114,152 @@ import "../../styles/global.css";
 
         <!-- Main Content -->
         <main class="lg:col-span-3">
-          <article class="prose-stone max-w-none">
-            <!-- Overview Content -->
-            <div class="content-section">
-              <h2 class="section-title">Welcome to Mosaic</h2>
-              <p class="text-xl text-stone-600 font-light leading-relaxed mb-8">
-                Mosaic is a clean architecture framework for Flutter that helps you build maintainable, 
-                testable, and scalable applications with clarity and purpose.
+          <article class="prose-mosaic">
+            <!-- Hero Section -->
+            <div class="mb-12">
+              <h1>Welcome to Mosaic</h1>
+              <p class="text-xl text-slate-600 leading-relaxed">
+                Mosaic is a powerful, modular Flutter architecture that enables clean separation of features using dynamic modules, internal event systems, UI injection, and centralized build orchestration.
               </p>
-
-              <!-- Feature Cards -->
-              <div class="grid md:grid-cols-2 gap-6 mb-12">
-                <div class="feature-card">
-                  <div class="feature-icon layer-icon"></div>
-                  <h3 class="text-xl font-medium text-stone-800 mb-3">Clean Separation</h3>
-                  <p class="text-stone-600 leading-relaxed">
-                    Clear boundaries between presentation, domain, and data layers ensure your code 
-                    remains organized and maintainable as your app grows.
-                  </p>
+              
+              <!-- Quick stats with sketchy styling -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
+                <div class="stat-box">
+                  <div class="stat-icon">🧩</div>
+                  <div class="stat-title">Modular</div>
+                  <div class="stat-desc">Independent modules</div>
                 </div>
-
-                <div class="feature-card">
-                  <div class="feature-icon modular-icon"></div>
-                  <h3 class="text-xl font-medium text-stone-800 mb-3">Modular Design</h3>
-                  <p class="text-stone-600 leading-relaxed">
-                    Build your application from independent, reusable modules that can be easily 
-                    tested, modified, and extended without affecting other parts.
-                  </p>
+                <div class="stat-box">
+                  <div class="stat-icon">⚡</div>
+                  <div class="stat-title">Event-Driven</div>
+                  <div class="stat-desc">Decoupled communication</div>
                 </div>
-
-                <div class="feature-card">
-                  <div class="feature-icon dependency-icon"></div>
-                  <h3 class="text-xl font-medium text-stone-800 mb-3">Dependency Injection</h3>
-                  <p class="text-stone-600 leading-relaxed">
-                    Built-in service locator pattern makes testing effortless and dependencies 
-                    explicit throughout your application architecture.
-                  </p>
+                <div class="stat-box">
+                  <div class="stat-icon">🎯</div>
+                  <div class="stat-title">Type-Safe</div>
+                  <div class="stat-desc">Strongly typed events</div>
                 </div>
-
-                <div class="feature-card">
-                  <div class="feature-icon testing-icon-card"></div>
-                  <h3 class="text-xl font-medium text-stone-800 mb-3">Test-Driven</h3>
-                  <p class="text-stone-600 leading-relaxed">
-                    Every component is designed with testability in mind, making it easy to write 
-                    comprehensive unit, integration, and widget tests.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Quick Example -->
-              <div class="example-section">
-                <h3 class="text-2xl font-light text-stone-800 mb-6">Quick Example</h3>
-                <div class="code-block">
-                  <div class="code-header">
-                    <div class="code-dots">
-                      <div class="dot"></div>
-                      <div class="dot"></div>
-                      <div class="dot"></div>
-                    </div>
-                    <span class="code-title">main.dart</span>
-                  </div>
-                  <pre class="code-content">
-                    <code class="language-dart">
-{`import 'package:mosaic/mosaic.dart';
-
-void main() {
-  // Initialize Mosaic framework
-  Mosaic.initialize();
-  
-  // Register dependencies
-  Mosaic.register&lt;UserRepository&gt;(() => UserRepositoryImpl());
-  Mosaic.register&lt;GetUserUseCase&gt;(() => GetUserUseCase());
-  
-  runApp(MyApp());
-}`}
-
-{`class MyApp extends StatelessWidget {`}
-  @override
- {` Widget build(BuildContext context) {`}
-    return MosaicApp(
-      title: 'My Clean App',
-      home: UserScreen(),
-    );
-  }
-}
-                  </code></pre>
-                </div>
-              </div>
-
-              <!-- Next Steps -->
-              <div class="next-steps">
-                <h3 class="text-2xl font-light text-stone-800 mb-6">Next Steps</h3>
-                <div class="grid md:grid-cols-3 gap-4">
-                  <a href="/docs/installation" class="step-card">
-                    <div class="step-number">1</div>
-                    <h4 class="font-medium text-stone-800">Install Mosaic</h4>
-                    <p class="text-sm text-stone-600">Add Mosaic to your Flutter project</p>
-                  </a>
-                  
-                  <a href="/docs/your-first-app" class="step-card">
-                    <div class="step-number">2</div>
-                    <h4 class="font-medium text-stone-800">Build Your First App</h4>
-                    <p class="text-sm text-stone-600">Follow our step-by-step tutorial</p>
-                  </a>
-                  
-                  <a href="/docs/architecture" class="step-card">
-                    <div class="step-number">3</div>
-                    <h4 class="font-medium text-stone-800">Learn Architecture</h4>
-                    <p class="text-sm text-stone-600">Understand the principles deeply</p>
-                  </a>
+                <div class="stat-box">
+                  <div class="stat-icon">🧪</div>
+                  <div class="stat-title">Testable</div>
+                  <div class="stat-desc">Built for testing</div>
                 </div>
               </div>
             </div>
+
+            ## What makes Mosaic special?
+
+            Mosaic helps large applications scale with ease by treating each feature as an **isolated unit** that can be enabled, built, and tested independently. Think of it as building with LEGO blocks - each piece fits perfectly together, but can work on its own.
+
+            ### Core Features
+
+            - **🧩 Modular Architecture**: Organize your app into independent, reusable modules
+            - **⚡ Event-Driven Communication**: Decoupled communication between modules using a robust event system  
+            - **🎯 Dynamic UI Injection**: Inject UI components dynamically across different modules
+            - **🧭 Internal Navigation**: Module-specific routing with stack management
+            - **📊 Advanced Logging**: Multi-dispatcher logging system with file and console output
+            - **🔒 Thread Safety**: Built-in mutex and semaphore utilities for concurrent operations
+            - **🔄 Auto Queue**: Automatic retry mechanism for async operations
+            - **✅ Type-Safe Events**: Strongly typed event system with wildcard support
+
+            ## Architecture Overview
+
+            Mosaic follows a modular architecture pattern where each feature is encapsulated in its own module. Here's how it works:
+
+            <div class="architecture-visual">
+              <svg width="100%" height="300" viewBox="0 0 600 300" class="my-8">
+                <!-- Module A -->
+                <g class="module-group">
+                  <rect x="50" y="50" width="120" height="80" fill="#FEF3C7" stroke="#FB923C" stroke-width="2" class="module-box"/>
+                  <text x="110" y="75" text-anchor="middle" class="module-label">Module A</text>
+                  <text x="110" y="95" text-anchor="middle" class="module-sublabel">Home, Dashboard</text>
+                </g>
+                
+                <!-- Module B -->
+                <g class="module-group">
+                  <rect x="240" y="50" width="120" height="80" fill="#DBEAFE" stroke="#60A5FA" stroke-width="2" class="module-box"/>
+                  <text x="300" y="75" text-anchor="middle" class="module-label">Module B</text>
+                  <text x="300" y="95" text-anchor="middle" class="module-sublabel">Profile, Settings</text>
+                </g>
+                
+                <!-- Module C -->
+                <g class="module-group">
+                  <rect x="430" y="50" width="120" height="80" fill="#F3E8FF" stroke="#A78BFA" stroke-width="2" class="module-box"/>
+                  <text x="490" y="75" text-anchor="middle" class="module-label">Module C</text>
+                  <text x="490" y="95" text-anchor="middle" class="module-sublabel">Chat, Messages</text>
+                </g>
+
+                <!-- Event System -->
+                <ellipse cx="300" cy="200" rx="180" ry="40" fill="#F9FAFB" stroke="#2B2B2B" stroke-width="2"/>
+                <text x="300" y="195" text-anchor="middle" class="event-label">Event System</text>
+                <text x="300" y="210" text-anchor="middle" class="event-sublabel">Router • Events • Injector • Logger</text>
+
+                <!-- Connection lines -->
+                <path d="M110 130 Q150 160 220 200" stroke="#FB923C" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                <path d="M300 130 L300 160" stroke="#60A5FA" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                <path d="M490 130 Q450 160 380 200" stroke="#A78BFA" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+              </svg>
+            </div>
+
+            Each module can communicate with others through the centralized event system, inject UI components into other modules, and maintain its own internal navigation stack.
+
+            ## Quick Installation
+
+            Get started with Mosaic in just a few minutes:
+
+            ```yaml
+            dependencies:
+              flutter:
+                sdk: flutter
+              mosaic: ^0.0.1
+            ```
+
+            ```bash
+            flutter pub get
+            ```
+
+            ## Next Steps
+
+            Ready to dive deeper? Here's where to go next:
+
+            <div class="next-steps-grid">
+              <a href="/docs/installation" class="next-step-card">
+                <div class="card-icon">📦</div>
+                <h3>Installation</h3>
+                <p>Complete setup guide with code examples</p>
+              </a>
+              
+              <a href="/docs/quick-start" class="next-step-card">
+                <div class="card-icon">🚀</div>
+                <h3>Quick Start</h3>
+                <p>Build your first modular app in 5 minutes</p>
+              </a>
+              
+              <a href="/docs/architecture" class="next-step-card">
+                <div class="card-icon">🏗️</div>
+                <h3>Architecture</h3>
+                <p>Deep dive into modular design patterns</p>
+              </a>
+              
+              <a href="/docs/examples" class="next-step-card">
+                <div class="card-icon">💡</div>
+                <h3>Examples</h3>
+                <p>Real-world applications and use cases</p>
+              </a>
+            </div>
+
+            ## Community & Support
+
+            Join our growing community of developers who are building amazing things with Mosaic:
+
+            - **📖 Documentation**: Complete guides and API reference
+            - **💬 Discord**: Get help and share your projects  
+            - **🐛 GitHub Issues**: Report bugs and request features
+            - **🎯 Discussions**: Share ideas and best practices
+
+            ---
+
+            **Ready to build something amazing?** [Get started with the installation guide →](/docs/installation)
           </article>
         </main>
       </div>
@@ -220,365 +267,132 @@ void main() {
   </main>
 
   <style>
-    /* Import neoclassical fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap');
-
-    /* Apply neoclassical typography */
-    body {
-      font-family: 'Crimson Text', serif;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Playfair Display', serif;
-    }
-
-    .prose-stone {
-      font-family: 'Cormorant Garamond', serif;
-    }
-
-    /* Mini Logo for Header */
-    .mini-logo {
-      width: 40px;
-      height: 35px;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .mini-fragment {
-      position: absolute;
-      background: linear-gradient(145deg, #92400e, #b45309, #d97706);
-      border-radius: 2px;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
-        inset -2px -2px 4px rgba(146, 64, 14, 0.4),
-        0 3px 6px rgba(146, 64, 14, 0.2);
-    }
-
-    .mini-left { width: 8px; height: 30px; top: 0; left: 0; }
-    .mini-center { width: 6px; height: 15px; top: 8px; left: 12px; transform: rotate(20deg); }
-    .mini-right { width: 8px; height: 30px; top: 0; right: 0; }
-
-    /* Navigation Pills */
-    .nav-pill {
-      padding: 12px 20px;
-      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
-      color: #92400e;
-      font-weight: 500;
-      font-family: 'Crimson Text', serif;
-      border-radius: 3px;
-      text-decoration: none;
-      transition: all 0.4s ease;
-      border: 1px solid #f59e0b;
-      box-shadow: 
-        inset 3px 3px 6px rgba(255, 255, 255, 0.8),
-        inset -3px -3px 6px rgba(245, 158, 11, 0.3),
-        0 4px 8px rgba(146, 64, 14, 0.1);
-    }
-
-    .nav-pill:hover {
-      background: linear-gradient(145deg, #fed7aa, #fdba74, #fb923c);
-      color: #7c2d12;
-      box-shadow: 
-        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
-        inset -4px -4px 8px rgba(245, 158, 11, 0.4),
-        0 6px 12px rgba(146, 64, 14, 0.2);
-      transform: translateY(-1px);
-    }
-
-    .nav-pill.active {
-      background: linear-gradient(145deg, #ea580c, #dc2626, #b91c1c);
-      color: #fef3c7;
-      box-shadow: 
-        inset 3px 3px 6px rgba(220, 38, 38, 0.3),
-        inset -3px -3px 6px rgba(185, 28, 28, 0.4),
-        0 4px 8px rgba(146, 64, 14, 0.3);
-    }
-
-    /* Sidebar Navigation */
-    .nav-section {
-      padding-bottom: 28px;
-      border-bottom: 2px solid #fed7aa;
-      margin-bottom: 24px;
-    }
-
-    .nav-section:last-child {
-      border-bottom: none;
-    }
-
-    .nav-section h3 {
-      font-family: 'Playfair Display', serif;
-      color: #92400e;
-      font-weight: 500;
-    }
-
-    .nav-icon {
-      width: 18px;
-      height: 18px;
-      background: linear-gradient(145deg, #d97706, #ea580c, #dc2626);
-      border-radius: 2px;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.4),
-        inset -1px -1px 2px rgba(220, 38, 38, 0.3),
-        0 2px 4px rgba(146, 64, 14, 0.2);
-    }
-
-    .nav-link {
-      display: block;
-      padding: 10px 0;
-      color: #b45309;
-      text-decoration: none;
-      font-weight: 400;
-      font-family: 'Crimson Text', serif;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
-      padding-left: 16px;
-    }
-
-    .nav-link:hover {
-      color: #92400e;
-      border-left-color: #f59e0b;
-      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), transparent);
-      padding-left: 20px;
-    }
-
-    /* Content Sections */
-    .content-section {
-      margin-bottom: 56px;
-    }
-
-    .section-title {
-      font-size: 3rem;
-      font-weight: 500;
-      font-family: 'Playfair Display', serif;
-      color: #7c2d12;
-      margin-bottom: 32px;
-      tracking: 0.02em;
-      text-shadow: 2px 2px 4px rgba(146, 64, 14, 0.1);
-    }
-
-    /* Feature Cards */
-    .feature-card {
-      padding: 32px;
-      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
-      border-radius: 6px;
-      border: 2px solid #f59e0b;
-      box-shadow: 
-        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
-        inset -4px -4px 8px rgba(245, 158, 11, 0.3),
-        0 6px 12px rgba(146, 64, 14, 0.15);
-      transition: all 0.4s ease;
-    }
-
-    .feature-card:hover {
-      box-shadow: 
-        inset 6px 6px 12px rgba(255, 255, 255, 0.8),
-        inset -6px -6px 12px rgba(245, 158, 11, 0.4),
-        0 8px 16px rgba(146, 64, 14, 0.25);
-      transform: translateY(-3px);
-    }
-
-    .feature-card h3 {
-      font-family: 'Playfair Display', serif;
-      color: #92400e;
-      font-weight: 500;
-    }
-
-    .feature-card p {
-      font-family: 'Cormorant Garamond', serif;
-      color: #b45309;
-      line-height: 1.7;
-    }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 20px;
-      background: linear-gradient(145deg, #ea580c, #dc2626, #b91c1c);
-      border-radius: 4px;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
-        inset -2px -2px 4px rgba(185, 28, 28, 0.4),
-        0 4px 8px rgba(146, 64, 14, 0.2);
-    }
-
-    /* Code Block */
-    .code-block {
-      background: linear-gradient(145deg, #451a03, #7c2d12, #92400e);
+    /* Custom styles for documentation */
+    .stat-box {
+      background: var(--slate-50);
+      border: 2px solid var(--slate-200);
       border-radius: 8px;
-      overflow: hidden;
-      margin: 32px 0;
-      box-shadow: 
-        0 10px 20px rgba(146, 64, 14, 0.3),
-        inset 2px 2px 4px rgba(255, 255, 255, 0.1);
-      border: 2px solid #ea580c;
+      padding: 16px;
+      text-align: center;
+      transform: rotate(-0.5deg);
+      transition: transform 0.2s ease;
     }
 
-    .code-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      background: linear-gradient(145deg, #7c2d12, #451a03);
-      border-bottom: 2px solid #ea580c;
+    .stat-box:nth-child(even) {
+      transform: rotate(0.5deg);
     }
 
-    .code-dots {
-      display: flex;
-      gap: 8px;
+    .stat-box:hover {
+      transform: rotate(0deg) translateY(-2px);
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #fed7aa, #f59e0b);
-      box-shadow: inset 1px 1px 2px rgba(245, 158, 11, 0.3);
+    .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
     }
 
-    .code-title {
-      color: #fef3c7;
-      font-size: 14px;
+    .stat-title {
       font-weight: 600;
-      font-family: 'Crimson Text', serif;
+      color: var(--charcoal);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
     }
 
-    .code-content {
+    .stat-desc {
+      font-size: 12px;
+      color: var(--slate-600);
+    }
+
+    .architecture-visual {
+      background: var(--slate-50);
+      border: 2px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 2rem 0;
+    }
+
+    .module-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      fill: var(--charcoal);
+    }
+
+    .module-sublabel {
+      font-family: 'Crimson Text', serif;
+      font-size: 11px;
+      fill: var(--slate-600);
+    }
+
+    .event-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      fill: var(--charcoal);
+    }
+
+    .event-sublabel {
+      font-family: 'Crimson Text', serif;
+      font-size: 11px;
+      fill: var(--slate-600);
+    }
+
+    .next-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .next-step-card {
+      background: var(--cream);
+      border: 2px solid var(--slate-300);
+      border-radius: 8px;
       padding: 24px;
-      color: #fef3c7;
-      font-family: 'Courier New', monospace;
-      font-size: 15px;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
-
-    /* Example Section */
-    .example-section {
-      background: linear-gradient(145deg, #fef3c7, #fde68a, #fed7aa);
-      padding: 40px;
-      border-radius: 8px;
-      border: 3px solid #f59e0b;
-      margin: 40px 0;
-      box-shadow: 
-        inset 4px 4px 8px rgba(255, 255, 255, 0.8),
-        inset -4px -4px 8px rgba(245, 158, 11, 0.3),
-        0 8px 16px rgba(146, 64, 14, 0.15);
-    }
-
-    .example-section h3 {
-      font-family: 'Playfair Display', serif;
-      color: #7c2d12;
-      font-weight: 500;
-    }
-
-    /* Next Steps */
-    .next-steps {
-      margin-top: 56px;
-    }
-
-    .next-steps h3 {
-      font-family: 'Playfair Display', serif;
-      color: #7c2d12;
-      font-weight: 500;
-    }
-
-    .step-card {
-      display: block;
-      padding: 28px;
-      background: linear-gradient(145deg, #fed7aa, #fdba74, #fb923c);
-      border-radius: 6px;
-      border: 2px solid #ea580c;
       text-decoration: none;
-      transition: all 0.4s ease;
-      box-shadow: 
-        inset 3px 3px 6px rgba(255, 255, 255, 0.7),
-        inset -3px -3px 6px rgba(234, 88, 12, 0.4),
-        0 6px 12px rgba(146, 64, 14, 0.2);
+      color: var(--charcoal);
+      transform: rotate(-0.3deg);
+      transition: all 0.2s ease;
     }
 
-    .step-card:hover {
-      background: linear-gradient(145deg, #fb923c, #f97316, #ea580c);
-      box-shadow: 
-        inset 4px 4px 8px rgba(255, 255, 255, 0.7),
-        inset -4px -4px 8px rgba(234, 88, 12, 0.5),
-        0 8px 16px rgba(146, 64, 14, 0.3);
-      transform: translateY(-2px);
+    .next-step-card:nth-child(even) {
+      transform: rotate(0.3deg);
     }
 
-    .step-card h4 {
-      font-family: 'Playfair Display', serif;
-      color: #7c2d12;
-      font-weight: 500;
+    .next-step-card:hover {
+      transform: rotate(0deg) translateY(-5px);
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+      border-color: var(--orange-400);
     }
 
-    .step-card p {
-      font-family: 'Cormorant Garamond', serif;
-      color: #92400e;
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
     }
 
-    .step-number {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(145deg, #dc2626, #b91c1c, #991b1b);
-      color: #fef3c7;
-      border-radius: 50%;
-      font-size: 14px;
+    .next-step-card h3 {
+      margin: 0 0 8px 0;
+      font-family: 'Inter', sans-serif;
       font-weight: 600;
-      font-family: 'Playfair Display', serif;
-      margin-bottom: 16px;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.2),
-        inset -2px -2px 4px rgba(153, 27, 27, 0.4),
-        0 4px 8px rgba(146, 64, 14, 0.2);
+      color: var(--charcoal);
     }
 
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .grid.lg\\:grid-cols-4 {
-        grid-template-columns: 1fr;
-      }
-      
-      aside {
-        order: 2;
-      }
-      
-      main {
-        order: 1;
-      }
-      
-      .sticky {
-        position: static;
-      }
+    .next-step-card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--slate-600);
+      line-height: 1.4;
     }
 
+    /* Responsive adjustments */
     @media (max-width: 768px) {
-      .mini-logo {
-        width: 30px;
-        height: 26px;
+      .stat-box,
+      .next-step-card {
+        transform: rotate(0deg);
       }
       
-      .mini-left, .mini-right { width: 6px; height: 22px; }
-      .mini-center { width: 4px; height: 11px; top: 6px; left: 9px; }
-      
-      .section-title {
-        font-size: 2.5rem;
-      }
-      
-      .feature-card,
-      .step-card {
-        padding: 20px;
-      }
-      
-      .code-content {
-        font-size: 13px;
-        padding: 20px;
-      }
-      
-      .nav-pill {
-        padding: 10px 16px;
-        font-size: 14px;
+      .next-steps-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>

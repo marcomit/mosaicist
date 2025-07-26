@@ -1,1 +1,435 @@
 @import "tailwindcss";
+
+/* Zen Mosaic Framework Styles */
+/* Inspired by neoclassicism with warm, earthy tones */
+
+:root {
+  /* Warm Color Palette */
+  --warm-white: #faf9f7;
+  --warm-light: #f5f4f1;
+  --warm-medium: #8b7355;
+  --warm-dark: #5c4033;
+  --warm-accent: #b8860b;
+
+  /* Neutral Tones */
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-500: #78716c;
+  --stone-700: #44403c;
+  --stone-900: #1c1917;
+
+  /* Shadows */
+  --shadow-light: rgba(92, 64, 51, 0.05);
+  --shadow-medium: rgba(92, 64, 51, 0.1);
+  --shadow-strong: rgba(92, 64, 51, 0.15);
+}
+
+/* Typography */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=Crimson+Text:wght@300;400;500;600&display=swap");
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Crimson Text", serif;
+  line-height: 1.6;
+  color: var(--warm-dark);
+  background-color: var(--warm-white);
+  margin: 0;
+  padding: 0;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Links */
+a {
+  color: var(--warm-dark);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--warm-accent);
+}
+
+/* Navigation Pills (Zen Style) */
+.nav-pill {
+  display: inline-block;
+  padding: 8px 20px;
+  background-color: transparent;
+  color: var(--warm-medium);
+  border: 1px solid transparent;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.nav-pill:hover {
+  background-color: var(--warm-light);
+  color: var(--warm-dark);
+  border-color: var(--warm-medium);
+}
+
+.nav-pill.active {
+  background-color: var(--warm-dark);
+  color: var(--warm-white);
+  border-color: var(--warm-dark);
+}
+
+/* Mini Logo for Headers */
+.mini-logo {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-fragment {
+  position: absolute;
+  background-color: var(--warm-dark);
+  border-radius: 1px;
+}
+
+.mini-left {
+  width: 12px;
+  height: 12px;
+  top: 8px;
+  left: 8px;
+}
+
+.mini-center {
+  width: 12px;
+  height: 12px;
+  top: 14px;
+  left: 14px;
+}
+
+.mini-right {
+  width: 12px;
+  height: 12px;
+  top: 20px;
+  left: 20px;
+}
+
+/* Documentation Sidebar Navigation */
+.nav-section {
+  margin-bottom: 2rem;
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  background-color: var(--warm-accent);
+  border-radius: 1px;
+}
+
+.quick-start-icon {
+  position: relative;
+}
+
+.quick-start-icon::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--warm-white);
+  border-radius: 1px;
+}
+
+.architecture-icon {
+  background: linear-gradient(
+    45deg,
+    var(--warm-accent) 25%,
+    transparent 25%,
+    transparent 75%,
+    var(--warm-accent) 75%
+  );
+  background-size: 4px 4px;
+}
+
+.nav-link {
+  display: block;
+  padding: 6px 12px;
+  color: var(--warm-medium);
+  border-radius: 2px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
+}
+
+.nav-link:hover {
+  background-color: var(--warm-light);
+  color: var(--warm-dark);
+  border-left-color: var(--warm-accent);
+}
+
+.nav-link.active {
+  background-color: var(--warm-light);
+  color: var(--warm-dark);
+  border-left-color: var(--warm-accent);
+  font-weight: 500;
+}
+
+/* Prose Styling for Documentation (Zen Style) */
+.prose-mosaic {
+  max-width: none;
+  color: var(--warm-dark);
+  line-height: 1.7;
+}
+
+.prose-mosaic h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--warm-dark);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--warm-light);
+  padding-bottom: 0.5rem;
+}
+
+.prose-mosaic h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--warm-dark);
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.prose-mosaic h2::before {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 0.75rem;
+  width: 6px;
+  height: 6px;
+  background-color: var(--warm-accent);
+  border-radius: 1px;
+}
+
+.prose-mosaic h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--warm-dark);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose-mosaic p {
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+.prose-mosaic strong {
+  color: var(--warm-dark);
+  font-weight: 600;
+}
+
+.prose-mosaic em {
+  color: var(--warm-medium);
+  font-style: italic;
+}
+
+/* Lists */
+.prose-mosaic ul,
+.prose-mosaic ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.prose-mosaic li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.prose-mosaic ul li::before {
+  content: "";
+  position: absolute;
+  left: -1.25rem;
+  top: 0.75rem;
+  width: 4px;
+  height: 4px;
+  background-color: var(--warm-accent);
+  border-radius: 50%;
+}
+
+/* Code Blocks (Clean, Minimal) */
+.prose-mosaic pre {
+  background-color: var(--stone-900);
+  border: 1px solid var(--stone-200);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.prose-mosaic code {
+  font-family: "Monaco", "Courier New", monospace;
+  font-size: 0.9em;
+  color: var(--stone-50);
+}
+
+.prose-mosaic :not(pre) > code {
+  background-color: var(--warm-light);
+  color: var(--warm-dark);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+  font-size: 0.85em;
+  border: 1px solid var(--warm-medium);
+  font-weight: 500;
+}
+
+/* Blockquotes */
+.prose-mosaic blockquote {
+  border-left: 3px solid var(--warm-accent);
+  background-color: var(--warm-light);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: 0 3px 3px 0;
+  font-style: italic;
+}
+
+/* Tables */
+.prose-mosaic table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  background-color: var(--warm-white);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.prose-mosaic th {
+  background-color: var(--warm-dark);
+  color: var(--warm-white);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.prose-mosaic td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--warm-light);
+}
+
+.prose-mosaic tr:last-child td {
+  border-bottom: none;
+}
+
+/* Links in Prose */
+.prose-mosaic a {
+  color: var(--warm-accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.prose-mosaic a:hover {
+  border-bottom-color: var(--warm-accent);
+}
+
+/* Horizontal Rules */
+.prose-mosaic hr {
+  border: none;
+  height: 1px;
+  background-color: var(--warm-light);
+  margin: 3rem 0;
+}
+
+/* Utility Classes */
+.bg-warm-white {
+  background-color: var(--warm-white);
+}
+.bg-warm-light {
+  background-color: var(--warm-light);
+}
+.text-warm-dark {
+  color: var(--warm-dark);
+}
+.text-warm-medium {
+  color: var(--warm-medium);
+}
+.text-warm-accent {
+  color: var(--warm-accent);
+}
+.border-warm-accent {
+  border-color: var(--warm-accent);
+}
+
+/* Focus States */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid var(--warm-accent);
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .grid.lg\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+
+  aside {
+    order: 2;
+  }
+
+  main {
+    order: 1;
+  }
+
+  .sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .prose-mosaic h1 {
+    font-size: 2rem;
+  }
+
+  .prose-mosaic h2 {
+    font-size: 1.75rem;
+  }
+
+  .prose-mosaic h3 {
+    font-size: 1.5rem;
+  }
+
+  .prose-mosaic pre {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .prose-mosaic table {
+    font-size: 0.9rem;
+  }
+
+  .nav-pill {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+}

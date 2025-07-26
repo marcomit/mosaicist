@@ -9,395 +9,689 @@ export interface Props {
 
 const { title, description } = Astro.props;
 const fullTitle = `${title} - Mosaic Documentation`;
+
+// Get current URL to determine active navigation
+const currentPath = Astro.url.pathname;
 ---
 
 <Layout title={fullTitle} description={description}>
-  <main class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 text-amber-900">
-    <!-- Docs Header -->
-    <header class="relative px-6 py-12 bg-gradient-to-r from-amber-100/40 to-orange-100/40 backdrop-blur-sm border-b border-amber-200">
+  <main class="min-h-screen bg-cream text-charcoal">
+    <!-- Sketchy Header -->
+    <header class="relative px-6 py-8 bg-slate-50 border-b-2 border-charcoal">
       <div class="max-w-7xl mx-auto">
         <div class="flex items-center gap-6 mb-6">
-          <!-- Mini Logo -->
-          <div class="mini-logo">
-            <div class="mini-fragment mini-left"></div>
-            <div class="mini-fragment mini-center"></div>
-            <div class="mini-fragment mini-right"></div>
-          </div>
+          <!-- Hand-drawn Mini Logo -->
+          <a href="/" class="mini-logo-link">
+            <div class="mini-logo">
+              <div class="mini-fragment mini-left"></div>
+              <div class="mini-fragment mini-center"></div>
+              <div class="mini-fragment mini-right"></div>
+            </div>
+          </a>
           
           <div>
-            <a href="/docs" class="text-2xl font-light text-amber-700 hover:text-amber-900 transition-colors" style="font-family: 'Playfair Display', serif;">
-              ← Documentation
+            <a href="/docs" class="text-2xl font-medium text-charcoal hover:text-orange-500 transition-colors flex items-center gap-2" style="font-family: 'Inter', sans-serif;">
+              <svg width="20" height="16" viewBox="0 0 20 16" class="sketchy-arrow-back">
+                <path d="M8 2 L2 8 L8 14 M2 8 L18 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Documentation
             </a>
+            <p class="text-sm text-slate-600 mt-1 font-tiempos">{title}</p>
           </div>
         </div>
       </div>
     </header>
 
     <div class="max-w-7xl mx-auto px-6 py-8">
-      <div class="grid lg:grid-cols-4 gap-12">
-        <!-- Sidebar Navigation -->
+      <div class="grid lg:grid-cols-5 gap-12">
+        <!-- Enhanced Sidebar Navigation -->
         <aside class="lg:col-span-1">
           <nav class="sticky top-8 space-y-6">
             <!-- Quick Start -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon quick-start-icon"></div>
                 Quick Start
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/installation" class="nav-link">Installation</a></li>
-                <li><a href="/docs/your-first-app" class="nav-link">Your First App</a></li>
-                <li><a href="/docs/basic-concepts" class="nav-link">Basic Concepts</a></li>
+                <li><a href="/docs" class={`nav-link ${currentPath === '/docs' || currentPath === '/docs/' ? 'active' : ''}`}>Overview</a></li>
+                <li><a href="/docs/installation" class={`nav-link ${currentPath === '/docs/installation' ? 'active' : ''}`}>Installation</a></li>
+                <li><a href="/docs/quick-start" class={`nav-link ${currentPath === '/docs/quick-start' ? 'active' : ''}`}>Quick Start</a></li>
               </ul>
             </div>
 
-            <!-- Architecture -->
+            <!-- Core Concepts -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon architecture-icon"></div>
-                Architecture
+                Core Concepts
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/layers" class="nav-link">Layers Overview</a></li>
-                <li><a href="/docs/presentation-layer" class="nav-link">Presentation Layer</a></li>
-                <li><a href="/docs/domain-layer" class="nav-link">Domain Layer</a></li>
-                <li><a href="/docs/data-layer" class="nav-link">Data Layer</a></li>
-                <li><a href="/docs/dependency-injection" class="nav-link">Dependency Injection</a></li>
+                <li><a href="/docs/architecture" class={`nav-link ${currentPath === '/docs/architecture' ? 'active' : ''}`}>Architecture</a></li>
+                <li><a href="/docs/modules" class={`nav-link ${currentPath === '/docs/modules' ? 'active' : ''}`}>Modules</a></li>
+                <li><a href="/docs/events" class={`nav-link ${currentPath === '/docs/events' ? 'active' : ''}`}>Event System</a></li>
+                <li><a href="/docs/ui-injection" class={`nav-link ${currentPath === '/docs/ui-injection' ? 'active' : ''}`}>UI Injection</a></li>
+                <li><a href="/docs/navigation" class={`nav-link ${currentPath === '/docs/navigation' ? 'active' : ''}`}>Navigation</a></li>
               </ul>
             </div>
 
-            <!-- Patterns -->
+            <!-- Features -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
-                <div class="nav-icon patterns-icon"></div>
-                Patterns
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon core-concepts-icon"></div>
+                Features
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/repository-pattern" class="nav-link">Repository Pattern</a></li>
-                <li><a href="/docs/use-cases" class="nav-link">Use Cases</a></li>
-                <li><a href="/docs/entities" class="nav-link">Entities</a></li>
-                <li><a href="/docs/value-objects" class="nav-link">Value Objects</a></li>
+                <li><a href="/docs/logging" class={`nav-link ${currentPath === '/docs/logging' ? 'active' : ''}`}>Logging</a></li>
+                <li><a href="/docs/thread-safety" class={`nav-link ${currentPath === '/docs/thread-safety' ? 'active' : ''}`}>Thread Safety</a></li>
+                <li><a href="/docs/auto-queue" class={`nav-link ${currentPath === '/docs/auto-queue' ? 'active' : ''}`}>Auto Queue</a></li>
+                <li><a href="/docs/testing" class={`nav-link ${currentPath === '/docs/testing' ? 'active' : ''}`}>Testing</a></li>
               </ul>
             </div>
 
-            <!-- Testing -->
+            <!-- Examples -->
             <div class="nav-section">
-              <h3 class="text-lg font-medium text-amber-900 mb-4 flex items-center gap-2" style="font-family: 'Playfair Display', serif;">
-                <div class="nav-icon testing-icon"></div>
-                Testing
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon examples-icon"></div>
+                Examples
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/unit-testing" class="nav-link">Unit Testing</a></li>
-                <li><a href="/docs/integration-testing" class="nav-link">Integration Testing</a></li>
-                <li><a href="/docs/widget-testing" class="nav-link">Widget Testing</a></li>
+                <li><a href="/docs/examples/todo-app" class={`nav-link ${currentPath === '/docs/examples/todo-app' ? 'active' : ''}`}>Todo App</a></li>
+                <li><a href="/docs/examples/authentication" class={`nav-link ${currentPath === '/docs/examples/authentication' ? 'active' : ''}`}>Authentication</a></li>
+                <li><a href="/docs/examples/api-integration" class={`nav-link ${currentPath === '/docs/examples/api-integration' ? 'active' : ''}`}>API Integration</a></li>
               </ul>
+            </div>
+
+            <!-- API Reference -->
+            <div class="nav-section">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon api-icon"></div>
+                API Reference
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/api/core" class={`nav-link ${currentPath === '/docs/api/core' ? 'active' : ''}`}>Core Classes</a></li>
+                <li><a href="/docs/api/utilities" class={`nav-link ${currentPath === '/docs/api/utilities' ? 'active' : ''}`}>Utilities</a></li>
+                <li><a href="/docs/api/widgets" class={`nav-link ${currentPath === '/docs/api/widgets' ? 'active' : ''}`}>Widgets</a></li>
+              </ul>
+            </div>
+
+            <!-- Hand-drawn decoration -->
+            <div class="mt-12">
+              <svg width="120" height="40" viewBox="0 0 120 40" class="opacity-30">
+                <path d="M10 20 Q30 10 60 20 T110 15" stroke="#FB923C" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <circle cx="20" cy="18" r="2" fill="#FB923C"/>
+                <circle cx="50" cy="22" r="1.5" fill="#60A5FA"/>
+                <circle cx="90" cy="16" r="2.5" fill="#4ADE80"/>
+              </svg>
             </div>
           </nav>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main class="lg:col-span-3">
-          <article class="prose-mosaic max-w-none">
+          <!-- Hand-drawn content border -->
+          <div class="absolute inset-0 pointer-events-none lg:block hidden">
+            <svg class="w-full h-full" viewBox="0 0 400 600" preserveAspectRatio="none">
+              <rect x="10" y="10" width="380" height="580" 
+                    stroke="#E2E8F0" 
+                    stroke-width="2" 
+                    fill="none" 
+                    stroke-dasharray="5,3"
+                    opacity="0.3"/>
+            </svg>
+          </div>
+          
+          <article class="prose-mosaic relative z-10">
             <slot />
           </article>
+
+          <!-- Next/Previous Navigation -->
+          <nav class="mt-16 pt-8 border-t-2 border-slate-200">
+            <div class="flex justify-between items-center">
+              <div class="prev-page">
+                <!-- Will be populated by navigation logic -->
+              </div>
+              <div class="next-page">
+                <!-- Will be populated by navigation logic -->
+              </div>
+            </div>
+          </nav>
         </main>
+
+        <!-- Table of Contents Sidebar -->
+        <aside class="lg:col-span-1 hidden lg:block">
+          <div class="sticky top-8">
+            <div class="toc-container p-6 bg-slate-50 border-2 border-slate-200 rounded-lg transform rotate-1">
+              <div class="absolute -top-3 left-6 bg-cream px-2">
+                <span class="text-sm font-medium text-slate-600 font-styrene">On this page</span>
+              </div>
+              
+              <!-- Table of Contents will be generated by JavaScript -->
+              <nav class="toc-nav">
+                <ul id="toc-list" class="space-y-1">
+                  <!-- TOC items will be inserted here -->
+                </ul>
+              </nav>
+              
+              <!-- Progress indicator -->
+              <div class="mt-6 pt-4 border-t border-slate-300">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                  <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <span>Reading progress</span>
+                </div>
+                <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
+                  <div id="reading-progress" class="bg-orange-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
+
+    <!-- Sketchy Footer -->
+    <footer class="relative px-6 py-12 mt-20 bg-slate-50 border-t-2 border-charcoal">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center gap-4 mb-4 md:mb-0">
+            <!-- Footer logo -->
+            <svg width="40" height="40" viewBox="0 0 40 40">
+              <rect x="8" y="8" width="8" height="8" fill="#2B2B2B" transform="rotate(2 12 12)"/>
+              <rect x="16" y="12" width="6" height="6" fill="#2B2B2B" transform="rotate(-1 19 15)"/>
+              <rect x="24" y="10" width="7" height="7" fill="#2B2B2B" transform="rotate(1 27.5 13.5)"/>
+            </svg>
+            <span class="text-slate-600 font-medium font-styrene">
+              Mosaic Framework
+            </span>
+          </div>
+          
+          <div class="flex items-center gap-6">
+            <a href="/docs" class="text-slate-600 hover:text-orange-500 text-sm">Documentation</a>
+            <a href="/docs/examples" class="text-slate-600 hover:text-orange-500 text-sm">Examples</a>
+            <a href="https://github.com/marcomit/mosaic" class="text-slate-600 hover:text-orange-500 text-sm">GitHub</a>
+            <a href="https://pub.dev/packages/mosaic" class="text-slate-600 hover:text-orange-500 text-sm">pub.dev</a>
+          </div>
+        </div>
+        
+        <!-- Hand-drawn footer decoration -->
+        <div class="mt-8 pt-6 border-t border-slate-200">
+          <svg width="100%" height="20" viewBox="0 0 800 20" class="opacity-20">
+            <path d="M0 10 Q100 5 200 10 T400 8 T600 12 T800 9" 
+                  stroke="#FB923C" 
+                  stroke-width="1.5" 
+                  fill="none" 
+                  stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </footer>
   </main>
 
   <style>
-    /* Import neoclassical fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap');
-
-    /* Mini Logo for Header */
-    .mini-logo {
-      width: 32px;
-      height: 28px;
-      position: relative;
-      flex-shrink: 0;
+    /* Enhanced navigation styles */
+    .mini-logo-link {
+      transition: transform 0.2s ease;
+    }
+    
+    .mini-logo-link:hover {
+      transform: scale(1.1) rotate(5deg);
     }
 
-    .mini-fragment {
-      position: absolute;
-      background: linear-gradient(145deg, #92400e, #b45309, #d97706);
+    /* Sketchy Arrow Animation */
+    .sketchy-arrow-back {
+      transition: transform 0.2s ease;
+    }
+    
+    .sketchy-arrow-back:hover {
+      transform: translateX(-3px);
+    }
+
+    /* Table of Contents Styles */
+    .toc-container {
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--orange-400) var(--slate-100);
+    }
+
+    .toc-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .toc-container::-webkit-scrollbar-track {
+      background: var(--slate-100);
       border-radius: 2px;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
-        inset -2px -2px 4px rgba(146, 64, 14, 0.4),
-        0 3px 6px rgba(146, 64, 14, 0.2);
     }
 
-    .mini-left { width: 6px; height: 24px; top: 0; left: 0; }
-    .mini-center { width: 4px; height: 12px; top: 6px; left: 10px; transform: rotate(20deg); }
-    .mini-right { width: 6px; height: 24px; top: 0; right: 0; }
-
-    /* Sidebar Navigation */
-    .nav-section {
-      padding-bottom: 24px;
-      border-bottom: 2px solid #fed7aa;
-      margin-bottom: 20px;
-    }
-
-    .nav-section:last-child {
-      border-bottom: none;
-    }
-
-    .nav-icon {
-      width: 16px;
-      height: 16px;
-      background: linear-gradient(145deg, #d97706, #ea580c, #dc2626);
+    .toc-container::-webkit-scrollbar-thumb {
+      background: var(--orange-400);
       border-radius: 2px;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.4),
-        inset -1px -1px 2px rgba(220, 38, 38, 0.3),
-        0 2px 4px rgba(146, 64, 14, 0.2);
     }
 
-    .nav-link {
-      display: block;
-      padding: 8px 0;
-      color: #b45309;
+    .toc-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-nav a {
+      color: var(--slate-600);
       text-decoration: none;
-      font-weight: 400;
-      font-family: 'Crimson Text', serif;
-      transition: all 0.3s ease;
+      display: block;
+      padding: 6px 0;
       border-left: 3px solid transparent;
+      padding-left: 12px;
+      transition: all 0.2s ease;
+      font-size: 13px;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    .toc-nav a:hover {
+      color: var(--orange-500);
+      border-left-color: var(--orange-300);
+      padding-left: 16px;
+      background-color: rgba(251, 146, 60, 0.05);
+    }
+
+    .toc-nav a.active {
+      color: var(--orange-600);
+      border-left-color: var(--orange-400);
+      font-weight: 600;
+      padding-left: 16px;
+      background-color: rgba(251, 146, 60, 0.1);
+      transform: translateX(2px);
+    }
+
+    .toc-nav a.active::before {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background-color: var(--orange-400);
+      border-radius: 50%;
+    }
+
+    /* Nested TOC items for different heading levels */
+    .toc-h1 a {
+      font-weight: 500;
+      font-size: 14px;
+      padding: 8px 0;
+    }
+
+    .toc-h2 a {
+      font-size: 13px;
+      padding: 6px 0;
       padding-left: 16px;
     }
 
-    .nav-link:hover {
-      color: #92400e;
-      border-left-color: #f59e0b;
-      background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), transparent);
+    .toc-h3 a {
+      font-size: 12px;
+      padding: 4px 0;
+      padding-left: 24px;
+      color: var(--slate-500);
+      opacity: 0.9;
+    }
+
+    .toc-h4 a {
+      font-size: 11px;
+      padding: 3px 0;
+      padding-left: 32px;
+      color: var(--slate-500);
+      opacity: 0.8;
+    }
+
+    /* Active states for nested items */
+    .toc-h2 a.active {
       padding-left: 20px;
     }
 
-    /* Prose Styling for MDX Content */
-    .prose-mosaic {
-      font-family: 'Cormorant Garamond', serif;
-      line-height: 1.7;
-      color: #92400e;
+    .toc-h3 a.active {
+      padding-left: 28px;
+      opacity: 1;
+      color: var(--orange-600);
     }
 
-    .prose-mosaic h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3rem;
-      font-weight: 500;
-      color: #7c2d12;
-      margin-bottom: 2rem;
-      margin-top: 0;
-      border-bottom: 3px solid #fed7aa;
-      padding-bottom: 1rem;
+    .toc-h4 a.active {
+      padding-left: 36px;
+      opacity: 1;
+      color: var(--orange-600);
     }
 
-    .prose-mosaic h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.25rem;
-      font-weight: 500;
-      color: #92400e;
-      margin-top: 3rem;
-      margin-bottom: 1.5rem;
-      position: relative;
+    /* Hover states for nested items */
+    .toc-h2 a:hover {
+      padding-left: 20px;
     }
 
-    .prose-mosaic h2:before {
-      content: '';
-      position: absolute;
-      left: -1.5rem;
-      top: 0.5rem;
-      width: 8px;
-      height: 8px;
-      background: linear-gradient(145deg, #ea580c, #dc2626);
-      border-radius: 2px;
+    .toc-h3 a:hover {
+      padding-left: 28px;
+      opacity: 1;
     }
 
-    .prose-mosaic h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
-      font-weight: 500;
-      color: #b45309;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
+    .toc-h4 a:hover {
+      padding-left: 36px;
+      opacity: 1;
     }
 
-    .prose-mosaic h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #d97706;
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
+    /* Navigation between pages */
+    .prev-page, .next-page {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .prose-mosaic p {
-      margin-bottom: 1.5rem;
-      text-align: justify;
-    }
-
-    .prose-mosaic strong {
-      color: #7c2d12;
-      font-weight: 600;
-    }
-
-    .prose-mosaic em {
-      color: #b45309;
-      font-style: italic;
-    }
-
-    .prose-mosaic ul, .prose-mosaic ol {
-      margin: 1.5rem 0;
-      padding-left: 2rem;
-    }
-
-    .prose-mosaic li {
-      margin-bottom: 0.75rem;
-      position: relative;
-    }
-
-    .prose-mosaic ul li:before {
-      content: '';
-      position: absolute;
-      left: -1.5rem;
-      top: 0.75rem;
-      width: 6px;
-      height: 6px;
-      background: linear-gradient(145deg, #f59e0b, #ea580c);
-      border-radius: 1px;
-    }
-
-    /* Code Blocks */
-    .prose-mosaic pre {
-      background: linear-gradient(145deg, #451a03, #7c2d12, #92400e);
+    .nav-page-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--slate-50);
+      border: 2px solid var(--slate-200);
       border-radius: 8px;
-      padding: 1.5rem;
-      margin: 2rem 0;
-      overflow-x: auto;
-      border: 2px solid #ea580c;
-      box-shadow: 
-        0 8px 16px rgba(146, 64, 14, 0.3),
-        inset 2px 2px 4px rgba(255, 255, 255, 0.1);
-    }
-
-    .prose-mosaic code {
-      font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-      color: #fef3c7;
-      background: transparent;
-    }
-
-    .prose-mosaic :not(pre) > code {
-      background: linear-gradient(145deg, #fed7aa, #fdba74);
-      color: #7c2d12;
-      padding: 0.25rem 0.5rem;
-      border-radius: 3px;
-      font-size: 0.85em;
-      border: 1px solid #f59e0b;
-      box-shadow: inset 1px 1px 2px rgba(245, 158, 11, 0.3);
-    }
-
-    /* Blockquotes */
-    .prose-mosaic blockquote {
-      border-left: 4px solid #f59e0b;
-      background: linear-gradient(145deg, #fef3c7, #fde68a);
-      padding: 1.5rem;
-      margin: 2rem 0;
-      border-radius: 0 6px 6px 0;
-      font-style: italic;
-      box-shadow: 
-        inset 3px 3px 6px rgba(255, 255, 255, 0.7),
-        inset -3px -3px 6px rgba(245, 158, 11, 0.2);
-    }
-
-    /* Tables */
-    .prose-mosaic table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 2rem 0;
-      background: linear-gradient(145deg, #fef3c7, #fde68a);
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(146, 64, 14, 0.15);
-    }
-
-    .prose-mosaic th {
-      background: linear-gradient(145deg, #ea580c, #dc2626);
-      color: #fef3c7;
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .prose-mosaic td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid #fed7aa;
-    }
-
-    .prose-mosaic tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Links */
-    .prose-mosaic a {
-      color: #ea580c;
       text-decoration: none;
+      color: var(--charcoal);
+      transition: all 0.2s ease;
+      transform: rotate(-0.5deg);
+    }
+
+    .nav-page-link:hover {
+      transform: rotate(0deg) translateY(-2px);
+      border-color: var(--orange-400);
+      box-shadow: 3px 3px 0px var(--orange-400);
+    }
+
+    .nav-page-link .page-direction {
+      font-size: 12px;
+      color: var(--slate-500);
       font-weight: 500;
-      border-bottom: 1px solid transparent;
-      transition: all 0.3s ease;
     }
 
-    .prose-mosaic a:hover {
-      color: #dc2626;
-      border-bottom-color: #ea580c;
+    .nav-page-link .page-title {
+      font-weight: 600;
+      color: var(--charcoal);
     }
 
-    /* Horizontal Rules */
-    .prose-mosaic hr {
-      border: none;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #fed7aa, transparent);
-      margin: 3rem 0;
-    }
-
-    /* Responsive Design */
+    /* Responsive improvements */
     @media (max-width: 1024px) {
-      .grid.lg\\:grid-cols-4 {
+      .toc-container {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-section h3 {
+        font-size: 1rem;
+      }
+      
+      .nav-link {
+        padding: 8px 12px;
+        font-size: 15px;
+      }
+
+      .grid.lg\\:grid-cols-5 {
         grid-template-columns: 1fr;
       }
       
-      aside {
+      aside:first-of-type {
         order: 2;
       }
       
       main {
         order: 1;
       }
+    }
+
+    /* Print styles */
+    @media print {
+      .nav-section,
+      footer,
+      .toc-container {
+        display: none;
+      }
       
-      .sticky {
-        position: static;
+      main {
+        grid-column: 1 / -1;
+      }
+      
+      .prose-mosaic {
+        max-width: none;
       }
     }
 
-    @media (max-width: 768px) {
-      .prose-mosaic h1 {
-        font-size: 2.5rem;
-      }
-      
-      .prose-mosaic h2 {
-        font-size: 2rem;
-      }
-      
-      .prose-mosaic h3 {
-        font-size: 1.5rem;
-      }
-      
-      .prose-mosaic pre {
-        padding: 1rem;
-      }
-      
-      .prose-mosaic table {
-        font-size: 0.9rem;
+    /* Dark mode support (if needed) */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --cream: #1F2937;
+        --charcoal: #F9FAFB;
+        --slate-50: #374151;
+        --slate-100: #4B5563;
       }
     }
   </style>
+
+  <!-- Table of Contents JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      generateTableOfContents();
+      setupReadingProgress();
+      setupSmoothScrolling();
+      setupIntersectionObserver();
+    });
+
+    function generateTableOfContents() {
+      const tocList = document.getElementById('toc-list');
+      const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
+      
+      if (!tocList || headings.length === 0) return;
+
+      let tocHTML = '';
+      
+      headings.forEach((heading, index) => {
+        // Create ID if it doesn't exist
+        if (!heading.id) {
+          heading.id = heading.textContent
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        }
+
+        const level = parseInt(heading.tagName.charAt(1));
+        const text = heading.textContent;
+        
+        // Create nested structure with proper classes
+        let className = `toc-h${level}`;
+
+        tocHTML += `
+          <li class="${className}">
+            <a href="#${heading.id}" class="toc-link" data-target="${heading.id}" data-level="${level}">
+              ${text}
+            </a>
+          </li>
+        `;
+      });
+      
+      tocList.innerHTML = tocHTML;
+
+      // Add click handlers for smooth scrolling
+      const tocLinks = document.querySelectorAll('.toc-link');
+      tocLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('data-target');
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Update active state immediately
+            setTimeout(() => {
+              updateActiveTocItem(targetId);
+            }, 100);
+          }
+        });
+      });
+    }
+
+    function setupReadingProgress() {
+      const progressBar = document.getElementById('reading-progress');
+      if (!progressBar) return;
+
+      window.addEventListener('scroll', function() {
+        const article = document.querySelector('.prose-mosaic');
+        if (!article) return;
+
+        const articleTop = article.offsetTop;
+        const articleHeight = article.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.pageYOffset;
+
+        // Calculate progress
+        const progress = Math.min(
+          Math.max((scrollTop - articleTop + windowHeight * 0.2) / articleHeight, 0),
+          1
+        );
+
+        progressBar.style.width = (progress * 100) + '%';
+      });
+    }
+
+    function setupIntersectionObserver() {
+      const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
+      if (headings.length === 0) return;
+
+      const observerOptions = {
+        rootMargin: '-10% 0% -80% 0%', // Trigger when heading is in the top 10-20% of viewport
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        let activeHeading = null;
+        let maxRatio = 0;
+
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            activeHeading = entry.target;
+          }
+        });
+
+        if (activeHeading) {
+          updateActiveTocItem(activeHeading.id);
+        } else {
+          // Fallback to scroll-based detection
+          updateActiveTocItemOnScroll();
+        }
+      }, observerOptions);
+
+      headings.forEach(heading => {
+        observer.observe(heading);
+      });
+    }
+
+    function updateActiveTocItemOnScroll() {
+      const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
+      const tocLinks = document.querySelectorAll('.toc-link');
+      
+      let activeHeading = null;
+      const scrollPosition = window.pageYOffset + 120; // Offset for better UX
+
+      // Find the heading that's currently in view
+      headings.forEach(heading => {
+        if (heading.offsetTop <= scrollPosition) {
+          activeHeading = heading;
+        }
+      });
+
+      if (activeHeading) {
+        updateActiveTocItem(activeHeading.id);
+      }
+    }
+
+    function updateActiveTocItem(activeId) {
+      const tocLinks = document.querySelectorAll('.toc-link');
+      
+      // Remove active class from all items
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+
+      // Add active class to current item
+      const activeLink = document.querySelector(`[data-target="${activeId}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+        
+        // Scroll TOC to show active item
+        scrollTocToActiveItem(activeLink);
+      }
+    }
+
+    function scrollTocToActiveItem(activeLink) {
+      const tocContainer = document.querySelector('.toc-container');
+      if (!tocContainer || !activeLink) return;
+
+      const containerRect = tocContainer.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      
+      // Check if the active link is outside the visible area
+      if (linkRect.top < containerRect.top || linkRect.bottom > containerRect.bottom) {
+        const scrollTop = activeLink.offsetTop - tocContainer.offsetTop - (tocContainer.clientHeight / 2);
+        tocContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    function setupSmoothScrolling() {
+      // Enhance all anchor links in the document
+      const anchorLinks = document.querySelectorAll('a[href^="#"]');
+      
+      anchorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          
+          const targetId = href.substring(1);
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            e.preventDefault();
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Update TOC after smooth scroll
+            setTimeout(() => {
+              updateActiveTocItem(targetId);
+            }, 100);
+          }
+        });
+      });
+    }
+
+    // Handle initial load with hash in URL
+    window.addEventListener('load', function() {
+      if (window.location.hash) {
+        const targetId = window.location.hash.substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          setTimeout(() => {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            updateActiveTocItem(targetId);
+          }, 100);
+        }
+      }
+    });
+  </script>
 </Layout>

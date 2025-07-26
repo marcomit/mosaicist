@@ -6,14 +6,14 @@ description: Get started with Mosaic framework in your Flutter project
 
 # Installation
 
-Welcome to the Mosaic framework installation guide. Follow these steps to integrate clean architecture principles into your Flutter application.
+Welcome to Mosaic! This guide will help you set up the framework in your Flutter project and get you building modular applications in minutes.
 
 ## Prerequisites
 
-Before installing Mosaic, ensure you have:
+Before installing Mosaic, make sure you have:
 
 - **Flutter SDK** 3.10.0 or higher
-- **Dart SDK** 3.0.0 or higher
+- **Dart SDK** 3.0.0 or higher  
 - A code editor (VS Code, Android Studio, or IntelliJ IDEA)
 
 ## Quick Installation
@@ -24,12 +24,11 @@ Before installing Mosaic, ensure you have:
 dependencies:
   flutter:
     sdk: flutter
-  mosaic: ^1.0.0
+  mosaic: ^0.0.1
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mosaic_test: ^1.0.0
 ```
 
 ### 2. Install Dependencies
@@ -40,38 +39,26 @@ Run the following command in your project root:
 flutter pub get
 ```
 
-### 3. Initialize Mosaic
+### 3. Verify Installation
 
-Create a new file `lib/main.dart` and initialize the framework:
+Create a simple test to ensure Mosaic is properly installed:
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mosaic/mosaic.dart';
 
-void main() {
-  // Initialize Mosaic framework
-  Mosaic.initialize();
-  
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MosaicApp(
-      title: 'My Clean Architecture App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomeScreen(),
-    );
-  }
-}
+void main() &#123;
+  test('Mosaic installation test', () &#123;
+    expect(Events, isNotNull);
+    expect(ModuleManager, isNotNull);
+    expect(InternalRouter, isNotNull);
+  &#125;);
+&#125;
 ```
 
 ## Project Structure Setup
 
-Mosaic follows a specific folder structure to maintain clean architecture principles:
+Mosaic follows a specific folder structure to maintain clean architecture principles. Here's the recommended structure:
 
 ```
 lib/
@@ -104,164 +91,268 @@ lib/
 └── main.dart
 ```
 
-## Configuration
+## Basic Setup
+
+### 1. Define Your Modules
+
+Create an enum for your application modules:
+
+```dart
+// lib/core/enums/module_enum.dart
+enum ModuleEnum &#123;
+  home,
+  profile,
+  settings,
+  auth;
+
+  static ModuleEnum? tryParse(String value) &#123;
+    for (final module in values) &#123;
+      if (module.name == value) return module;
+    &#125;
+    return null;
+  &#125;
+&#125;
+```
+
+### 2. Initialize the Framework
+
+Update your `main.dart` file:
+
+```dart
+// lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import 'features/home/home_module.dart';
+import 'features/profile/profile_module.dart';
+import 'core/enums/module_enum.dart';
+
+void main() async &#123;
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize logger
+  await logger.init(
+    tags: ['app', 'router', 'events'],
+    dispatchers: [
+      ConsoleDispatcher(),
+      FileLoggerDispatcher(path: 'logs'),
+    ],
+  );
+
+  // Register modules
+  moduleManager.modules['home'] = HomeModule();
+  moduleManager.modules['profile'] = ProfileModule();
+  moduleManager.defaultModule = 'home';
+
+  // Initialize router
+  router.init(ModuleEnum.home);
+
+  runApp(MyApp());
+&#125;
+
+class MyApp extends StatelessWidget &#123;
+  @override
+  Widget build(BuildContext context) &#123;
+    return MaterialApp(
+      title: 'Mosaic Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: ModularApp(),
+      debugShowCheckedModeBanner: false,
+    );
+  &#125;
+&#125;
+```
+
+### 3. Create Your First Module
+
+```dart
+// lib/features/home/home_module.dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule() : super(name: 'home');
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Welcome to Mosaic! 🎉',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Text(
+            'This is your first modular Flutter app.',
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () &#123;
+              events.emit<String>('user/welcome', 'Hello from Home!');
+            &#125;,
+            child: const Text('Send Event'),
+          ),
+          const SizedBox(height: 20),
+          // Display any injected widgets
+          ...stack,
+        ],
+      ),
+    );
+  &#125;
+
+  @override
+  Future<void> onInit() async &#123;
+    logger.info('Home module initialized', ['home']);
+    
+    // Listen to events
+    events.on<String>('user/welcome', (context) &#123;
+      logger.info('Received welcome event: $&#123;context.data&#125;', ['home']);
+    &#125;);
+  &#125;
+
+  @override
+  void onActive() &#123;
+    logger.info('Home module activated', ['home']);
+  &#125;
+
+  @override
+  void onInactive() &#123;
+    logger.info('Home module deactivated', ['home']);
+  &#125;
+&#125;
+```
+
+## Configuration Options
+
+### Logger Configuration
+
+Customize the logging system for your needs:
+
+```dart
+await logger.init(
+  tags: ['app', 'network', 'ui', 'auth'],
+  dispatchers: [
+    ConsoleDispatcher(),
+    FileLoggerDispatcher(
+      path: 'logs',
+      fileNameRole: (tag) => '$&#123;tag&#125;_$&#123;DateTime.now().millisecondsSinceEpoch&#125;.log',
+    ),
+  ],
+);
+```
+
+### Event System Configuration
+
+Set up global event listeners:
+
+```dart
+// lib/app/events/app_events.dart
+class AppEvents &#123;
+  static void init() &#123;
+    // Global authentication events
+    events.on<String>('auth/login', (context) &#123;
+      logger.info('User logged in: $&#123;context.data&#125;', ['auth']);
+    &#125;);
+    
+    events.on<String>('auth/logout', (context) &#123;
+      logger.info('User logged out', ['auth']);
+      router.goto(ModuleEnum.auth);
+    &#125;);
+    
+    // Navigation events
+    events.on<ModuleEnum>('navigation/goto', (context) &#123;
+      router.goto(context.data);
+    &#125;);
+  &#125;
+&#125;
+```
 
 ### Dependency Injection Setup
 
-Create `lib/app/di/injection.dart`:
+Create a centralized dependency injection system:
 
 ```dart
-import 'package:mosaic/mosaic.dart';
+// lib/app/di/injection.dart
 import 'package:get_it/get_it.dart';
+import 'package:mosaic/mosaic.dart';
 
 final sl = GetIt.instance;
 
-Future<void> initializeDependencies() async {
+Future<void> initializeDependencies() async &#123;
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
   sl.registerLazySingleton<ApiClient>(() => ApiClient());
   
-  // Data Sources
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(client: sl()),
-  );
-  
   // Repositories
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl());
   
-  // Use Cases
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => LogoutUseCase(sl()));
+  // Use cases
+  sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
+  sl.registerLazySingleton<GetUserUseCase>(() => GetUserUseCase(sl()));
   
-  // BLoC
-  sl.registerFactory(() => AuthBloc(
-    loginUseCase: sl(),
-    logoutUseCase: sl(),
-  ));
-}
+  // Modules
+  sl.registerFactory<HomeModule>(() => HomeModule());
+  sl.registerFactory<AuthModule>(() => AuthModule());
+&#125;
 ```
 
-### Environment Configuration
+## Troubleshooting
 
-Create different environment configurations:
+### Common Issues
 
-```dart
-// lib/core/config/env_config.dart
-abstract class EnvConfig {
-  static const String baseUrl = String.fromEnvironment(
-    'BASE_URL',
-    defaultValue: 'https://api.example.com',
-  );
-  
-  static const String apiKey = String.fromEnvironment(
-    'API_KEY',
-    defaultValue: 'your-api-key',
-  );
-  
-  static const bool isProduction = bool.fromEnvironment(
-    'PRODUCTION',
-    defaultValue: false,
-  );
-}
+**Module not found error:**
 ```
-
-## Verification
-
-To verify your installation is working correctly:
-
-### 1. Run the App
-
-```bash
-flutter run
+Exception: Module 'home' not found
 ```
+**Solution:** Make sure you've registered your modules in `main.dart` before calling `router.init()`.
 
-### 2. Check for Compilation Errors
-
-Ensure there are no import or dependency errors.
-
-### 3. Test Dependency Injection
-
-Create a simple test to verify DI is working:
-
-```dart
-// test/app/di/injection_test.dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:myapp/app/di/injection.dart';
-
-void main() {
-  group('Dependency Injection', () {
-    test('should initialize all dependencies without errors', () async {
-      // Act
-      await initializeDependencies();
-      
-      // Assert
-      expect(sl.isRegistered<NetworkInfo>(), true);
-      expect(sl.isRegistered<AuthRepository>(), true);
-      expect(sl.isRegistered<LoginUseCase>(), true);
-    });
-  });
-}
+**Event not firing:**
 ```
-
-## Common Issues
-
-### Import Errors
-
-If you encounter import errors, ensure you have:
-
-1. Added the correct version in `pubspec.yaml`
-2. Run `flutter pub get`
-3. Restarted your IDE
-
-### Build Errors
-
-For build errors, try:
-
-```bash
-flutter clean
-flutter pub get
-flutter run
+Event listener not receiving events
 ```
+**Solution:** Ensure you're calling `events.on()` before `events.emit()` and that the event names match exactly.
 
-### Platform-Specific Issues
-
-**iOS:**
-Add the following to `ios/Runner/Info.plist` if using network requests:
-
-```xml
-<key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-</dict>
+**Logger not working:**
 ```
-
-**Android:**
-Add internet permission in `android/app/src/main/AndroidManifest.xml`:
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
+Logger messages not appearing
 ```
+**Solution:** Initialize the logger before using it and make sure you've added the correct dispatchers.
+
+### Performance Tips
+
+1. **Lazy Loading**: Only initialize modules when they're needed
+2. **Event Cleanup**: Remove event listeners in module's `onDestroy()` method
+3. **Memory Management**: Use weak references for long-lived objects
+4. **Async Operations**: Use `InternalAutoQueue` for retryable operations
 
 ## Next Steps
 
-Now that you have Mosaic installed and configured:
+Now that you have Mosaic installed and configured, you're ready to dive deeper:
 
-1. [Create Your First Feature](/docs/your-first-app)
-2. [Understand the Architecture](/docs/architecture)
-3. [Learn About Use Cases](/docs/use-cases)
+- **[Quick Start Guide](/docs/quick-start)** - Build your first app in 5 minutes
+- **[Architecture Overview](/docs/architecture)** - Understand the modular patterns
+- **[Event System](/docs/events)** - Master event-driven communication
+- **[UI Injection](/docs/ui-injection)** - Learn dynamic UI composition
 
-## Additional Resources
+## Getting Help
 
-- [Flutter Documentation](https://docs.flutter.dev)
-- [Clean Architecture Principles](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Mosaic Examples Repository](https://github.com/mosaic/examples)
+If you run into issues during installation:
 
----
+1. Check the [FAQ](/docs/faq) for common solutions
+2. Search [GitHub Issues](https://github.com/marcomit/mosaic/issues)
+3. Join our [Discord community](https://discord.gg/mosaic) for real-time help
+4. Create a new issue with your specific problem
 
-**Need help?** Join our [Discord community](https://discord.gg/mosaic) or check out our [FAQ section](/docs/faq).
+**Happy coding! 🚀**

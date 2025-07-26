@@ -1,621 +1,1057 @@
 ---
 layout: ../../layouts/DocsLayout.astro
 title: Architecture Overview
-description: Understanding the clean architecture principles behind Mosaic framework
+description: Deep dive into Mosaic's modular architecture patterns and design principles
 ---
 
 # Architecture Overview
 
-Mosaic framework is built upon the principles of **Clean Architecture** as defined by Robert C. Martin (Uncle Bob). This architecture promotes separation of concerns, testability, and maintainability through well-defined layer boundaries.
+Mosaic implements a **modular architecture** that treats each feature as an independent, self-contained unit. This approach enables better separation of concerns, improved testability, and easier maintenance as your application grows.
 
-## Core Principles
+## Core Architecture Principles
 
-### 1. Independence of Frameworks
-The architecture doesn't depend on the existence of some library of feature-laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
-
-### 2. Testable
-The business rules can be tested without the UI, Database, Web Server, or any other external element.
-
-### 3. Independent of UI
-The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
-
-### 4. Independent of Database
-You can swap out Oracle or SQL Server, for MongoDB, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
-
-### 5. Independent of External Agency
-Your business rules simply don't know anything at all about the outside world.
-
-## The Layers
-
-Mosaic organizes code into four distinct layers, each with specific responsibilities and dependencies flowing inward:
+### 1. **Modular Separation**
+Each feature lives in its own module with clear boundaries:
 
 ```
-┌─────────────────────────────────────┐
-│          Presentation               │
-│    (UI, Widgets, State Management)  │
-├─────────────────────────────────────┤
-│           Domain                    │
-│   (Entities, Use Cases, Contracts)  │
-├─────────────────────────────────────┤
-│            Data                     │
-│  (Repositories, Data Sources, DTOs) │
-├─────────────────────────────────────┤
-│          Infrastructure             │
-│    (Platform, Network, Storage)     │
-└─────────────────────────────────────┘
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     Module A    │    │     Module B    │    │     Module C    │
+│  ┌───────────┐  │    │  ┌───────────┐  │    │  ┌───────────┐  │
+│  │   Logic   │  │    │  │   Logic   │  │    │  │   Logic   │  │
+│  │    UI     │  │    │  │    UI     │  │    │  │    UI     │  │
+│  │   Data    │  │    │  │   Data    │  │    │  │   Data    │  │
+│  └───────────┘  │    │  └───────────┘  │    │  └───────────┘  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │  Mosaic Core    │
+                    │   • Events      │
+                    │   • Router      │
+                    │   • Injector    │
+                    │   • Logger      │
+                    └─────────────────┘
 ```
 
-### Presentation Layer
-
-The **outermost layer** contains everything related to the user interface:
-
-- **Widgets**: Flutter UI components
-- **Pages/Screens**: Complete screen implementations
-- **State Management**: BLoC, Cubit, or other state management solutions
-- **View Models**: Data transformation for UI consumption
-
-**Responsibilities:**
-- Handle user interactions
-- Display data to the user
-- Manage UI state
-- Navigate between screens
-
-**Dependencies:** Can depend on Domain layer only
+### 2. **Event-Driven Communication**
+Modules communicate through a centralized event system, ensuring loose coupling:
 
 ```dart
-// Example: Login BLoC
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final LoginUseCase _loginUseCase;
-  
-  LoginBloc({required LoginUseCase loginUseCase}) 
-    : _loginUseCase = loginUseCase,
-      super(LoginInitial());
+// Module A doesn't know about Module B directly
+events.emit<String>('user/updated', userId);
 
-  @override
-  Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is LoginSubmitted) {
-      yield LoginLoading();
-      
-      final result = await _loginUseCase(LoginParams(
-        email: event.email,
-        password: event.password,
-      ));
-      
-      yield result.fold(
-        (failure) => LoginFailure(failure.message),
-        (user) => LoginSuccess(user),
-      );
-    }
-  }
-}
+// Module B listens and responds
+events.on<String>('user/updated', (context) &#123;
+  refreshUserData(context.data);
+&#125;);
 ```
 
-### Domain Layer
-
-The **heart** of the application containing business logic:
-
-- **Entities**: Core business objects
-- **Use Cases**: Application-specific business rules
-- **Repository Contracts**: Abstract definitions of data access
-- **Value Objects**: Immutable objects representing domain concepts
-
-**Responsibilities:**
-- Define business entities
-- Implement business rules
-- Define contracts for data access
-- Remain independent of external concerns
-
-**Dependencies:** Has no dependencies on other layers
+### 3. **Dynamic Composition**
+Modules can inject UI components into other modules at runtime:
 
 ```dart
-// Example: Entity
-class User extends Equatable {
-  final String id;
-  final String email;
-  final String name;
-  final UserRole role;
-  
-  const User({
-    required this.id,
-    required this.email,
-    required this.name,
-    required this.role,
-  });
-
-  @override
-  List<Object?> get props => [id, email, name, role];
-}
-
-// Example: Use Case
-class LoginUseCase implements UseCase<User, LoginParams> {
-  final AuthRepository repository;
-  
-  LoginUseCase(this.repository);
-
-  @override
-  Future<Either<Failure, User>> call(LoginParams params) async {
-    if (!EmailValidator.isValid(params.email)) {
-      return Left(ValidationFailure('Invalid email format'));
-    }
-    
-    if (params.password.length < 6) {
-      return Left(ValidationFailure('Password too short'));
-    }
-    
-    return await repository.login(params.email, params.password);
-  }
-}
-```
-
-### Data Layer
-
-Implements the **data access contracts** defined in the domain layer:
-
-- **Repository Implementations**: Concrete implementations of domain contracts
-- **Data Sources**: Local and remote data access
-- **Data Transfer Objects (DTOs)**: Data models for external APIs
-- **Mappers**: Convert between DTOs and domain entities
-
-**Responsibilities:**
-- Fetch data from various sources
-- Cache and persist data
-- Transform external data formats to domain entities
-- Handle data-related errors
-
-**Dependencies:** Can depend on Domain layer only
-
-```dart
-// Example: Repository Implementation
-class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
-  final AuthLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
-  
-  AuthRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-    required this.networkInfo,
-  });
-
-  @override
-  Future<Either<Failure, User>> login(String email, String password) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final userDto = await remoteDataSource.login(email, password);
-        await localDataSource.cacheUser(userDto);
-        return Right(UserMapper.fromDto(userDto));
-      } on ServerException catch (e) {
-        return Left(ServerFailure(e.message));
-      }
-    } else {
-      return Left(ConnectionFailure('No internet connection'));
-    }
-  }
-}
-
-// Example: Data Source
-abstract class AuthRemoteDataSource {
-  Future<UserDto> login(String email, String password);
-  Future<void> logout();
-}
-
-class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final ApiClient client;
-  
-  AuthRemoteDataSourceImpl({required this.client});
-
-  @override
-  Future<UserDto> login(String email, String password) async {
-    final response = await client.post('/auth/login', data: {
-      'email': email,
-      'password': password,
-    });
-    
-    if (response.statusCode == 200) {
-      return UserDto.fromJson(response.data);
-    } else {
-      throw ServerException('Login failed');
-    }
-  }
-}
-```
-
-### Infrastructure Layer
-
-The **outermost layer** handling platform-specific implementations:
-
-- **Network**: HTTP clients, API configurations
-- **Database**: Local storage implementations
-- **Platform Services**: Device-specific functionality
-- **External Services**: Third-party integrations
-
-**Responsibilities:**
-- Handle platform-specific code
-- Manage external service integrations
-- Provide infrastructure implementations
-- Handle low-level system operations
-
-**Dependencies:** Can depend on all other layers
-
-```dart
-// Example: Network Implementation
-class ApiClient {
-  final Dio _dio;
-  
-  ApiClient() : _dio = Dio() {
-    _dio.options.baseUrl = EnvConfig.baseUrl;
-    _dio.options.connectTimeout = Duration(seconds: 30);
-    _dio.options.receiveTimeout = Duration(seconds: 30);
-    
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-    ));
-    
-    _dio.interceptors.add(AuthInterceptor());
-  }
-  
-  Future<Response> get(String path, {Map<String, dynamic>? queryParams}) {
-    return _dio.get(path, queryParameters: queryParams);
-  }
-  
-  Future<Response> post(String path, {dynamic data}) {
-    return _dio.post(path, data: data);
-  }
-}
-
-// Example: Local Storage
-class LocalStorageImpl implements LocalStorage {
-  final SharedPreferences _prefs;
-  
-  LocalStorageImpl(this._prefs);
-
-  @override
-  Future<void> setString(String key, String value) async {
-    await _prefs.setString(key, value);
-  }
-
-  @override
-  String? getString(String key) {
-    return _prefs.getString(key);
-  }
-}
-```
-
-## Dependency Rule
-
-The **Dependency Rule** is the overriding principle that makes clean architecture work:
-
-> **Source code dependencies can only point inward**
-
-This means:
-
-- **Presentation** can depend on **Domain**
-- **Data** can depend on **Domain** 
-- **Infrastructure** can depend on **Domain** and **Data**
-- **Domain** depends on nothing else
-
-### Dependency Inversion
-
-When an outer layer needs to call an inner layer, we use **Dependency Inversion**:
-
-```dart
-// Domain layer defines the contract
-abstract class UserRepository {
-  Future<Either<Failure, User>> getUser(String id);
-  Future<Either<Failure, void>> saveUser(User user);
-}
-
-// Data layer implements the contract
-class UserRepositoryImpl implements UserRepository {
-  final UserRemoteDataSource remoteDataSource;
-  final UserLocalDataSource localDataSource;
-  
-  UserRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-  });
-  
-  @override
-  Future<Either<Failure, User>> getUser(String id) async {
-    // Implementation details...
-  }
-}
-
-// Presentation layer uses the abstraction
-class UserBloc extends Bloc<UserEvent, UserState> {
-  final UserRepository _repository; // Depends on abstraction, not implementation
-  
-  UserBloc(this._repository) : super(UserInitial());
-}
-```
-
-## Data Flow
-
-Understanding how data flows through the layers:
-
-### 1. User Interaction
-```dart
-// User taps login button
-ElevatedButton(
-  onPressed: () => context.read<LoginBloc>().add(
-    LoginSubmitted(email: email, password: password)
-  ),
-  child: Text('Login'),
-)
-```
-
-### 2. Presentation Layer Processing
-```dart
-// BLoC receives event and calls use case
-Stream<LoginState> mapEventToState(LoginEvent event) async* {
-  if (event is LoginSubmitted) {
-    yield LoginLoading();
-    
-    final result = await _loginUseCase(LoginParams(
-      email: event.email,
-      password: event.password,
-    ));
-    
-    yield result.fold(
-      (failure) => LoginFailure(failure.message),
-      (user) => LoginSuccess(user),
-    );
-  }
-}
-```
-
-### 3. Domain Layer Business Logic
-```dart
-// Use case validates and calls repository
-Future<Either<Failure, User>> call(LoginParams params) async {
-  // Business rules validation
-  if (!EmailValidator.isValid(params.email)) {
-    return Left(ValidationFailure('Invalid email'));
-  }
-  
-  // Delegate to repository
-  return await repository.login(params.email, params.password);
-}
-```
-
-### 4. Data Layer Implementation
-```dart
-// Repository coordinates data sources
-Future<Either<Failure, User>> login(String email, String password) async {
-  try {
-    // Check network connectivity
-    if (await networkInfo.isConnected) {
-      // Fetch from remote
-      final userDto = await remoteDataSource.login(email, password);
-      // Cache locally
-      await localDataSource.cacheUser(userDto);
-      // Transform to domain entity
-      return Right(UserMapper.fromDto(userDto));
-    } else {
-      // Try local cache
-      final cachedUser = await localDataSource.getLastUser();
-      return Right(UserMapper.fromDto(cachedUser));
-    }
-  } catch (e) {
-    return Left(ServerFailure(e.toString()));
-  }
-}
-```
-
-### 5. Infrastructure Layer Execution
-```dart
-// Remote data source makes API call
-Future<UserDto> login(String email, String password) async {
-  final response = await apiClient.post('/auth/login', data: {
-    'email': email,
-    'password': password,
-  });
-  
-  return UserDto.fromJson(response.data);
-}
-```
-
-## Error Handling
-
-Mosaic uses a structured approach to error handling:
-
-### Failure Classes
-```dart
-abstract class Failure extends Equatable {
-  final String message;
-  
-  const Failure(this.message);
-  
-  @override
-  List<Object> get props => [message];
-}
-
-class ServerFailure extends Failure {
-  const ServerFailure(String message) : super(message);
-}
-
-class ConnectionFailure extends Failure {
-  const ConnectionFailure(String message) : super(message);
-}
-
-class ValidationFailure extends Failure {
-  const ValidationFailure(String message) : super(message);
-}
-```
-
-### Either Pattern
-```dart
-// Use cases return Either<Failure, Success>
-Future<Either<Failure, User>> login(LoginParams params) async {
-  try {
-    final user = await repository.login(params.email, params.password);
-    return Right(user);
-  } on ValidationException catch (e) {
-    return Left(ValidationFailure(e.message));
-  } on NetworkException catch (e) {
-    return Left(ConnectionFailure(e.message));
-  } catch (e) {
-    return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-  }
-}
-
-// BLoCs handle both success and failure cases
-yield result.fold(
-  (failure) => LoginFailure(failure.message),
-  (user) => LoginSuccess(user),
+// Profile module injects a widget into Home module
+injector.inject(
+  'home/sidebar',
+  ModularExtension((context) => ProfileWidget()),
 );
 ```
 
-## Testing Strategy
+## Module Anatomy
 
-Each layer has specific testing strategies:
+Every Mosaic module extends the base `Module` class and implements specific lifecycle methods:
 
-### Domain Layer Testing
 ```dart
-// Test use cases in isolation
-group('LoginUseCase', () {
-  late MockAuthRepository mockRepository;
-  late LoginUseCase useCase;
+class ExampleModule extends Module &#123;
+  ExampleModule() : super(name: 'example');
 
-  setUp(() {
-    mockRepository = MockAuthRepository();
-    useCase = LoginUseCase(mockRepository);
-  });
-
-  test('should return User when login is successful', () async {
-    // Arrange
-    const user = User(id: '1', email: 'test@test.com', name: 'Test');
-    when(() => mockRepository.login(any(), any()))
-        .thenAnswer((_) async => Right(user));
-
-    // Act
-    final result = await useCase(LoginParams(
-      email: 'test@test.com',
-      password: 'password',
-    ));
-
-    // Assert
-    expect(result, Right(user));
-    verify(() => mockRepository.login('test@test.com', 'password'));
-  });
-});
-```
-
-### Data Layer Testing
-```dart
-// Test repository implementations
-group('AuthRepositoryImpl', () {
-  late MockAuthRemoteDataSource mockRemoteDataSource;
-  late MockNetworkInfo mockNetworkInfo;
-  late AuthRepositoryImpl repository;
-
-  setUp(() {
-    mockRemoteDataSource = MockAuthRemoteDataSource();
-    mockNetworkInfo = MockNetworkInfo();
-    repository = AuthRepositoryImpl(
-      remoteDataSource: mockRemoteDataSource,
-      networkInfo: mockNetworkInfo,
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(title: Text('Example')),
+      body: Column(
+        children: [
+          Text('Module Content'),
+          ...stack, // Injected widgets appear here
+        ],
+      ),
     );
-  });
+  &#125;
 
-  test('should return User when remote login is successful', () async {
-    // Arrange
-    when(() => mockNetworkInfo.isConnected)
-        .thenAnswer((_) async => true);
-    when(() => mockRemoteDataSource.login(any(), any()))
-        .thenAnswer((_) async => UserDto.test());
+  @override
+  Future<void> onInit() async &#123;
+    // Initialize resources, register event listeners
+    events.on<String>('example/event', _handleEvent);
+  &#125;
 
-    // Act
-    final result = await repository.login('test@test.com', 'password');
+  @override
+  void onActive() &#123;
+    // Called when module becomes active
+    logger.info('Example module activated');
+  &#125;
 
-    // Assert
-    expect(result, isA<Right<Failure, User>>());
-  });
-});
+  @override
+  void onInactive() &#123;
+    // Called when module becomes inactive
+  &#125;
+
+  @override
+  void onDestroy() &#123;
+    // Cleanup resources, remove listeners
+    super.onDestroy();
+  &#125;
+&#125;
 ```
 
-### Presentation Layer Testing
+### Module Lifecycle
+
+Modules follow a predictable lifecycle:
+
+1. **Creation** → Module instance is created
+2. **Registration** → Module is added to `moduleManager`
+3. **Initialization** → `onInit()` is called
+4. **Activation** → `onActive()` is called when displayed
+5. **Deactivation** → `onInactive()` is called when hidden
+6. **Destruction** → `onDestroy()` is called before removal
+
 ```dart
-// Test BLoCs with mock dependencies
-group('LoginBloc', () {
-  late MockLoginUseCase mockLoginUseCase;
-  late LoginBloc loginBloc;
-
-  setUp(() {
-    mockLoginUseCase = MockLoginUseCase();
-    loginBloc = LoginBloc(loginUseCase: mockLoginUseCase);
-  });
-
-  blocTest<LoginBloc, LoginState>(
-    'emits [LoginLoading, LoginSuccess] when login succeeds',
-    build: () {
-      when(() => mockLoginUseCase(any()))
-          .thenAnswer((_) async => Right(User.test()));
-      return loginBloc;
-    },
-    act: (bloc) => bloc.add(LoginSubmitted(
-      email: 'test@test.com',
-      password: 'password',
-    )),
-    expect: () => [
-      LoginLoading(),
-      LoginSuccess(User.test()),
-    ],
-  );
-});
+// Module lifecycle visualization
+Module Created
+     ↓
+Registration (moduleManager.modules['name'] = module)
+     ↓
+onInit() - Setup listeners, initialize resources
+     ↓
+onActive() - Module becomes visible
+     ↓
+[Module is running and handling events]
+     ↓
+onInactive() - Module becomes hidden
+     ↓
+onDestroy() - Cleanup and removal
 ```
 
-## Benefits of This Architecture
+## System Components
 
-### 1. **Testability**
-Each layer can be tested in isolation with clear boundaries and mocked dependencies.
+### ModuleManager
 
-### 2. **Maintainability**
-Changes in one layer don't affect others, making the codebase easier to maintain.
+The central registry for all modules:
 
-### 3. **Scalability**
-New features can be added following the same patterns without affecting existing code.
+```dart
+class ModuleManager &#123;
+  static final ModuleManager _instance = ModuleManager._internal();
+  factory ModuleManager() => _instance;
+  
+  final Map<String, Module> modules = &#123;&#125;;
+  String? defaultModule;
+  
+  // Register a module
+  void register(String name, Module module) &#123;
+    modules[name] = module;
+  &#125;
+  
+  // Get active module
+  Module? get activeModule => modules[currentModuleName];
+&#125;
 
-### 4. **Flexibility**
-External dependencies can be swapped without changing business logic.
+// Usage
+moduleManager.modules['home'] = HomeModule();
+moduleManager.modules['profile'] = ProfileModule();
+moduleManager.defaultModule = 'home';
+```
 
-### 5. **Separation of Concerns**
-Each layer has a single responsibility, making the code easier to understand.
+### Event System
 
-## Common Patterns
+Decoupled communication backbone:
 
-### Repository Pattern
-Abstracts data access logic and provides a uniform interface for accessing data.
+```dart
+class Events &#123;
+  // Type-safe event emission
+  void emit<T>(String eventName, T data) &#123;
+    // Notify all listeners for this event
+  &#125;
+  
+  // Type-safe event listening
+  StreamSubscription on<T>(String pattern, EventCallback<T> callback) &#123;
+    // Register callback for pattern matching
+  &#125;
+  
+  // Remove specific listener
+  void off<T>(String eventName, EventCallback<T> callback) &#123;
+    // Unregister callback
+  &#125;
+&#125;
+```
 
-### Use Case Pattern
-Encapsulates specific business rules and application logic.
+**Event Patterns:**
+- **Specific**: `'user/login'` - Exact match
+- **Single wildcard**: `'user/*'` - Any immediate child
+- **Multi wildcard**: `'user/#'` - Any descendant
 
-### Dependency Injection
-Provides dependencies to classes rather than having them create dependencies themselves.
+### Router System
 
-### Observer Pattern
-Used in state management to notify UI of state changes.
+Manages module navigation and internal stacks:
+
+```dart
+class InternalRouter &#123;
+  String? currentModule;
+  final Map<String, List<Widget>> _moduleStacks = &#123;&#125;;
+  
+  // Switch between modules
+  void goto(ModuleEnum module) &#123;
+    currentModule = module.name;
+    // Notify listeners, update UI
+  &#125;
+  
+  // Push widget to current module's stack
+  Future<T?> push<T>(Widget widget) &#123;
+    // Add widget to current module's internal stack
+  &#125;
+  
+  // Pop from current module's stack
+  void pop<T>([T? result]) &#123;
+    // Remove top widget from stack, return result
+  &#125;
+&#125;
+```
+
+### UI Injector
+
+Dynamic widget composition system:
+
+```dart
+class UIInjector &#123;
+  final Map<String, List<ModularExtension>> _injections = &#123;&#125;;
+  
+  void inject(String path, ModularExtension extension) &#123;
+    _injections.putIfAbsent(path, () => []).add(extension);
+    // Sort by priority
+    _injections[path]!.sort((a, b) => a.priority.compareTo(b.priority));
+  &#125;
+  
+  List<Widget> getWidgets(String path, BuildContext context) &#123;
+    return _injections[path]
+        ?.map((ext) => ext.builder(context))
+        .toList() ?? [];
+  &#125;
+&#125;
+
+// Extension wrapper
+class ModularExtension &#123;
+  final WidgetBuilder builder;
+  final int priority;
+  
+  ModularExtension(this.builder, &#123;this.priority = 0&#125;);
+&#125;
+```
+
+## Application Structure
+
+### Recommended Project Layout
+
+```
+lib/
+├── app/                     # Application-level configuration
+│   ├── app.dart            # Main app widget with ModularApp
+│   ├── modules.dart        # Module registration
+│   └── events.dart         # Global event setup
+│
+├── core/                   # Shared utilities and services
+│   ├── enums/
+│   │   └── module_enum.dart
+│   ├── services/
+│   │   ├── api_service.dart
+│   │   └── storage_service.dart
+│   └── utils/
+│       └── constants.dart
+│
+├── modules/                # Feature modules
+│   ├── auth/              # Authentication module
+│   │   ├── auth_module.dart
+│   │   ├── pages/
+│   │   │   ├── login_page.dart
+│   │   │   └── register_page.dart
+│   │   ├── widgets/
+│   │   │   └── auth_form.dart
+│   │   └── services/
+│   │       └── auth_service.dart
+│   │
+│   ├── home/              # Home module
+│   │   ├── home_module.dart
+│   │   ├── pages/
+│   │   └── widgets/
+│   │
+│   └── profile/           # Profile module
+│       ├── profile_module.dart
+│       └── pages/
+│
+└── main.dart              # App entry point
+```
+
+### Module Organization
+
+Each module should be self-contained:
+
+```dart
+// modules/shopping/shopping_module.dart
+class ShoppingModule extends Module &#123;
+  ShoppingModule() : super(name: 'shopping');
+  
+  // Private services (dependency injection)
+  late final CartService _cartService;
+  late final PaymentService _paymentService;
+  
+  @override
+  Future<void> onInit() async &#123;
+    // Initialize services
+    _cartService = CartService();
+    _paymentService = PaymentService();
+    
+    // Register event listeners
+    _registerEventListeners();
+    
+    // Inject UI components into other modules
+    _registerUIInjections();
+  &#125;
+  
+  void _registerEventListeners() &#123;
+    events.on<Product>('shopping/add_to_cart', (context) &#123;
+      _cartService.addItem(context.data);
+      events.emit<int>('cart/updated', _cartService.itemCount);
+    &#125;);
+    
+    events.on<PaymentInfo>('shopping/process_payment', (context) &#123;
+      _paymentService.processPayment(context.data);
+    &#125;);
+  &#125;
+  
+  void _registerUIInjections() &#123;
+    // Inject cart widget into navigation bar
+    injector.inject(
+      'navigation/actions',
+      ModularExtension(
+        (context) => CartIconWidget(
+          itemCount: _cartService.itemCount,
+          onTap: () => router.goto(ModuleEnum.shopping),
+        ),
+        priority: 10,
+      ),
+    );
+  &#125;
+&#125;
+```
+
+## Communication Patterns
+
+### 1. Event-Based Communication
+
+**Scenario**: User logs in, multiple modules need to update
+
+```dart
+// Auth module emits login event
+class AuthModule extends Module &#123;
+  void handleLoginSuccess(User user) &#123;
+    events.emit<User>('auth/login_success', user);
+  &#125;
+&#125;
+
+// Profile module listens and updates
+class ProfileModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<User>('auth/login_success', (context) &#123;
+      _updateUserProfile(context.data);
+    &#125;);
+  &#125;
+&#125;
+
+// Analytics module tracks
+class AnalyticsModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<User>('auth/login_success', (context) &#123;
+      analytics.trackEvent('user_login', &#123;'user_id': context.data.id&#125;);
+    &#125;);
+  &#125;
+&#125;
+```
+
+### 2. Service-Based Communication
+
+**Scenario**: Shared services across modules
+
+```dart
+// Shared service
+class UserService &#123;
+  static final UserService _instance = UserService._internal();
+  factory UserService() => _instance;
+  
+  User? _currentUser;
+  
+  void updateUser(User user) &#123;
+    _currentUser = user;
+    events.emit<User>('user/updated', user);
+  &#125;
+  
+  User? get currentUser => _currentUser;
+&#125;
+
+// Modules access the service
+class ProfileModule extends Module &#123;
+  final UserService _userService = UserService();
+  
+  void updateProfile(Map<String, dynamic> profileData) &#123;
+    final updatedUser = _currentUser.copyWith(profileData);
+    _userService.updateUser(updatedUser);
+  &#125;
+&#125;
+```
+
+### 3. State Synchronization
+
+**Scenario**: Keeping state in sync across modules
+
+```dart
+class StateManager &#123;
+  static final Map<String, dynamic> _globalState = &#123;&#125;;
+  
+  static void setState(String key, dynamic value) &#123;
+    _globalState[key] = value;
+    events.emit<Map<String, dynamic>>('state/updated', &#123;
+      'key': key,
+      'value': value,
+      'fullState': Map.from(_globalState),
+    &#125;);
+  &#125;
+  
+  static T? getState<T>(String key) => _globalState[key] as T?;
+&#125;
+
+// Modules listen to state changes
+class ShoppingModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<Map<String, dynamic>>('state/updated', (context) &#123;
+      final stateUpdate = context.data;
+      if (stateUpdate['key'] == 'cart_items') &#123;
+        _updateCartUI(stateUpdate['value']);
+      &#125;
+    &#125;);
+  &#125;
+&#125;
+```
+
+## Advanced Patterns
+
+### Module Factories
+
+For complex module initialization:
+
+```dart
+class ModuleFactory &#123;
+  static Module createModule(ModuleEnum type, Map<String, dynamic> config) &#123;
+    switch (type) &#123;
+      case ModuleEnum.home:
+        return HomeModule();
+      case ModuleEnum.shopping:
+        return ShoppingModule(
+          apiKey: config['api_key'],
+          environment: config['environment'],
+        );
+      case ModuleEnum.profile:
+        return ProfileModule(
+          userService: config['user_service'],
+        );
+      default:
+        throw Exception('Unknown module type: $type');
+    &#125;
+  &#125;
+&#125;
+```
+
+### Lazy Module Loading
+
+Load modules only when needed:
+
+```dart
+class LazyModuleManager &#123;
+  final Map<String, Module Function()> _moduleFactories = &#123;&#125;;
+  final Map<String, Module> _loadedModules = &#123;&#125;;
+  
+  void registerFactory(String name, Module Function() factory) &#123;
+    _moduleFactories[name] = factory;
+  &#125;
+  
+  Future<Module> getModule(String name) async &#123;
+    if (!_loadedModules.containsKey(name)) &#123;
+      final factory = _moduleFactories[name];
+      if (factory != null) &#123;
+        final module = factory();
+        await module.onInit();
+        _loadedModules[name] = module;
+      &#125;
+    &#125;
+    return _loadedModules[name]!;
+  &#125;
+&#125;
+```
+
+### Module Dependencies
+
+Handle module dependencies:
+
+```dart
+class DependencyManager &#123;
+  final Map<String, List<String>> _dependencies = &#123;&#125;;
+  
+  void addDependency(String module, String dependsOn) &#123;
+    _dependencies.putIfAbsent(module, () => []).add(dependsOn);
+  &#125;
+  
+  Future<void> initializeWithDependencies(String moduleName) async &#123;
+    final deps = _dependencies[moduleName] ?? [];
+    
+    // Initialize dependencies first
+    for (final dep in deps) &#123;
+      await initializeWithDependencies(dep);
+    &#125;
+    
+    // Then initialize the module
+    final module = moduleManager.modules[moduleName];
+    if (module != null && !module.initialized) &#123;
+      await module.onInit();
+    &#125;
+  &#125;
+&#125;
+```
+
+## Performance Considerations
+
+### Memory Management
+
+```dart
+class MemoryEfficientModule extends Module &#123;
+  Timer? _periodicTimer;
+  StreamSubscription? _eventSubscription;
+  
+  @override
+  Future<void> onInit() async &#123;
+    // Use weak references for long-lived objects
+    _eventSubscription = events.on<String>('data/update', _handleUpdate);
+  &#125;
+  
+  @override
+  void onInactive() &#123;
+    // Pause expensive operations when inactive
+    _periodicTimer?.cancel();
+  &#125;
+  
+  @override
+  void onActive() &#123;
+    // Resume operations when active
+    _startPeriodicUpdates();
+  &#125;
+  
+  @override
+  void onDestroy() &#123;
+    // Clean up all resources
+    _periodicTimer?.cancel();
+    _eventSubscription?.cancel();
+    super.onDestroy();
+  &#125;
+&#125;
+```
+
+### Event Optimization
+
+```dart
+class OptimizedEventHandler &#123;
+  final Map<String, Timer> _debounceTimers = &#123;&#125;;
+  
+  void handleDebouncedEvent(String eventName, Function() handler) &#123;
+    _debounceTimers[eventName]?.cancel();
+    _debounceTimers[eventName] = Timer(
+      const Duration(milliseconds: 300),
+      handler,
+    );
+  &#125;
+  
+  void dispose() &#123;
+    for (final timer in _debounceTimers.values) &#123;
+      timer.cancel();
+    &#125;
+    _debounceTimers.clear();
+  &#125;
+&#125;
+```
+
+## Testing Strategies
+
+### Unit Testing Modules
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mosaic/mosaic.dart';
+
+void main() &#123;
+  group('Module Tests', () &#123;
+    late TestModule module;
+    
+    setUp(() &#123;
+      module = TestModule();
+    &#125;);
+    
+    tearDown(() &#123;
+      events.clear();
+    &#125;);
+    
+    test('should initialize correctly', () async &#123;
+      await module.onInit();
+      expect(module.initialized, isTrue);
+    &#125;);
+    
+    test('should handle events', () async &#123;
+      await module.onInit();
+      
+      String? receivedData;
+      events.on<String>('test/response', (context) &#123;
+        receivedData = context.data;
+      &#125;);
+      
+      events.emit<String>('test/event', 'test data');
+      await Future.delayed(Duration.zero);
+      
+      expect(receivedData, equals('processed: test data'));
+    &#125;);
+  &#125;);
+&#125;
+
+class TestModule extends Module &#123;
+  TestModule() : super(name: 'test');
+  
+  @override
+  Widget build(BuildContext context) => Container();
+  
+  @override
+  Future<void> onInit() async &#123;
+    events.on<String>('test/event', (context) &#123;
+      events.emit<String>('test/response', 'processed:       String? receivedData;
+      events.on<String>('test/response', (context) &#123;#123;context.data&#125;');
+    &#125;);
+  &#125;
+&#125;
+```
+
+### Integration Testing
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+
+void main() &#123;
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  
+  group('Module Integration Tests', () &#123;
+    testWidgets('should navigate between modules', (tester) async &#123;
+      // Initialize app with modules
+      await tester.pumpWidget(MyApp());
+      await tester.pumpAndSettle();
+      
+      // Verify home module is active
+      expect(find.text('Home'), findsOneWidget);
+      
+      // Navigate to profile
+      router.goto(ModuleEnum.profile);
+      await tester.pumpAndSettle();
+      
+      // Verify profile module is active
+      expect(find.text('Profile'), findsOneWidget);
+    &#125;);
+    
+    testWidgets('should handle cross-module communication', (tester) async &#123;
+      await tester.pumpWidget(MyApp());
+      await tester.pumpAndSettle();
+      
+      // Emit event from one module
+      events.emit<String>('user/login', 'testuser');
+      await tester.pumpAndSettle();
+      
+      // Verify other modules responded
+      expect(find.text('Welcome, testuser'), findsOneWidget);
+    &#125;);
+  &#125;);
+&#125;
+```
+
+## Migration Strategies
+
+### From Monolithic to Modular
+
+**Step 1: Identify Modules**
+```dart
+// Before: Monolithic structure
+class MyApp extends StatelessWidget &#123;
+  @override
+  Widget build(BuildContext context) &#123;
+    return MaterialApp(
+      home: HomePage(), // Everything in one place
+    );
+  &#125;
+&#125;
+
+// After: Identify distinct features
+enum AppModules &#123;
+  authentication,  // Login, register, password reset
+  userProfile,     // Profile management, settings
+  contentFeed,     // Posts, comments, likes
+  messaging,       // Chat, notifications
+  settings,        // App configuration
+&#125;
+```
+
+**Step 2: Extract First Module**
+```dart
+// Extract authentication as first module
+class AuthModule extends Module &#123;
+  AuthModule() : super(name: 'auth');
+  
+  @override
+  Widget build(BuildContext context) &#123;
+    return AuthFlow(); // Existing auth widgets
+  &#125;
+  
+  @override
+  Future<void> onInit() async &#123;
+    // Move existing auth logic here
+    _setupAuthListeners();
+  &#125;
+&#125;
+```
+
+**Step 3: Gradual Migration**
+```dart
+// Migrate incrementally
+void main() &#123;
+  // Start with mixed approach
+  moduleManager.modules['auth'] = AuthModule();
+  
+  // Keep existing code for non-migrated features
+  runApp(HybridApp());
+&#125;
+
+class HybridApp extends StatelessWidget &#123;
+  @override
+  Widget build(BuildContext context) &#123;
+    return MaterialApp(
+      home: isModularEnabled 
+        ? ModularApp()      // New modular approach
+        : LegacyHomePage(), // Existing monolithic approach
+    );
+  &#125;
+&#125;
+```
+
+### From Other Architectures
+
+**From BLoC Pattern:**
+```dart
+// Before: BLoC
+class UserBloc extends Bloc<UserEvent, UserState> &#123;
+  // BLoC logic
+&#125;
+
+// After: Mosaic Module with BLoC integration
+class UserModule extends Module &#123;
+  late final UserBloc _userBloc;
+  
+  @override
+  Future<void> onInit() async &#123;
+    _userBloc = UserBloc();
+    
+    // Bridge BLoC events to Mosaic events
+    _userBloc.stream.listen((state) &#123;
+      events.emit<UserState>('user/state_changed', state);
+    &#125;);
+    
+    // Bridge Mosaic events to BLoC
+    events.on<UserEvent>('user/action', (context) &#123;
+      _userBloc.add(context.data);
+    &#125;);
+  &#125;
+&#125;
+```
+
+**From Provider Pattern:**
+```dart
+// Before: Provider
+class UserProvider extends ChangeNotifier &#123;
+  User? _user;
+  // Provider logic
+&#125;
+
+// After: Mosaic Module with Provider integration
+class UserModule extends Module &#123;
+  late final UserProvider _userProvider;
+  
+  @override
+  Future<void> onInit() async &#123;
+    _userProvider = UserProvider();
+    
+    // Listen to provider changes
+    _userProvider.addListener(() &#123;
+      events.emit<User?>('user/changed', _userProvider.user);
+    &#125;);
+  &#125;
+  
+  @override
+  Widget build(BuildContext context) &#123;
+    return ChangeNotifierProvider.value(
+      value: _userProvider,
+      child: UserInterface(),
+    );
+  &#125;
+&#125;
+```
 
 ## Best Practices
 
-1. **Keep entities pure**: Domain entities should not depend on external libraries
-2. **Use value objects**: Represent domain concepts with immutable objects
-3. **Fail fast**: Validate input at the boundaries
-4. **Test business rules**: Focus testing efforts on domain logic
-5. **Mock external dependencies**: Keep tests isolated and fast
-6. **Use meaningful names**: Make code self-documenting
-7. **Follow SOLID principles**: Apply SOLID principles at every layer
+### 1. Module Design Principles
+
+**Single Responsibility**
+```dart
+// ✅ Good - focused on authentication
+class AuthModule extends Module &#123;
+  // Only auth-related functionality
+&#125;
+
+// ❌ Avoid - mixed responsibilities
+class AuthAndProfileModule extends Module &#123;
+  // Auth AND profile functionality - too broad
+&#125;
+```
+
+**Clear Boundaries**
+```dart
+// ✅ Good - well-defined interface
+class PaymentModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<PaymentRequest>('payment/process', _processPayment);
+    events.on<String>('payment/cancel', _cancelPayment);
+  &#125;
+  
+  void _processPayment(EventContext<PaymentRequest> context) &#123;
+    // Clear input/output contract
+    final request = context.data;
+    // Process payment
+    events.emit<PaymentResult>('payment/result', result);
+  &#125;
+&#125;
+```
+
+### 2. Event Design
+
+**Hierarchical Naming**
+```dart
+// ✅ Good - hierarchical and descriptive
+'user/profile/updated'
+'payment/card/added'
+'navigation/page/changed'
+
+// ❌ Avoid - flat and ambiguous
+'updated'
+'changed'
+'success'
+```
+
+**Type Safety**
+```dart
+// ✅ Good - strongly typed
+events.emit<UserProfile>('user/profile/updated', userProfile);
+events.on<UserProfile>('user/profile/updated', (context) &#123;
+  final profile = context.data; // Type is UserProfile
+&#125;);
+
+// ❌ Avoid - untyped
+events.emit('user/profile/updated', userProfile);
+```
+
+### 3. Module Dependencies
+
+**Minimize Dependencies**
+```dart
+// ✅ Good - minimal external dependencies
+class NotificationModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    // Only depends on events, not other modules directly
+    events.on<String>('user/login', _sendWelcomeNotification);
+  &#125;
+&#125;
+
+// ❌ Avoid - tight coupling
+class NotificationModule extends Module &#123;
+  final UserModule userModule; // Direct dependency
+  final ProfileModule profileModule; // Another dependency
+&#125;
+```
+
+**Dependency Injection**
+```dart
+// ✅ Good - inject dependencies
+class PaymentModule extends Module &#123;
+  final PaymentService _paymentService;
+  
+  PaymentModule(&#123;PaymentService? paymentService&#125;) 
+    : _paymentService = paymentService ?? PaymentService(),
+      super(name: 'payment');
+&#125;
+
+// Register with DI container
+final paymentModule = PaymentModule(
+  paymentService: MockPaymentService(), // For testing
+);
+```
+
+### 4. Error Handling
+
+**Module-Level Error Handling**
+```dart
+class RobustModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    try &#123;
+      await _initializeServices();
+      _registerEventListeners();
+    &#125; catch (error) &#123;
+      logger.error('Failed to initialize module: $error', [name]);
+      events.emit<String>('module/initialization_failed', name);
+    &#125;
+  &#125;
+  
+  void _registerEventListeners() &#123;
+    events.on<String>('data/request', (context) &#123;
+      try &#123;
+        final result = processRequest(context.data);
+        events.emit<String>('data/response', result);
+      &#125; catch (error) &#123;
+        events.emit<String>('data/error', error.toString());
+      &#125;
+    &#125;);
+  &#125;
+&#125;
+```
+
+### 5. Performance Optimization
+
+**Lazy Initialization**
+```dart
+class LazyModule extends Module &#123;
+  ServiceA? _serviceA;
+  ServiceB? _serviceB;
+  
+  ServiceA get serviceA &#123;
+    _serviceA ??= ServiceA(); // Initialize when first accessed
+    return _serviceA!;
+  &#125;
+  
+  ServiceB get serviceB &#123;
+    _serviceB ??= ServiceB();
+    return _serviceB!;
+  &#125;
+&#125;
+```
+
+**Event Batching**
+```dart
+class OptimizedModule extends Module &#123;
+  final List<String> _pendingUpdates = [];
+  Timer? _batchTimer;
+  
+  void _handleUpdate(String update) &#123;
+    _pendingUpdates.add(update);
+    
+    _batchTimer?.cancel();
+    _batchTimer = Timer(Duration(milliseconds: 100), () &#123;
+      _processBatchedUpdates(_pendingUpdates.toList());
+      _pendingUpdates.clear();
+    &#125;);
+  &#125;
+&#125;
+```
+
+## Common Pitfalls
+
+### 1. Event Overuse
+```dart
+// ❌ Avoid - too many granular events
+events.emit<String>('user/name/first/changed', firstName);
+events.emit<String>('user/name/last/changed', lastName);
+events.emit<String>('user/email/changed', email);
+
+// ✅ Better - batch related changes
+events.emit<UserProfile>('user/profile/updated', updatedProfile);
+```
+
+### 2. Circular Dependencies
+```dart
+// ❌ Avoid - circular event dependencies
+class ModuleA extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<String>('b/response', (context) &#123;
+      events.emit<String>('a/request', 'from A');
+    &#125;);
+  &#125;
+&#125;
+
+class ModuleB extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<String>('a/request', (context) &#123;
+      events.emit<String>('b/response', 'from B'); // Circular!
+    &#125;);
+  &#125;
+&#125;
+```
+
+### 3. Memory Leaks
+```dart
+// ❌ Avoid - not cleaning up listeners
+class LeakyModule extends Module &#123;
+  @override
+  Future<void> onInit() async &#123;
+    events.on<String>('some/event', _handleEvent);
+    // No cleanup in onDestroy!
+  &#125;
+&#125;
+
+// ✅ Good - proper cleanup
+class CleanModule extends Module &#123;
+  late StreamSubscription _subscription;
+  
+  @override
+  Future<void> onInit() async &#123;
+    _subscription = events.on<String>('some/event', _handleEvent);
+  &#125;
+  
+  @override
+  void onDestroy() &#123;
+    _subscription.cancel();
+    super.onDestroy();
+  &#125;
+&#125;
+```
 
 ## Next Steps
 
-Now that you understand the architecture:
+Now that you understand Mosaic's architecture, explore these advanced topics:
 
-1. [Learn about Use Cases](/docs/use-cases)
-2. [Explore the Repository Pattern](/docs/repository-pattern)
-3. [Understand Dependency Injection](/docs/dependency-injection)
-4. [Build Your First Feature](/docs/your-first-app)
+- **[UI Injection](/docs/ui-injection)** - Dynamic UI composition patterns
+- **[Navigation](/docs/navigation)** - Advanced routing and stack management  
+- **[Testing](/docs/testing)** - Comprehensive testing strategies
+- **[Performance](/docs/performance)** - Optimization techniques
+- **[Best Practices](/docs/best-practices)** - Production-ready patterns
 
----
-
-*"The architecture should scream the intent of the system"* - Robert C. Martin
+The modular architecture is the foundation of scalable Flutter applications. Master these concepts, and you'll build apps that grow gracefully with your needs! 🚀

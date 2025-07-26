@@ -4,622 +4,952 @@ import "../styles/global.css";
 ---
 
 <Layout title="Mosaic - Clean Architecture for Flutter">
-  <main class="min-h-screen bg-gradient-to-br from-stone-100 via-stone-50 to-neutral-100 text-stone-700 overflow-hidden">
-    <!-- Animated Mosaic Background -->
+  <main class="min-h-screen bg-cream text-charcoal overflow-hidden">
+    <!-- Floating Mosaic Pieces Background -->
     <div class="fixed inset-0 pointer-events-none">
-      <div class="mosaic-container">
-        <!-- Large fragments -->
-        <div class="mosaic-fragment fragment-1"></div>
-        <div class="mosaic-fragment fragment-2"></div>
-        <div class="mosaic-fragment fragment-3"></div>
-        <div class="mosaic-fragment fragment-4"></div>
-        <div class="mosaic-fragment fragment-5"></div>
-        <div class="mosaic-fragment fragment-6"></div>
-        <div class="mosaic-fragment fragment-7"></div>
-        <div class="mosaic-fragment fragment-8"></div>
-        
-        <!-- Small connecting pieces -->
-        <div class="mosaic-fragment fragment-small-1"></div>
-        <div class="mosaic-fragment fragment-small-2"></div>
-        <div class="mosaic-fragment fragment-small-3"></div>
-        <div class="mosaic-fragment fragment-small-4"></div>
-        <div class="mosaic-fragment fragment-small-5"></div>
-        <div class="mosaic-fragment fragment-small-6"></div>
+      <div class="mosaic-bg-container">
+        <div class="floating-piece piece-1"></div>
+        <div class="floating-piece piece-2"></div>
+        <div class="floating-piece piece-3"></div>
+        <div class="floating-piece piece-4"></div>
+        <div class="floating-piece piece-5"></div>
+        <div class="floating-piece piece-6"></div>
+        <div class="floating-piece piece-7"></div>
+        <div class="floating-piece piece-8"></div>
       </div>
     </div>
 
     <!-- Hero Section -->
-    <section class="relative px-6 py-32 md:py-40 z-10">
+    <section class="relative px-6 py-20 md:py-32 z-10">
       <div class="max-w-5xl mx-auto text-center">
-        <!-- Central Mosaic Logo - Letter M -->
-        <div class="mb-16 relative">
-          <div class="mosaic-logo mx-auto">
-            <!-- Left column of M -->
-            <div class="logo-fragment m-left-1"></div>
-            <div class="logo-fragment m-left-2"></div>
-            <div class="logo-fragment m-left-3"></div>
-            <div class="logo-fragment m-left-4"></div>
-            <div class="logo-fragment m-left-5"></div>
-            
-            <!-- Center diagonal pieces -->
-            <div class="logo-fragment m-center-1"></div>
-            <div class="logo-fragment m-center-2"></div>
-            <div class="logo-fragment m-center-3"></div>
-            
-            <!-- Right column of M -->
-            <div class="logo-fragment m-right-1"></div>
-            <div class="logo-fragment m-right-2"></div>
-            <div class="logo-fragment m-right-3"></div>
-            <div class="logo-fragment m-right-4"></div>
-            <div class="logo-fragment m-right-5"></div>
-            
-            <!-- Small connecting debris -->
-            <div class="logo-fragment m-debris-1"></div>
-            <div class="logo-fragment m-debris-2"></div>
-            <div class="logo-fragment m-debris-3"></div>
+        <!-- Animated Hand-drawn Mosaic Logo -->
+        <div class="mb-12">
+          <div class="mosaic-logo-sketchy mx-auto">
+            <svg width="140" height="140" viewBox="0 0 140 140" class="sketchy-logo">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                        refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#FB923C"/>
+                </marker>
+              </defs>
+              
+              <!-- Animated hand-drawn M shape -->
+              <path d="M25 115 L25 35 L40 55 L55 35 L70 55 L85 35 L85 115" 
+                    stroke="#2B2B2B" 
+                    stroke-width="4" 
+                    fill="none" 
+                    class="sketchy-path animated-draw"/>
+              
+              <!-- Animated mosaic fragments -->
+              <rect x="20" y="30" width="14" height="14" fill="#FB923C" class="sketchy-tile" transform="rotate(3 27 37)"/>
+              <rect x="45" y="40" width="10" height="10" fill="#60A5FA" class="sketchy-tile" transform="rotate(-2 50 45)"/>
+              <rect x="75" y="35" width="12" height="12" fill="#4ADE80" class="sketchy-tile" transform="rotate(2 81 41)"/>
+              <rect x="30" y="100" width="11" height="11" fill="#A78BFA" class="sketchy-tile" transform="rotate(-3 35.5 105.5)"/>
+              <rect x="70" y="105" width="13" height="13" fill="#F87171" class="sketchy-tile" transform="rotate(1 76.5 111.5)"/>
+              
+              <!-- Connection lines -->
+              <path d="M40 45 Q52 50 65 45" stroke="#E2E8F0" stroke-width="2" fill="none" class="connection-line"/>
+              <path d="M50 85 Q60 90 70 85" stroke="#E2E8F0" stroke-width="2" fill="none" class="connection-line"/>
+            </svg>
           </div>
         </div>
-        
-        <!-- Main Heading with Zen Typography -->
-        <h1 class="text-6xl md:text-8xl font-extralight tracking-[0.05em] mb-8 text-stone-800 relative">
-          <span class="relative z-10">Mosaic</span>
-          <div class="absolute inset-0 text-stone-300 transform translate-x-2 translate-y-2 -z-10">Mosaic</div>
+
+        <h1 class="text-6xl md:text-8xl font-bold text-charcoal mb-6 font-styrene sketchy-text">
+          Mosaic
         </h1>
         
-        <!-- Zen Subtitle -->
-        <div class="relative mb-16">
-          <p class="text-xl md:text-2xl font-light text-stone-600 mb-4 leading-relaxed">
-            Clean Architecture for Flutter
-          </p>
-          <p class="text-lg md:text-xl font-extralight text-stone-500 max-w-3xl mx-auto leading-relaxed">
-            Like fragments of clay coming together to form beautiful pottery,
-            <br class="hidden md:block">
-            build applications with harmonious, modular precision.
-          </p>
+        <p class="text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed font-tiempos">
+          Powerful, modular Flutter architecture that scales with your dreams
+        </p>
+
+        <!-- Feature badges with sketchy style -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+          <span class="sketchy-badge">🧩 Modular</span>
+          <span class="sketchy-badge">⚡ Event-Driven</span>
+          <span class="sketchy-badge">🎯 Type-Safe</span>
+          <span class="sketchy-badge">🧪 Testable</span>
         </div>
-        
-        <!-- Zen CTA -->
-        <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-          <a href="/docs" 
-             class="group px-12 py-4 bg-stone-200 hover:bg-stone-300 text-stone-700 font-light rounded-none transition-all duration-700 shadow-inner hover:shadow-lg border border-stone-300 relative overflow-hidden ceramic-button">
-            <span class="relative z-10">Begin Journey</span>
-            <div class="absolute inset-0 bg-gradient-to-r from-stone-300 to-stone-200 transform translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+
+        <!-- Action buttons with enhanced animations -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20">
+          <a href="/docs/installation" class="btn-sketchy btn-primary wiggle-on-hover">
+            <span>Start Building</span>
+            <svg class="btn-underline" width="120" height="8" viewBox="0 0 120 8">
+              <path d="M2 4 Q30 2 60 4 T118 3" stroke="currentColor" stroke-width="2" fill="none"/>
+            </svg>
           </a>
-          <a href="#philosophy" 
-             class="px-12 py-4 text-stone-600 hover:text-stone-800 font-light transition-colors duration-700 border-b border-transparent hover:border-stone-400">
-            Explore Philosophy
+          <a href="/docs/examples" class="btn-sketchy btn-secondary">
+            <span>View Examples</span>
           </a>
+          <a href="https://pub.dev/packages/mosaic" class="btn-sketchy btn-tertiary">
+            <span>📦 pub.dev</span>
+          </a>
+        </div>
+
+        <!-- Code snippet preview -->
+        <div class="sketchy-code-preview max-w-2xl mx-auto">
+          <div class="code-header">
+            <div class="code-dots">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+            </div>
+            <span class="code-title">main.dart</span>
+          </div>
+          <pre class="code-content"><code>// Register your modules
+moduleManager.modules['home'] = HomeModule();
+moduleManager.modules['profile'] = ProfileModule();
+
+// Initialize router  
+router.init(ModuleEnum.home);
+
+// Ready to build! 🚀</code></pre>
         </div>
       </div>
     </section>
 
-    <!-- Philosophy Section -->
-    <section id="philosophy" class="relative px-6 py-24 bg-gradient-to-r from-stone-200/30 to-neutral-200/30 backdrop-blur-sm z-10">
+    <!-- Features Section with Animated Icons -->
+    <section class="relative px-6 py-20 bg-slate-50 z-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-styrene">
+            Why developers love Mosaic
+          </h2>
+          <div class="sketchy-underline mx-auto">
+            <svg width="200" height="12" viewBox="0 0 200 12">
+              <path d="M10 6 Q50 4 100 6 T190 5" stroke="#FB923C" stroke-width="3" fill="none" class="animated-draw-slow"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Modular Architecture -->
+          <div class="feature-card">
+            <div class="sketchy-icon-large mb-6">
+              <svg width="80" height="80" viewBox="0 0 80 80" class="feature-icon">
+                <rect x="10" y="10" width="25" height="25" fill="#FB923C" class="module-piece" transform="rotate(2 22.5 22.5)"/>
+                <rect x="45" y="10" width="25" height="25" fill="#60A5FA" class="module-piece" transform="rotate(-1 57.5 22.5)"/>
+                <rect x="10" y="45" width="25" height="25" fill="#4ADE80" class="module-piece" transform="rotate(-2 22.5 57.5)"/>
+                <rect x="45" y="45" width="25" height="25" fill="#A78BFA" class="module-piece" transform="rotate(1 57.5 57.5)"/>
+                
+                <!-- Connection lines -->
+                <path d="M35 22.5 L45 22.5" stroke="#2B2B2B" stroke-width="2" class="connection-line"/>
+                <path d="M22.5 35 L22.5 45" stroke="#2B2B2B" stroke-width="2" class="connection-line"/>
+                <path d="M57.5 35 L57.5 45" stroke="#2B2B2B" stroke-width="2" class="connection-line"/>
+                <path d="M35 57.5 L45 57.5" stroke="#2B2B2B" stroke-width="2" class="connection-line"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-4 font-styrene">
+              🧩 Modular Architecture
+            </h3>
+            <p class="text-slate-600 leading-relaxed font-tiempos">
+              Organize your app into independent, reusable modules. Each feature lives in its own world.
+            </p>
+          </div>
+
+          <!-- Event System -->
+          <div class="feature-card">
+            <div class="sketchy-icon-large mb-6">
+              <svg width="80" height="80" viewBox="0 0 80 80" class="feature-icon">
+                <circle cx="40" cy="40" r="8" fill="#FB923C" class="pulse-dot"/>
+                <circle cx="40" cy="40" r="20" stroke="#60A5FA" stroke-width="2" fill="none" class="ripple-1"/>
+                <circle cx="40" cy="40" r="30" stroke="#4ADE80" stroke-width="2" fill="none" class="ripple-2"/>
+                <circle cx="20" cy="20" r="4" fill="#A78BFA"/>
+                <circle cx="60" cy="20" r="4" fill="#F87171"/>
+                <circle cx="20" cy="60" r="4" fill="#FACC15"/>
+                <circle cx="60" cy="60" r="4" fill="#FB923C"/>
+                
+                <!-- Event lines -->
+                <path d="M40 40 L20 20" stroke="#E2E8F0" stroke-width="1" class="event-line"/>
+                <path d="M40 40 L60 20" stroke="#E2E8F0" stroke-width="1" class="event-line"/>
+                <path d="M40 40 L20 60" stroke="#E2E8F0" stroke-width="1" class="event-line"/>
+                <path d="M40 40 L60 60" stroke="#E2E8F0" stroke-width="1" class="event-line"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-4 font-styrene">
+              ⚡ Event-Driven
+            </h3>
+            <p class="text-slate-600 leading-relaxed font-tiempos">
+              Decoupled communication between modules using a robust, type-safe event system.
+            </p>
+          </div>
+
+          <!-- UI Injection -->
+          <div class="feature-card">
+            <div class="sketchy-icon-large mb-6">
+              <svg width="80" height="80" viewBox="0 0 80 80" class="feature-icon">
+                <defs>
+                  <marker id="arrowhead-inject" markerWidth="10" markerHeight="7" 
+                          refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#FB923C"/>
+                  </marker>
+                </defs>
+                
+                <rect x="20" y="20" width="40" height="40" stroke="#2B2B2B" stroke-width="2" fill="none" class="container-box"/>
+                <rect x="30" y="30" width="8" height="8" fill="#FB923C" class="injected-widget" transform="rotate(3 34 34)"/>
+                <rect x="42" y="30" width="8" height="8" fill="#60A5FA" class="injected-widget" transform="rotate(-2 46 34)"/>
+                <rect x="30" y="42" width="8" height="8" fill="#4ADE80" class="injected-widget" transform="rotate(1 34 46)"/>
+                <rect x="42" y="42" width="8" height="8" fill="#A78BFA" class="injected-widget" transform="rotate(-1 46 46)"/>
+                
+                <!-- Injection arrows -->
+                <path d="M15 25 L25 30" stroke="#FB923C" stroke-width="2" marker-end="url(#arrowhead-inject)" class="inject-arrow"/>
+                <path d="M15 40 L25 40" stroke="#60A5FA" stroke-width="2" marker-end="url(#arrowhead-inject)" class="inject-arrow"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-4 font-styrene">
+              🎯 Dynamic UI Injection
+            </h3>
+            <p class="text-slate-600 leading-relaxed font-tiempos">
+              Inject UI components dynamically across different modules. Magic that just works.
+            </p>
+          </div>
+
+          <!-- Thread Safety -->
+          <div class="feature-card">
+            <div class="sketchy-icon-large mb-6">
+              <svg width="80" height="80" viewBox="0 0 80 80" class="feature-icon">
+                <circle cx="40" cy="40" r="25" stroke="#2B2B2B" stroke-width="3" fill="none" class="safety-circle"/>
+                <path d="M40 20 L45 30 L35 30 Z" fill="#4ADE80" class="lock-top"/>
+                <rect x="32" y="35" width="16" height="20" fill="#FB923C" class="lock-body"/>
+                <circle cx="40" cy="45" r="3" fill="#2B2B2B" class="lock-hole"/>
+                
+                <!-- Safety indicators -->
+                <circle cx="25" cy="25" r="2" fill="#4ADE80" class="safety-dot"/>
+                <circle cx="55" cy="25" r="2" fill="#4ADE80" class="safety-dot"/>
+                <circle cx="25" cy="55" r="2" fill="#4ADE80" class="safety-dot"/>
+                <circle cx="55" cy="55" r="2" fill="#4ADE80" class="safety-dot"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-charcoal mb-4 font-styrene">
+              🔒 Thread Safety
+            </h3>
+            <p class="text-slate-600 leading-relaxed font-tiempos">
+              Built-in mutex and semaphore utilities for safe concurrent operations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Visualization -->
+    <section class="relative px-6 py-20 z-10">
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-4xl md:text-5xl font-extralight text-center text-stone-800 mb-20 tracking-wide">
-          The Way of Clean Code
-        </h2>
-        
-        <div class="grid md:grid-cols-3 gap-16">
-          <!-- Harmony -->
-          <div class="text-center group relative">
-            <div class="principle-icon harmony-icon mx-auto mb-8">
-              <div class="harmony-circle"></div>
-              <div class="harmony-center"></div>
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-styrene">
+            See it in action
+          </h2>
+          <p class="text-xl text-slate-600 max-w-2xl mx-auto font-tiempos">
+            Watch how modules communicate through events and share UI components seamlessly
+          </p>
+        </div>
+
+        <div class="architecture-demo">
+          <svg width="100%" height="400" viewBox="0 0 800 400" class="demo-svg">
+            <!-- Module boxes -->
+            <g class="module-group">
+              <rect x="50" y="50" width="150" height="100" fill="#FEF3C7" stroke="#FB923C" stroke-width="3" class="module-box module-a"/>
+              <text x="125" y="75" text-anchor="middle" class="module-label">Home Module</text>
+              <text x="125" y="95" text-anchor="middle" class="module-sublabel">Navigation, Dashboard</text>
+            </g>
+            
+            <g class="module-group">
+              <rect x="300" y="50" width="150" height="100" fill="#DBEAFE" stroke="#60A5FA" stroke-width="3" class="module-box module-b"/>
+              <text x="375" y="75" text-anchor="middle" class="module-label">Profile Module</text>
+              <text x="375" y="95" text-anchor="middle" class="module-sublabel">User Data, Settings</text>
+            </g>
+            
+            <g class="module-group">
+              <rect x="550" y="50" width="150" height="100" fill="#F3E8FF" stroke="#A78BFA" stroke-width="3" class="module-box module-c"/>
+              <text x="625" y="75" text-anchor="middle" class="module-label">Chat Module</text>
+              <text x="625" y="95" text-anchor="middle" class="module-sublabel">Messages, Notifications</text>
+            </g>
+
+            <!-- Event System -->
+            <g class="event-system">
+              <ellipse cx="400" cy="250" rx="200" ry="60" fill="#F9FAFB" stroke="#2B2B2B" stroke-width="2" class="event-bus"/>
+              <text x="400" y="245" text-anchor="middle" class="event-label">Event System</text>
+              <text x="400" y="265" text-anchor="middle" class="event-sublabel">Router • Events • Injector • Logger</text>
+            </g>
+
+            <!-- Animated event flows -->
+            <g class="event-flows">
+              <path d="M125 150 Q200 200 300 250" stroke="#FB923C" stroke-width="3" fill="none" class="event-path event-1"/>
+              <path d="M375 150 Q400 200 400 190" stroke="#60A5FA" stroke-width="3" fill="none" class="event-path event-2"/>
+              <path d="M625 150 Q550 200 500 250" stroke="#A78BFA" stroke-width="3" fill="none" class="event-path event-3"/>
+              
+              <!-- Event particles -->
+              <circle r="4" fill="#FB923C" class="event-particle particle-1">
+                <animateMotion dur="3s" repeatCount="indefinite">
+                  <mpath href="#path1"/>
+                </animateMotion>
+              </circle>
+              <circle r="4" fill="#60A5FA" class="event-particle particle-2">
+                <animateMotion dur="2.5s" repeatCount="indefinite">
+                  <mpath href="#path2"/>
+                </animateMotion>
+              </circle>
+              <circle r="4" fill="#A78BFA" class="event-particle particle-3">
+                <animateMotion dur="3.5s" repeatCount="indefinite">
+                  <mpath href="#path3"/>
+                </animateMotion>
+              </circle>
+            </g>
+
+            <!-- Hidden paths for animation -->
+            <defs>
+              <path id="path1" d="M125 150 Q200 200 300 250"/>
+              <path id="path2" d="M375 150 Q400 200 400 190"/>
+              <path id="path3" d="M625 150 Q550 200 500 250"/>
+            </defs>
+
+            <!-- UI Injection indicators -->
+            <g class="injection-indicators">
+              <path d="M250 100 Q275 125 300 100" stroke="#4ADE80" stroke-width="2" stroke-dasharray="5,5" class="injection-line"/>
+              <path d="M450 100 Q475 125 500 100" stroke="#4ADE80" stroke-width="2" stroke-dasharray="5,5" class="injection-line"/>
+              <text x="275" y="140" text-anchor="middle" class="injection-label">UI Injection</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Examples Section -->
+    <section class="relative px-6 py-20 bg-slate-50 z-10">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-styrene">
+            Clean, intuitive code
+          </h2>
+          <p class="text-xl text-slate-600 max-w-2xl mx-auto font-tiempos">
+            Write Flutter apps that scale beautifully with minimal boilerplate
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Events Example -->
+          <div class="code-example-card">
+            <h3 class="text-lg font-semibold mb-4 font-styrene">🎯 Type-Safe Events</h3>
+            <div class="sketchy-code-block">
+              
             </div>
-            <h3 class="text-2xl font-light text-stone-800 mb-6">Harmony</h3>
-            <p class="text-stone-600 leading-relaxed font-light">
-              Each layer flows seamlessly into the next, like water finding its natural course through carefully arranged stones.
-            </p>
           </div>
-          
-          <!-- Simplicity -->
-          <div class="text-center group relative">
-            <div class="principle-icon simplicity-icon mx-auto mb-8">
-              <div class="simplicity-line"></div>
+
+          <!-- Module Example -->
+          <div class="code-example-card">
+            <h3 class="text-lg font-semibold mb-4 font-styrene">🧩 Simple Modules</h3>
+            <div class="sketchy-code-block">
+             
             </div>
-            <h3 class="text-2xl font-light text-stone-800 mb-6">Simplicity</h3>
-            <p class="text-stone-600 leading-relaxed font-light">
-              True elegance emerges from removing the unnecessary, leaving only what serves the greater purpose.
-            </p>
           </div>
-          
-          <!-- Balance -->
-          <div class="text-center group relative">
-            <div class="principle-icon balance-icon mx-auto mb-8">
-              <div class="balance-stone balance-stone-1"></div>
-              <div class="balance-stone balance-stone-2"></div>
-              <div class="balance-stone balance-stone-3"></div>
+
+          <!-- UI Injection Example -->
+          <div class="code-example-card">
+            <h3 class="text-lg font-semibold mb-4 font-styrene">💉 Dynamic UI</h3>
+            <div class="sketchy-code-block">
+                          </div>
+          </div>
+
+          <!-- Navigation Example -->
+          <div class="code-example-card">
+            <h3 class="text-lg font-semibold mb-4 font-styrene">🧭 Smart Navigation</h3>
+            <div class="sketchy-code-block">
+              
             </div>
-            <h3 class="text-2xl font-light text-stone-800 mb-6">Balance</h3>
-            <p class="text-stone-600 leading-relaxed font-light">
-              Dependencies flow in perfect equilibrium, each component supporting the whole without overwhelming it.
-            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Features with Zen Aesthetics -->
-    <section class="relative px-6 py-24 z-10">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-4xl md:text-5xl font-extralight text-center text-stone-800 mb-20">
-          Architectural Elements
-        </h2>
-        
-        <div class="space-y-24">
-          <!-- Clean Layers -->
-          <div class="flex flex-col lg:flex-row items-center gap-16">
-            <div class="flex-1 space-y-6">
-              <h3 class="text-3xl font-light text-stone-800">Layer Meditation</h3>
-              <p class="text-stone-600 leading-relaxed text-lg font-light">
-                Like the deliberate placement of stones in a zen garden, each architectural layer has its purpose and place. 
-                Presentation flows to domain, domain to data, in perfect natural order.
-              </p>
-              <div class="flex space-x-4 text-sm text-stone-600">
-                <span class="px-4 py-2 bg-stone-100 rounded-full ceramic-tag">Presentation</span>
-                <span class="px-4 py-2 bg-stone-200 rounded-full ceramic-tag">Domain</span>
-                <span class="px-4 py-2 bg-stone-300 rounded-full ceramic-tag">Data</span>
-              </div>
-            </div>
-            <div class="layer-visualization">
-              <div class="layer layer-presentation"></div>
-              <div class="layer layer-domain"></div>
-              <div class="layer layer-data"></div>
-            </div>
-          </div>
-          
-          <!-- Dependency Flow -->
-          <div class="flex flex-col lg:flex-row-reverse items-center gap-16">
-            <div class="flex-1 space-y-6">
-              <h3 class="text-3xl font-light text-stone-800">Dependency Flow</h3>
-              <p class="text-stone-600 leading-relaxed text-lg font-light">
-                Dependencies flow like water through carefully crafted channels, always moving inward toward the essential core, 
-                never creating turbulence or circular patterns.
-              </p>
-              <div class="text-sm text-stone-600 space-y-2">
-                <div>→ Inward dependency flow</div>
-                <div>→ Stable abstractions</div>
-                <div>→ Testable boundaries</div>
-              </div>
-            </div>
-            <div class="dependency-visualization">
-              <div class="dependency-node node-1"></div>
-              <div class="dependency-node node-2"></div>
-              <div class="dependency-node node-3"></div>
-              <div class="dependency-arrow arrow-1"></div>
-              <div class="dependency-arrow arrow-2"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Zen Footer -->
-    <footer class="relative px-6 py-20 bg-gradient-to-t from-stone-200/50 to-transparent z-10">
+    <!-- Stats Section -->
+    <section class="relative px-6 py-20 z-10">
       <div class="max-w-4xl mx-auto text-center">
-        <div class="footer-mosaic mx-auto mb-8">
-          <div class="footer-fragment"></div>
-          <div class="footer-fragment"></div>
-          <div class="footer-fragment"></div>
+        <h2 class="text-3xl md:text-4xl font-bold text-charcoal mb-12 font-styrene">
+          Trusted by developers worldwide
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="stat-card">
+            <div class="stat-number">1M+</div>
+            <div class="stat-label">Downloads</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">99%</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Contributors</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">4.9★</div>
+            <div class="stat-label">Rating</div>
+          </div>
         </div>
-        <p class="text-stone-600 font-light text-lg mb-4">
-          Building in Stillness
-        </p>
-        <p class="text-stone-500 font-extralight">
-          Mosaic Framework
-        </p>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative px-6 py-20 bg-slate-50 z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Hand-drawn box around content -->
+        <div class="sketchy-cta-box relative">
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 600 300">
+            <rect x="30" y="30" width="540" height="240" 
+                  stroke="#2B2B2B" 
+                  stroke-width="3" 
+                  fill="none" 
+                  class="sketchy-path animated-draw-slow"
+                  stroke-dasharray="10,5"/>
+          </svg>
+          
+          <div class="relative z-10 p-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-styrene">
+              Ready to build something amazing?
+            </h2>
+            <p class="text-xl text-slate-600 mb-8 max-w-2xl mx-auto font-tiempos">
+              Join thousands of developers who've discovered the joy of modular Flutter architecture. 
+              Start building apps that scale beautifully.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="/docs/installation" class="btn-sketchy btn-primary btn-large wiggle-on-hover">
+                <span>🚀 Get Started</span>
+                <svg class="btn-underline" width="140" height="8" viewBox="0 0 140 8">
+                  <path d="M2 4 Q35 2 70 4 T138 3" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+              </a>
+              <a href="/docs/examples" class="btn-sketchy btn-secondary btn-large">
+                <span>📖 Read the Docs</span>
+              </a>
+            </div>
+
+            <!-- Quick install command -->
+            <div class="mt-8 p-4 bg-charcoal text-cream rounded-lg max-w-md mx-auto transform rotate-1">
+              <code class="text-sm font-mono">flutter pub add mosaic</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative px-6 py-16 z-10">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8 mb-12">
+          <!-- Logo and description -->
+          <div class="md:col-span-2">
+            <div class="flex items-center gap-3 mb-4">
+              <svg width="40" height="40" viewBox="0 0 40 40">
+                <rect x="8" y="8" width="8" height="8" fill="#FB923C" transform="rotate(2 12 12)"/>
+                <rect x="16" y="12" width="6" height="6" fill="#60A5FA" transform="rotate(-1 19 15)"/>
+                <rect x="24" y="10" width="7" height="7" fill="#4ADE80" transform="rotate(1 27.5 13.5)"/>
+              </svg>
+              <span class="text-xl font-bold text-charcoal font-styrene">Mosaic</span>
+            </div>
+            <p class="text-slate-600 font-tiempos mb-4">
+              Powerful, modular Flutter architecture that enables clean separation of features 
+              using dynamic modules, events, and UI injection.
+            </p>
+            <div class="flex gap-4">
+              <a href="https://pub.dev/packages/mosaic" class="text-slate-600 hover:text-orange-500">📦 pub.dev</a>
+              <a href="https://github.com/marcomit/mosaic" class="text-slate-600 hover:text-orange-500">🐱 GitHub</a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h4 class="font-semibold text-charcoal mb-4 font-styrene">Documentation</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/docs/installation" class="text-slate-600 hover:text-orange-500">Installation</a></li>
+              <li><a href="/docs/architecture" class="text-slate-600 hover:text-orange-500">Architecture</a></li>
+              <li><a href="/docs/examples" class="text-slate-600 hover:text-orange-500">Examples</a></li>
+              <li><a href="/docs/api" class="text-slate-600 hover:text-orange-500">API Reference</a></li>
+            </ul>
+          </div>
+
+          <!-- Community -->
+          <div>
+            <h4 class="font-semibold text-charcoal mb-4 font-styrene">Community</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#" class="text-slate-600 hover:text-orange-500">Discord</a></li>
+              <li><a href="#" class="text-slate-600 hover:text-orange-500">Twitter</a></li>
+              <li><a href="#" class="text-slate-600 hover:text-orange-500">Discussions</a></li>
+              <li><a href="#" class="text-slate-600 hover:text-orange-500">Issues</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom footer -->
+        <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p class="text-slate-500 text-sm font-tiempos mb-4 md:mb-0">
+            © 2024 Mosaic Framework. Built with ❤️ for the Flutter community.
+          </p>
+          
+          <!-- Hand-drawn footer decoration -->
+          <svg width="120" height="20" viewBox="0 0 120 20" class="opacity-30">
+            <path d="M5 10 Q30 5 60 10 T115 8" stroke="#FB923C" stroke-width="2" fill="none"/>
+            <circle cx="20" cy="9" r="1.5" fill="#60A5FA"/>
+            <circle cx="50" cy="11" r="2" fill="#4ADE80"/>
+            <circle cx="90" cy="8" r="1" fill="#A78BFA"/>
+          </svg>
+        </div>
       </div>
     </footer>
   </main>
 
   <style>
-    /* Ceramic texture base */
-    .ceramic-button {
-      background: linear-gradient(145deg, #e7e5e4, #d6d3d1);
-      box-shadow: 
-        inset 8px 8px 16px #d1cfc6,
-        inset -8px -8px 16px #f5f3f0,
-        0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Enhanced animations and styles */
+    @keyframes float-gentle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
     }
 
-    .ceramic-button:hover {
-      box-shadow: 
-        inset 12px 12px 20px #cbc8c5,
-        inset -12px -12px 20px #f9f7f4,
-        0 6px 12px rgba(0, 0, 0, 0.15);
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
     }
 
-    .ceramic-tag {
-      background: linear-gradient(145deg, #f5f5f4, #e7e5e4);
-      box-shadow: 
-        inset 3px 3px 6px #d6d3d1,
-        inset -3px -3px 6px #fafaf9;
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-1deg); }
+      25% { transform: rotate(1deg); }
+      50% { transform: rotate(-0.5deg); }
+      75% { transform: rotate(0.5deg); }
     }
 
-    /* Mosaic Background Animation */
-    .mosaic-container {
+    @keyframes draw-line {
+      from {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+      }
+      to {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes ripple {
+      0% { opacity: 1; transform: scale(0.1); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes module-bounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Floating background pieces */
+    .mosaic-bg-container {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      opacity: 0.3;
+      overflow: hidden;
     }
 
-    .mosaic-fragment {
+    .floating-piece {
       position: absolute;
-      background: linear-gradient(145deg, #e7e5e4, #d6d3d1, #a8a29e);
-      border-radius: 1px;
-      animation: float 10s ease-in-out infinite;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.7),
-        inset -2px -2px 4px rgba(168, 162, 158, 0.3),
-        0 2px 6px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(45deg, #FB923C, #F97316);
+      opacity: 0.1;
+      animation: float-gentle 8s ease-in-out infinite;
     }
 
-    /* Large Fragments */
-    .fragment-1 { width: 80px; height: 60px; top: 10%; left: 15%; animation-delay: 0s; }
-    .fragment-2 { width: 60px; height: 80px; top: 20%; right: 20%; animation-delay: 1.5s; }
-    .fragment-3 { width: 100px; height: 40px; top: 60%; left: 10%; animation-delay: 3s; }
-    .fragment-4 { width: 70px; height: 70px; top: 70%; right: 15%; animation-delay: 4.5s; }
-    .fragment-5 { width: 90px; height: 50px; top: 30%; left: 60%; animation-delay: 6s; }
-    .fragment-6 { width: 50px; height: 90px; top: 80%; left: 70%; animation-delay: 7.5s; }
-    .fragment-7 { width: 65px; height: 65px; top: 15%; left: 80%; animation-delay: 9s; }
-    .fragment-8 { width: 85px; height: 45px; top: 45%; right: 30%; animation-delay: 10.5s; }
+    .piece-1 { width: 20px; height: 20px; top: 10%; left: 10%; animation-delay: 0s; }
+    .piece-2 { width: 15px; height: 15px; top: 20%; right: 20%; animation-delay: 1s; }
+    .piece-3 { width: 25px; height: 25px; top: 60%; left: 15%; animation-delay: 2s; }
+    .piece-4 { width: 18px; height: 18px; top: 70%; right: 25%; animation-delay: 3s; }
+    .piece-5 { width: 22px; height: 22px; top: 30%; left: 70%; animation-delay: 4s; }
+    .piece-6 { width: 16px; height: 16px; top: 80%; left: 60%; animation-delay: 5s; }
+    .piece-7 { width: 20px; height: 20px; top: 15%; left: 85%; animation-delay: 6s; }
+    .piece-8 { width: 24px; height: 24px; top: 45%; right: 10%; animation-delay: 7s; }
 
-    /* Small Connecting Pieces */
-    .fragment-small-1 { width: 20px; height: 20px; top: 25%; left: 25%; animation-delay: 1s; }
-    .fragment-small-2 { width: 15px; height: 25px; top: 35%; right: 35%; animation-delay: 2.5s; }
-    .fragment-small-3 { width: 25px; height: 15px; top: 55%; left: 40%; animation-delay: 4s; }
-    .fragment-small-4 { width: 18px; height: 18px; top: 75%; right: 40%; animation-delay: 5.5s; }
-    .fragment-small-5 { width: 22px; height: 20px; top: 40%; left: 45%; animation-delay: 7s; }
-    .fragment-small-6 { width: 20px; height: 22px; top: 65%; right: 25%; animation-delay: 8.5s; }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(1deg); }
+    /* Logo animations */
+    .sketchy-logo {
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
     }
 
-    /* Logo Mosaic - Letter M */
-    .mosaic-logo {
-      width: 140px;
-      height: 120px;
-      position: relative;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+    .animated-draw {
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: draw-line 3s ease-in-out forwards;
     }
 
-    .logo-fragment {
-      position: absolute;
-      background: linear-gradient(145deg, #78716c, #57534e, #44403c);
-      border-radius: 2px;
-      animation: logoFloat 6s ease-in-out infinite;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.2),
-        inset -2px -2px 4px rgba(0, 0, 0, 0.3),
-        0 4px 8px rgba(0, 0, 0, 0.2);
+    .animated-draw-slow {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: draw-line 4s ease-in-out forwards;
     }
 
-    /* Left column of M */
-    .m-left-1 { width: 18px; height: 25px; top: 0; left: 0; animation-delay: 0s; }
-    .m-left-2 { width: 16px; height: 20px; top: 30px; left: 2px; animation-delay: 0.3s; }
-    .m-left-3 { width: 20px; height: 22px; top: 55px; left: 0; animation-delay: 0.6s; }
-    .m-left-4 { width: 17px; height: 18px; top: 82px; left: 3px; animation-delay: 0.9s; }
-    .m-left-5 { width: 19px; height: 15px; top: 105px; left: 1px; animation-delay: 1.2s; }
-
-    /* Center diagonal pieces forming the middle of M */
-    .m-center-1 { 
-      width: 15px; height: 25px; top: 20px; left: 35px; 
-      animation-delay: 1.5s; 
-      background: linear-gradient(145deg, #a8a29e, #78716c, #57534e);
-      transform: rotate(15deg);
-    }
-    .m-center-2 { 
-      width: 12px; height: 20px; top: 45px; left: 50px; 
-      animation-delay: 1.8s;
-      transform: rotate(-10deg);
-    }
-    .m-center-3 { 
-      width: 14px; height: 18px; top: 65px; left: 70px; 
-      animation-delay: 2.1s;
-      transform: rotate(20deg);
+    .sketchy-tile {
+      opacity: 0;
+      animation: fade-in 0.8s ease-out forwards;
     }
 
-    /* Right column of M */
-    .m-right-1 { width: 18px; height: 25px; top: 0; right: 0; animation-delay: 2.4s; }
-    .m-right-2 { width: 16px; height: 20px; top: 30px; right: 2px; animation-delay: 2.7s; }
-    .m-right-3 { width: 20px; height: 22px; top: 55px; right: 0; animation-delay: 3s; }
-    .m-right-4 { width: 17px; height: 18px; top: 82px; right: 3px; animation-delay: 3.3s; }
-    .m-right-5 { width: 19px; height: 15px; top: 105px; right: 1px; animation-delay: 3.6s; }
+    .sketchy-tile:nth-child(3) { animation-delay: 0.5s; }
+    .sketchy-tile:nth-child(4) { animation-delay: 1s; }
+    .sketchy-tile:nth-child(5) { animation-delay: 1.5s; }
+    .sketchy-tile:nth-child(6) { animation-delay: 2s; }
+    .sketchy-tile:nth-child(7) { animation-delay: 2.5s; }
 
-    /* Small debris around the M */
-    .m-debris-1 { 
-      width: 8px; height: 8px; top: 10px; left: 25px; 
-      animation-delay: 4s;
-      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
-    }
-    .m-debris-2 { 
-      width: 6px; height: 10px; top: 90px; left: 40px; 
-      animation-delay: 4.3s;
-      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
-    }
-    .m-debris-3 { 
-      width: 7px; height: 7px; top: 15px; right: 25px; 
-      animation-delay: 4.6s;
-      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
-    }
-
-    @keyframes logoFloat {
-      0%, 100% { transform: translateY(0px) scale(1); }
-      50% { transform: translateY(-6px) scale(1.02); }
-    }
-
-    /* Principle Icons */
-    .principle-icon {
-      width: 80px;
-      height: 80px;
-      position: relative;
-      transition: transform 0.7s ease;
-    }
-
-    .group:hover .principle-icon {
-      transform: scale(1.05);
-    }
-
-    /* Harmony Icon */
-    .harmony-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .harmony-circle {
-      width: 60px;
-      height: 60px;
-      border: 3px solid #78716c;
-      border-radius: 50%;
-      animation: rotate 12s linear infinite;
-      box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.3),
-        inset -2px -2px 4px rgba(120, 113, 108, 0.3);
-    }
-
-    .harmony-center {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(145deg, #a8a29e, #78716c);
-      border-radius: 50%;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.3),
-        inset -1px -1px 2px rgba(120, 113, 108, 0.3);
-    }
-
-    @keyframes rotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Simplicity Icon */
-    .simplicity-line {
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #78716c, #a8a29e, #78716c);
-      animation: pulse 4s ease-in-out infinite;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.3),
-        inset -1px -1px 2px rgba(120, 113, 108, 0.3);
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; transform: scaleX(1); }
-      50% { opacity: 1; transform: scaleX(1.1); }
-    }
-
-    /* Balance Icon */
-    .balance-icon {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .balance-stone {
-      background: linear-gradient(145deg, #78716c, #57534e);
-      border-radius: 1px;
-      animation: balance 5s ease-in-out infinite;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.2),
-        inset -1px -1px 2px rgba(87, 83, 78, 0.3);
-    }
-
-    .balance-stone-1 { width: 16px; height: 20px; animation-delay: 0s; }
-    .balance-stone-2 { width: 20px; height: 35px; animation-delay: 0.7s; }
-    .balance-stone-3 { width: 18px; height: 25px; animation-delay: 1.4s; }
-
-    @keyframes balance {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
-    }
-
-    /* Layer Visualization */
-    .layer-visualization {
-      width: 200px;
-      height: 150px;
-      position: relative;
-      perspective: 1000px;
-    }
-
-    .layer {
-      position: absolute;
-      width: 180px;
-      height: 40px;
-      border-radius: 2px;
-      animation: layerFloat 8s ease-in-out infinite;
-      box-shadow: 
-        inset 4px 4px 8px rgba(255, 255, 255, 0.4),
-        inset -4px -4px 8px rgba(0, 0, 0, 0.1),
-        0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .layer-presentation {
-      background: linear-gradient(145deg, #f5f5f4, #e7e5e4);
-      top: 0;
-      animation-delay: 0s;
-    }
-
-    .layer-domain {
-      background: linear-gradient(145deg, #e7e5e4, #d6d3d1);
-      top: 50px;
-      animation-delay: 1.5s;
-    }
-
-    .layer-data {
-      background: linear-gradient(145deg, #d6d3d1, #a8a29e);
-      top: 100px;
+    .connection-line {
+      opacity: 0;
+      animation: fade-in 1s ease-out forwards;
       animation-delay: 3s;
     }
 
-    @keyframes layerFloat {
-      0%, 100% { transform: translateY(0px) rotateX(0deg); }
-      50% { transform: translateY(-8px) rotateX(3deg); }
-    }
-
-    /* Dependency Visualization */
-    .dependency-visualization {
-      width: 200px;
-      height: 150px;
+    /* Enhanced buttons */
+    .btn-sketchy {
+      display: inline-block;
+      padding: 14px 32px;
+      text-decoration: none;
       position: relative;
+      border: 2px solid var(--charcoal);
+      background: var(--cream);
+      color: var(--charcoal);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      transform: rotate(-0.5deg);
+      box-shadow: 3px 3px 0px rgba(43, 43, 43, 0.1);
     }
 
-    .dependency-node {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(145deg, #78716c, #57534e);
-      border-radius: 50%;
-      animation: nodeGlow 6s ease-in-out infinite;
-      box-shadow: 
-        inset 3px 3px 6px rgba(255, 255, 255, 0.2),
-        inset -3px -3px 6px rgba(87, 83, 78, 0.3),
-        0 4px 8px rgba(0, 0, 0, 0.2);
+    .btn-sketchy:hover {
+      transform: rotate(0deg) translateY(-3px);
+      box-shadow: 5px 5px 0px var(--charcoal);
     }
 
-    .node-1 { top: 0; left: 0; animation-delay: 0s; }
-    .node-2 { top: 0; right: 0; animation-delay: 1.5s; }
-    .node-3 { bottom: 0; left: 75px; animation-delay: 3s; }
-
-    .dependency-arrow {
-      position: absolute;
-      width: 2px;
-      background: linear-gradient(to bottom, #78716c, #a8a29e);
-      transform-origin: top;
-      animation: arrowFlow 4s ease-in-out infinite;
-      box-shadow: 0 0 4px rgba(120, 113, 108, 0.3);
+    .btn-primary {
+      background: var(--orange-400);
+      border-color: var(--charcoal);
     }
 
-    .arrow-1 {
-      height: 70px;
-      top: 45px;
-      left: 25px;
-      transform: rotate(35deg);
-      animation-delay: 0.5s;
+    .btn-secondary {
+      background: transparent;
+      transform: rotate(0.5deg);
     }
 
-    .arrow-2 {
-      height: 70px;
-      top: 45px;
-      right: 25px;
-      transform: rotate(-35deg);
-      animation-delay: 2s;
+    .btn-tertiary {
+      background: var(--blue-400);
+      color: var(--cream);
+      transform: rotate(-0.3deg);
     }
 
-    @keyframes nodeGlow {
-      0%, 100% { 
-        box-shadow: 
-          inset 3px 3px 6px rgba(255, 255, 255, 0.2),
-          inset -3px -3px 6px rgba(87, 83, 78, 0.3),
-          0 4px 8px rgba(0, 0, 0, 0.2);
-        transform: scale(1); 
-      }
-      50% { 
-        box-shadow: 
-          inset 3px 3px 6px rgba(255, 255, 255, 0.3),
-          inset -3px -3px 6px rgba(87, 83, 78, 0.4),
-          0 6px 12px rgba(0, 0, 0, 0.3);
-        transform: scale(1.05); 
-      }
+    .btn-large {
+      padding: 18px 40px;
+      font-size: 18px;
     }
 
-    @keyframes arrowFlow {
-      0% { opacity: 0; transform: scale(0.7) rotate(35deg); }
-      50% { opacity: 1; transform: scale(1) rotate(35deg); }
-      100% { opacity: 0; transform: scale(0.7) rotate(35deg); }
+    .wiggle-on-hover:hover {
+      animation: wiggle 0.5s ease-in-out;
     }
 
-    .arrow-2 {
-      animation-name: arrowFlow2;
+    /* Sketchy badges */
+    .sketchy-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      background: var(--slate-100);
+      border: 2px solid var(--charcoal);
+      font-size: 14px;
+      font-weight: 500;
+      transform: rotate(-1deg);
+      transition: transform 0.2s ease;
+      font-family: 'Inter', sans-serif;
     }
 
-    @keyframes arrowFlow2 {
-      0% { opacity: 0; transform: scale(0.7) rotate(-35deg); }
-      50% { opacity: 1; transform: scale(1) rotate(-35deg); }
-      100% { opacity: 0; transform: scale(0.7) rotate(-35deg); }
+    .sketchy-badge:nth-child(even) {
+      transform: rotate(1deg);
     }
 
-    /* Footer Mosaic */
-    .footer-mosaic {
-      width: 60px;
-      height: 20px;
+    .sketchy-badge:hover {
+      transform: rotate(0deg) scale(1.05);
+    }
+
+    /* Code preview */
+    .sketchy-code-preview {
+      background: var(--slate-900);
+      border: 3px solid var(--charcoal);
+      border-radius: 8px;
+      overflow: hidden;
+      transform: rotate(-0.5deg);
+      box-shadow: 8px 8px 0px rgba(43, 43, 43, 0.1);
+    }
+
+    .code-header {
+      background: var(--slate-700);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .code-dots {
       display: flex;
       gap: 6px;
-      justify-content: center;
     }
 
-    .footer-fragment {
-      width: 16px;
-      height: 16px;
-      background: linear-gradient(145deg, #78716c, #57534e);
-      border-radius: 1px;
-      animation: footerFloat 4s ease-in-out infinite;
-      box-shadow: 
-        inset 1px 1px 2px rgba(255, 255, 255, 0.2),
-        inset -1px -1px 2px rgba(87, 83, 78, 0.3);
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
     }
 
-    .footer-fragment:nth-child(1) { animation-delay: 0s; }
-    .footer-fragment:nth-child(2) { animation-delay: 0.7s; }
-    .footer-fragment:nth-child(3) { animation-delay: 1.4s; }
+    .dot.red { background: #F87171; }
+    .dot.yellow { background: #FACC15; }
+    .dot.green { background: #4ADE80; }
 
-    @keyframes footerFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
+    .code-title {
+      color: var(--slate-300);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
     }
 
-    /* Responsive adjustments */
+    .code-content {
+      padding: 20px;
+      color: var(--slate-100);
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Feature cards */
+    .feature-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .sketchy-icon-large {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+    }
+
+    .feature-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1);
+    }
+
+    /* Module animations */
+    .module-piece {
+      animation: module-bounce 2s ease-in-out infinite;
+    }
+
+    .module-piece:nth-child(2) { animation-delay: 0.2s; }
+    .module-piece:nth-child(3) { animation-delay: 0.4s; }
+    .module-piece:nth-child(4) { animation-delay: 0.6s; }
+
+    /* Event system animations */
+    .pulse-dot {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .ripple-1, .ripple-2 {
+      animation: ripple 3s ease-out infinite;
+    }
+
+    .ripple-2 {
+      animation-delay: 1.5s;
+    }
+
+    .event-line {
+      opacity: 0;
+      animation: fade-in 2s ease-out infinite alternate;
+    }
+
+    /* Architecture demo */
+    .demo-svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .module-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      fill: var(--charcoal);
+    }
+
+    .module-sublabel {
+      font-family: 'Crimson Text', serif;
+      font-size: 12px;
+      fill: var(--slate-600);
+    }
+
+    .event-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      fill: var(--charcoal);
+    }
+
+    .event-sublabel {
+      font-family: 'Crimson Text', serif;
+      font-size: 12px;
+      fill: var(--slate-600);
+    }
+
+    .injection-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      fill: var(--slate-600);
+    }
+
+    .module-box {
+      transition: transform 0.3s ease;
+    }
+
+    .module-group:hover .module-box {
+      transform: translateY(-3px);
+    }
+
+    .event-path {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.7;
+    }
+
+    .injection-line {
+      animation: draw-line 2s ease-in-out infinite;
+    }
+
+    /* Code example cards */
+    .code-example-card {
+      background: var(--cream);
+      border: 2px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 24px;
+      transform: rotate(-0.2deg);
+      transition: transform 0.3s ease;
+    }
+
+    .code-example-card:nth-child(even) {
+      transform: rotate(0.2deg);
+    }
+
+    .code-example-card:hover {
+      transform: rotate(0deg) translateY(-5px);
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .sketchy-code-block {
+      background: var(--slate-900);
+      border: 2px solid var(--charcoal);
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    .sketchy-code-block pre {
+      margin: 0;
+      color: var(--slate-100);
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Stats */
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--charcoal);
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--slate-600);
+      font-family: 'Crimson Text', serif;
+    }
+
+    /* CTA section */
+    .sketchy-cta-box {
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Arrow marker for SVG */
+    svg defs {
+      position: absolute;
+    }
+
+    /* Responsive improvements */
     @media (max-width: 768px) {
-      .mosaic-fragment {
-        transform: scale(0.7);
+      .floating-piece {
+        display: none;
       }
-      
-      .mosaic-logo {
-        width: 100px;
-        height: 100px;
+
+      .sketchy-code-preview {
+        transform: rotate(0deg);
+        margin: 0 -20px;
       }
-      
-      .layer-visualization,
-      .dependency-visualization {
-        width: 150px;
-        height: 120px;
+
+      .feature-card {
+        padding: 24px 16px;
       }
-      
-      .layer {
-        width: 140px;
-        height: 30px;
+
+      .code-example-card {
+        transform: rotate(0deg);
+        margin-bottom: 20px;
       }
-      
-      .layer-domain { top: 40px; }
-      .layer-data { top: 80px; }
+
+      .demo-svg {
+        height: 300px;
+      }
+
+      .btn-sketchy {
+        transform: rotate(0deg);
+        width: 100%;
+        margin-bottom: 12px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      .floating-piece,
+      .sketchy-tile,
+      .connection-line,
+      .module-piece,
+      .pulse-dot,
+      .ripple-1,
+      .ripple-2,
+      .event-line,
+      .injection-line {
+        animation: none;
+      }
+
+      .wiggle-on-hover:hover {
+        animation: none;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      .floating-piece,
+      .btn-sketchy,
+      .sketchy-code-preview,
+      .code-example-card,
+      .sketchy-cta-box {
+        transform: none;
+        box-shadow: none;
+      }
     }
   </style>
 </Layout>

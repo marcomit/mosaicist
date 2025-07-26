@@ -1,0 +1,726 @@
+---
+layout: ../../layouts/DocsLayout.astro
+title: Quick Start Guide
+description: Build your first modular Flutter app with Mosaic in 5 minutes
+---
+
+# Quick Start Guide
+
+Ready to build your first modular Flutter app? This guide will get you up and running with Mosaic in just 5 minutes! ⚡
+
+## What We'll Build
+
+We're creating a simple app with three modules:
+- **Home**: Welcome screen with navigation
+- **Profile**: User profile management  
+- **Settings**: App configuration
+
+Each module will demonstrate key Mosaic features like events, navigation, and UI injection.
+
+## Step 1: Create a New Flutter Project
+
+```bash
+flutter create mosaic_demo
+cd mosaic_demo
+```
+
+## Step 2: Add Mosaic Dependency
+
+Update your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  mosaic: ^0.0.1
+  get_it: ^7.6.0  # For dependency injection (optional)
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+```
+
+Install dependencies:
+
+```bash
+flutter pub get
+```
+
+## Step 3: Define Module Enum
+
+Create `lib/core/enums/module_enum.dart`:
+
+```dart
+enum ModuleEnum &#123;
+  home,
+  profile,
+  settings;
+
+  static ModuleEnum? tryParse(String value) &#123;
+    for (final module in values) &#123;
+      if (module.name == value) return module;
+    &#125;
+    return null;
+  &#125;
+&#125;
+```
+
+## Step 4: Create Your Modules
+
+### Home Module
+
+Create `lib/modules/home/home_module.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule() : super(name: 'home');
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Welcome to Mosaic! 🎉',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'This is your modular Flutter app. Each section below is injected from different modules:',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
+            
+            // Navigation buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () &#123;
+                      router.goto(ModuleEnum.profile);
+                    &#125;,
+                    icon: const Icon(Icons.person),
+                    label: const Text('Profile'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () &#123;
+                      router.goto(ModuleEnum.settings);
+                    &#125;,
+                    icon: const Icon(Icons.settings),
+                    label: const Text('Settings'),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Event demonstration
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Event System Demo',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text('Send events between modules:'),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () &#123;
+                        events.emit<String>('home/greeting', 'Hello from Home! 👋');
+                      &#125;,
+                      child: const Text('Send Greeting Event'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Injected content section
+            const Text(
+              'Injected Content:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            
+            // Display injected widgets from other modules
+            Expanded(
+              child: ListView(
+                children: stack,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  &#125;
+
+  @override
+  Future<void> onInit() async &#123;
+    logger.info('Home module initialized', ['home']);
+    
+    // Listen to greeting events
+    events.on<String>('*/greeting', (context) &#123;
+      logger.info('Received greeting: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['home']);
+    &#125;);
+  &#125;
+
+  @override
+  void onActive() &#123;
+    logger.info('Home module activated', ['home']);
+  &#125;
+&#125;
+```
+
+### Profile Module
+
+Create `lib/modules/profile/profile_module.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class ProfileModule extends Module &#123;
+  ProfileModule() : super(name: 'profile');
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () &#123;
+            router.goto(ModuleEnum.home);
+          &#125;,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.green,
+              child: Icon(Icons.person, size: 50, color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'John Doe',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              'Flutter Developer',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            
+            // Profile actions
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.edit),
+                    title: const Text('Edit Profile'),
+                    onTap: () &#123;
+                      // Push internal page
+                      router.push<String>(const EditProfilePage());
+                    &#125;,
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Logout'),
+                    onTap: () &#123;
+                      events.emit<String>('auth/logout', 'User logged out');
+                      router.goto(ModuleEnum.home);
+                    &#125;,
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Event demo
+            ElevatedButton(
+              onPressed: () &#123;
+                events.emit<String>('profile/greeting', 'Hello from Profile! 👤');
+              &#125;,
+              child: const Text('Send Profile Greeting'),
+            ),
+            
+            // Display injected content
+            ...stack,
+          ],
+        ),
+      ),
+    );
+  &#125;
+
+  @override
+  Future<void> onInit() async &#123;
+    logger.info('Profile module initialized', ['profile']);
+    
+    // Inject a widget into the home module
+    injector.inject(
+      'home/content',
+      ModularExtension(
+        (context) => Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.green,
+              child: Icon(Icons.person, color: Colors.white),
+            ),
+            title: const Text('Profile Quick Access'),
+            subtitle: const Text('Injected from Profile Module'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () &#123;
+              router.goto(ModuleEnum.profile);
+            &#125;,
+          ),
+        ),
+        priority: 1,
+      ),
+    );
+  &#125;
+&#125;
+
+// Internal page for the profile module
+class EditProfilePage extends StatefulWidget &#123;
+  const EditProfilePage(&#123;Key? key&#125;) : super(key: key);
+
+  @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+&#125;
+
+class _EditProfilePageState extends State<EditProfilePage> &#123;
+  final _nameController = TextEditingController(text: 'John Doe');
+  final _titleController = TextEditingController(text: 'Flutter Developer');
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Profile'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () &#123;
+            router.pop<String>('Profile updated');
+          &#125;,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () &#123;
+              // Save profile
+              events.emit<Map<String, String>>('profile/updated', &#123;
+                'name': _nameController.text,
+                'title': _titleController.text,
+              &#125;);
+              router.pop<String>('Profile saved successfully!');
+            &#125;,
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                labelText: 'Title',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  &#125;
+&#125;
+```
+
+### Settings Module
+
+Create `lib/modules/settings/settings_module.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class SettingsModule extends Module &#123;
+  SettingsModule() : super(name: 'settings');
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        backgroundColor: Colors.purple,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () &#123;
+            router.goto(ModuleEnum.home);
+          &#125;,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Card(
+              child: Column(
+                children: [
+                  const ListTile(
+                    leading: Icon(Icons.palette),
+                    title: Text('Theme'),
+                    subtitle: Text('Choose your app theme'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                  ),
+                  const Divider(height: 1),
+                  const ListTile(
+                    leading: Icon(Icons.language),
+                    title: Text('Language'),
+                    subtitle: Text('Select app language'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('Notifications'),
+                    subtitle: const Text('Manage notifications'),
+                    trailing: Switch(
+                      value: true,
+                      onChanged: (value) &#123;
+                        events.emit<bool>('settings/notifications', value);
+                      &#125;,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            Card(
+              child: Column(
+                children: [
+                  const ListTile(
+                    leading: Icon(Icons.info),
+                    title: Text('About'),
+                    subtitle: Text('App version and info'),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.bug_report),
+                    title: const Text('Report Bug'),
+                    onTap: () &#123;
+                      events.emit<String>('app/feedback', 'Bug report requested');
+                    &#125;,
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            ElevatedButton(
+              onPressed: () &#123;
+                events.emit<String>('settings/greeting', 'Hello from Settings! ⚙️');
+              &#125;,
+              child: const Text('Send Settings Greeting'),
+            ),
+            
+            // Display injected content
+            ...stack,
+          ],
+        ),
+      ),
+    );
+  &#125;
+
+  @override
+  Future<void> onInit() async &#123;
+    logger.info('Settings module initialized', ['settings']);
+    
+    // Inject a widget into the home module
+    injector.inject(
+      'home/content',
+      ModularExtension(
+        (context) => Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.purple,
+              child: Icon(Icons.settings, color: Colors.white),
+            ),
+            title: const Text('Settings Quick Access'),
+            subtitle: const Text('Injected from Settings Module'),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: () &#123;
+              router.goto(ModuleEnum.settings);
+            &#125;,
+          ),
+        ),
+        priority: 2,
+      ),
+    );
+    
+    // Listen to profile updates
+    events.on<Map<String, String>>('profile/updated', (context) &#123;
+      logger.info('Profile updated from settings: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['settings']);
+    &#125;);
+  &#125;
+&#125;
+```
+
+## Step 5: Update Main.dart
+
+Replace the contents of `lib/main.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import 'core/enums/module_enum.dart';
+import 'modules/home/home_module.dart';
+import 'modules/profile/profile_module.dart';
+import 'modules/settings/settings_module.dart';
+
+void main() async &#123;
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize logger with multiple dispatchers
+  await logger.init(
+    tags: ['app', 'home', 'profile', 'settings', 'router', 'events'],
+    dispatchers: [
+      ConsoleDispatcher(),
+      // Uncomment to enable file logging
+      // FileLoggerDispatcher(path: 'logs'),
+    ],
+  );
+
+  // Register all modules
+  moduleManager.modules['home'] = HomeModule();
+  moduleManager.modules['profile'] = ProfileModule();
+  moduleManager.modules['settings'] = SettingsModule();
+  moduleManager.defaultModule = 'home';
+
+  // Initialize router with home as default
+  router.init(ModuleEnum.home);
+  
+  // Set up global event listeners
+  _setupGlobalEvents();
+
+  runApp(const MosaicDemoApp());
+&#125;
+
+void _setupGlobalEvents() &#123;
+  // Listen to all greeting events
+  events.on<String>('*/greeting', (context) &#123;
+    logger.info('Global greeting received: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['app']);
+  &#125;);
+  
+  // Listen to authentication events
+  events.on<String>('auth/*', (context) &#123;
+    logger.info('Auth event: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.name&#125; - ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['app']);
+  &#125;);
+  
+  // Listen to settings changes
+  events.on<bool>('settings/notifications', (context) &#123;
+    logger.info('Notifications setting changed: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['app']);
+  &#125;);
+  
+  // Listen to app feedback
+  events.on<String>('app/feedback', (context) &#123;
+    logger.info('User feedback: ```dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+import '../../core/enums/module_enum.dart';
+
+class HomeModule extends Module &#123;
+  HomeModule#123;context.data&#125;', ['app']);
+  &#125;);
+&#125;
+
+class MosaicDemoApp extends StatelessWidget &#123;
+  const MosaicDemoApp(&#123;Key? key&#125;) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) &#123;
+    return MaterialApp(
+      title: 'Mosaic Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 2,
+        ),
+      ),
+      home: const ModularApp(),
+      debugShowCheckedModeBanner: false,
+    );
+  &#125;
+&#125;
+```
+
+## Step 6: Run Your App
+
+```bash
+flutter run
+```
+
+🎉 **Congratulations!** You've just built your first modular Flutter app with Mosaic!
+
+## What You've Learned
+
+In this quick start, you've experienced:
+
+### ✅ **Modular Architecture**
+- Created three independent modules (Home, Profile, Settings)
+- Each module has its own UI and business logic
+- Modules can be developed and tested independently
+
+### ✅ **Event-Driven Communication**
+- Used `events.emit()` to send messages between modules
+- Used `events.on()` to listen for events with wildcard support
+- Demonstrated both specific and global event handling
+
+### ✅ **Dynamic UI Injection**
+- Profile and Settings modules inject widgets into the Home module
+- Used `injector.inject()` with priority ordering
+- Content appears dynamically based on loaded modules
+
+### ✅ **Navigation System**
+- Module-level navigation with `router.goto()`
+- Internal navigation with `router.push()` and `router.pop()`
+- Navigation stack management per module
+
+### ✅ **Logging System**
+- Configured multi-tag logging
+- Module-specific log messages
+- Console output for debugging
+
+## Next Steps
+
+Now that you have a working modular app, explore these advanced features:
+
+### 🚀 **Enhance Your App**
+- **[Event Chains](/docs/events#event-chains)** - Create structured event hierarchies
+- **[Thread Safety](/docs/thread-safety)** - Use Mutex and Semaphore for concurrent operations
+- **[Auto Queue](/docs/auto-queue)** - Add automatic retry mechanisms
+- **[Advanced Logging](/docs/logging)** - Set up file logging and custom dispatchers
+
+### 📚 **Learn More**
+- **[Architecture Guide](/docs/architecture)** - Deep dive into modular patterns
+- **[UI Injection](/docs/ui-injection)** - Advanced dynamic UI techniques
+- **[Testing](/docs/testing)** - Unit and integration testing strategies
+- **[Best Practices](/docs/best-practices)** - Production-ready patterns
+
+### 🛠 **Build Something Real**
+- **[Todo App Example](/docs/examples/todo-app)** - Complete CRUD application
+- **[Authentication Flow](/docs/examples/authentication)** - User management system
+- **[API Integration](/docs/examples/api-integration)** - Network and data handling
+
+## Troubleshooting
+
+**Module not switching?**
+```dart
+// Make sure router is initialized
+router.init(ModuleEnum.home);
+```
+
+**Events not working?**
+```dart
+// Check event names match exactly
+events.emit<String>('test/event', 'data');
+events.on<String>('test/event', (context) => print(context.data));
+```
+
+**UI not injecting?**
+```dart
+// Ensure injection happens in onInit()
+@override
+Future<void> onInit() async &#123;
+  injector.inject('home/content', widget);
+&#125;
+```
+
+**Need help?** Join our [Discord community](https://discord.gg/mosaic) or check the [full documentation](/docs)!
+
+**Happy modular coding! 🎨**
