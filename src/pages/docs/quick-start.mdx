@@ -3,724 +3,496 @@ layout: ../../layouts/DocsLayout.astro
 title: Quick Start Guide
 description: Build your first modular Flutter app with Mosaic in 5 minutes
 ---
+# Understanding Modules
 
-# Quick Start Guide
+Modules are the heart of Mosaic. Think of them as independent pieces of your app that can work alone but also connect with other pieces when needed.
 
-Ready to build your first modular Flutter app? This guide will get you up and running with Mosaic in just 5 minutes! ⚡
+## What is a Module?
 
-## What We'll Build
+A module is like a mini-app within your app. Each module:
 
-We're creating a simple app with three modules:
-- **Home**: Welcome screen with navigation
-- **Profile**: User profile management  
-- **Settings**: App configuration
+- **Has its own screen(s)** - what users see and interact with
+- **Handles one main feature** - like user profiles, settings, or a shopping cart
+- **Can talk to other modules** - but doesn't need to know about them directly
+- **Manages its own state** - keeps track of its own data and user interactions
 
-Each module will demonstrate key Mosaic features like events, navigation, and UI injection.
+## Real-World Example
 
-## Step 1: Create a New Flutter Project
+Imagine you're building a music app. You might have these modules:
 
-```bash
-flutter create mosaic_demo
-cd mosaic_demo
-```
+- **Player Module** - controls music playback (play, pause, skip)
+- **Library Module** - shows all the user's music
+- **Search Module** - finds new songs and artists
+- **Profile Module** - user account and preferences
 
-## Step 2: Add Mosaic Dependency
+Each module focuses on just one thing, making your code easier to understand and maintain.
 
-Update your `pubspec.yaml`:
+## Module Lifecycle
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  mosaic: ^0.0.1
-  get_it: ^7.6.0  # For dependency injection (optional)
+Every module goes through stages, like a person's life:
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
-```
+1. **Birth** - Module is created
+2. **Setup** - Module prepares itself (`onInit()`)
+3. **Active** - Module is being used (`onActive()`)
+4. **Inactive** - Module is hidden but still alive
+5. **Death** - Module is destroyed and cleaned up
 
-Install dependencies:
+Understanding this lifecycle helps you know when to set things up and when to clean them up.
 
-```bash
-flutter pub get
-```
+## Creating Your First Module
 
-## Step 3: Define Module Enum
+Let's build a simple profile module step by step:
 
-Create `lib/core/enums/module_enum.dart`:
-
-```dart
-enum ModuleEnum &#123;
-  home,
-  profile,
-  settings;
-
-  static ModuleEnum? tryParse(String value) &#123;
-    for (final module in values) &#123;
-      if (module.name == value) return module;
-    &#125;
-    return null;
-  &#125;
-&#125;
-```
-
-## Step 4: Create Your Modules
-
-### Home Module
-
-Create `lib/modules/home/home_module.dart`:
+### Step 1: Basic Structure
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
 
-class HomeModule extends Module &#123;
-  HomeModule() : super(name: 'home');
-
-  @override
-  Widget build(BuildContext context) &#123;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Welcome to Mosaic! 🎉',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'This is your modular Flutter app. Each section below is injected from different modules:',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            
-            // Navigation buttons
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () &#123;
-                      router.goto(ModuleEnum.profile);
-                    &#125;,
-                    icon: const Icon(Icons.person),
-                    label: const Text('Profile'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () &#123;
-                      router.goto(ModuleEnum.settings);
-                    &#125;,
-                    icon: const Icon(Icons.settings),
-                    label: const Text('Settings'),
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Event demonstration
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Event System Demo',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text('Send events between modules:'),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () &#123;
-                        events.emit<String>('home/greeting', 'Hello from Home! 👋');
-                      &#125;,
-                      child: const Text('Send Greeting Event'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Injected content section
-            const Text(
-              'Injected Content:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            
-            // Display injected widgets from other modules
-            Expanded(
-              child: ListView(
-                children: stack,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  &#125;
-
-  @override
-  Future<void> onInit() async &#123;
-    logger.info('Home module initialized', ['home']);
-    
-    // Listen to greeting events
-    events.on<String>('*/greeting', (context) &#123;
-      logger.info('Received greeting: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['home']);
-    &#125;);
-  &#125;
-
-  @override
-  void onActive() &#123;
-    logger.info('Home module activated', ['home']);
-  &#125;
-&#125;
-```
-
-### Profile Module
-
-Create `lib/modules/profile/profile_module.dart`:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class ProfileModule extends Module &#123;
+class ProfileModule extends Module {
+  // Give your module a name
   ProfileModule() : super(name: 'profile');
 
   @override
-  Widget build(BuildContext context) &#123;
+  Widget build(BuildContext context) {
+    // This is what users see
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () &#123;
-            router.goto(ModuleEnum.home);
-          &#125;,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(title: Text('My Profile')),
+      body: Text('Profile content goes here'),
+    );
+  }
+}
+```
+
+That's it! You have a basic module that shows a screen.
+
+### Step 2: Add Initialization
+
+```dart
+class ProfileModule extends Module {
+  ProfileModule() : super(name: 'profile');
+  
+  String? userName;  // Store user data
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('My Profile')),
+      body: Center(
         child: Column(
           children: [
-            const CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.green,
-              child: Icon(Icons.person, size: 50, color: Colors.white),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'John Doe',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              'Flutter Developer',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 24),
-            
-            // Profile actions
-            Card(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.edit),
-                    title: const Text('Edit Profile'),
-                    onTap: () &#123;
-                      // Push internal page
-                      router.push<String>(const EditProfilePage());
-                    &#125;,
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text('Logout'),
-                    onTap: () &#123;
-                      events.emit<String>('auth/logout', 'User logged out');
-                      router.goto(ModuleEnum.home);
-                    &#125;,
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Event demo
+            Text('Welcome, ${userName ?? "Guest"}!'),
             ElevatedButton(
-              onPressed: () &#123;
-                events.emit<String>('profile/greeting', 'Hello from Profile! 👤');
-              &#125;,
-              child: const Text('Send Profile Greeting'),
+              onPressed: () {
+                // Tell other modules something happened
+                events.emit<String>('profile/viewed', userName ?? 'guest');
+              },
+              child: Text('View Profile'),
             ),
-            
-            // Display injected content
-            ...stack,
           ],
         ),
       ),
     );
-  &#125;
+  }
 
   @override
-  Future<void> onInit() async &#123;
-    logger.info('Profile module initialized', ['profile']);
+  Future<void> onInit() async {
+    // This runs once when the module is set up
+    logger.info('Profile module is initializing');
     
-    // Inject a widget into the home module
-    injector.inject(
-      'home/content',
-      ModularExtension(
-        (context) => Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.green,
-              child: Icon(Icons.person, color: Colors.white),
+    // Listen for user login events
+    events.on<String>('auth/user_logged_in', (context) {
+      userName = context.data;  // Save the user's name
+      logger.info('User logged in: $userName');
+    });
+    
+    // Load any saved user data
+    await loadUserData();
+  }
+  
+  Future<void> loadUserData() async {
+    // Simulate loading user data
+    await Future.delayed(Duration(seconds: 1));
+    logger.info('User data loaded');
+  }
+}
+```
+
+### Step 3: Handle Activation
+
+```dart
+class ProfileModule extends Module {
+  ProfileModule() : super(name: 'profile');
+  
+  String? userName;
+  int viewCount = 0;  // Track how many times profile was viewed
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('My Profile')),
+      body: Center(
+        child: Column(
+          children: [
+            Text('Welcome, ${userName ?? "Guest"}!'),
+            Text('Profile views: $viewCount'),
+            ElevatedButton(
+              onPressed: () {
+                events.emit<String>('profile/viewed', userName ?? 'guest');
+              },
+              child: Text('View Profile'),
             ),
-            title: const Text('Profile Quick Access'),
-            subtitle: const Text('Injected from Profile Module'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () &#123;
-              router.goto(ModuleEnum.profile);
-            &#125;,
-          ),
+          ],
         ),
-        priority: 1,
       ),
     );
-  &#125;
-&#125;
-
-// Internal page for the profile module
-class EditProfilePage extends StatefulWidget &#123;
-  const EditProfilePage(&#123;Key? key&#125;) : super(key: key);
+  }
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
-&#125;
-
-class _EditProfilePageState extends State<EditProfilePage> &#123;
-  final _nameController = TextEditingController(text: 'John Doe');
-  final _titleController = TextEditingController(text: 'Flutter Developer');
+  Future<void> onInit() async {
+    logger.info('Profile module is initializing');
+    
+    events.on<String>('auth/user_logged_in', (context) {
+      userName = context.data;
+    });
+    
+    await loadUserData();
+  }
 
   @override
-  Widget build(BuildContext context) &#123;
+  void onActive() {
+    // This runs every time user switches to this module
+    viewCount++;
+    logger.info('Profile module is now active (view #$viewCount)');
+    
+    // Tell analytics about the page view
+    events.emit<Map<String, dynamic>>('analytics/page_view', {
+      'page': 'profile',
+      'user': userName,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+  
+  Future<void> loadUserData() async {
+    await Future.delayed(Duration(seconds: 1));
+    logger.info('User data loaded');
+  }
+}
+```
+
+## Module Communication
+
+Modules talk to each other using events, not by calling each other directly. This keeps them independent.
+
+### Sending Messages (Emitting Events)
+
+```dart
+// In any module, you can send a message:
+events.emit<String>('user/profile_updated', 'john_doe');
+events.emit<bool>('settings/theme_changed', true);
+events.emit<Map<String, dynamic>>('order/completed', {
+  'orderId': '12345',
+  'amount': 99.99,
+  'items': ['coffee', 'muffin']
+});
+```
+
+### Listening for Messages
+
+```dart
+@override
+Future<void> onInit() async {
+  // Listen for specific events
+  events.on<String>('user/profile_updated', (context) {
+    String userId = context.data;
+    refreshUserProfile(userId);
+  });
+  
+  // Listen for any user-related events
+  events.on<dynamic>('user/*', (context) {
+    logger.info('User event happened: ${context.name}');
+  });
+  
+  // Listen for all events everywhere (useful for logging)
+  events.on<dynamic>('*/#', (context) {
+    logger.debug('Event: ${context.name} with data: ${context.data}');
+  });
+}
+```
+
+## Internal Navigation
+
+Each module can have its own navigation stack - like a pile of screens within that module.
+
+```dart
+class ProfileModule extends Module {
+  // ... other code ...
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () &#123;
-            router.pop<String>('Profile updated');
-          &#125;,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () &#123;
-              // Save profile
-              events.emit<Map<String, String>>('profile/updated', &#123;
-                'name': _nameController.text,
-                'title': _titleController.text,
-              &#125;);
-              router.pop<String>('Profile saved successfully!');
-            &#125;,
-            child: const Text('Save', style: TextStyle(color: Colors.white)),
+      appBar: AppBar(title: Text('Profile')),
+      body: Column(
+        children: [
+          Text('Main profile screen'),
+          ElevatedButton(
+            onPressed: () async {
+              // Push a new screen onto this module's stack
+              final result = await router.push<String>(EditProfileScreen());
+              
+              if (result != null) {
+                logger.info('Profile updated: $result');
+              }
+            },
+            child: Text('Edit Profile'),
           ),
+          
+          // Show any screens pushed onto the stack
+          ...stack,
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    );
+  }
+}
+
+class EditProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
+            Text('Edit Profile Screen'),
+            TextField(decoration: InputDecoration(labelText: 'Name')),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Pop this screen and return data
+                    router.pop<String>('Profile saved successfully');
+                  },
+                  child: Text('Save'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Pop without returning data
+                    router.pop();
+                  },
+                  child: Text('Cancel'),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
-  &#125;
-&#125;
+  }
+}
 ```
 
-### Settings Module
+## Module States
 
-Create `lib/modules/settings/settings_module.dart`:
+Modules can be in different states:
+
+### Active vs Inactive
+- **Active** - module is currently being shown to the user
+- **Inactive** - module exists but is not visible (user switched to another module)
+
+### Enabled vs Disabled
+- **Enabled** - module is available and can be used
+- **Disabled** - module is turned off (useful for feature flags)
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
+// Check if a module is active
+if (moduleManager.current?.name == 'profile') {
+  print('User is viewing profile');
+}
 
-class SettingsModule extends Module &#123;
-  SettingsModule() : super(name: 'settings');
-
-  @override
-  Widget build(BuildContext context) &#123;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: Colors.purple,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () &#123;
-            router.goto(ModuleEnum.home);
-          &#125;,
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Card(
-              child: Column(
-                children: [
-                  const ListTile(
-                    leading: Icon(Icons.palette),
-                    title: Text('Theme'),
-                    subtitle: Text('Choose your app theme'),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                  ),
-                  const Divider(height: 1),
-                  const ListTile(
-                    leading: Icon(Icons.language),
-                    title: Text('Language'),
-                    subtitle: Text('Select app language'),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.notifications),
-                    title: const Text('Notifications'),
-                    subtitle: const Text('Manage notifications'),
-                    trailing: Switch(
-                      value: true,
-                      onChanged: (value) &#123;
-                        events.emit<bool>('settings/notifications', value);
-                      &#125;,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            Card(
-              child: Column(
-                children: [
-                  const ListTile(
-                    leading: Icon(Icons.info),
-                    title: Text('About'),
-                    subtitle: Text('App version and info'),
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.bug_report),
-                    title: const Text('Report Bug'),
-                    onTap: () &#123;
-                      events.emit<String>('app/feedback', 'Bug report requested');
-                    &#125;,
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            ElevatedButton(
-              onPressed: () &#123;
-                events.emit<String>('settings/greeting', 'Hello from Settings! ⚙️');
-              &#125;,
-              child: const Text('Send Settings Greeting'),
-            ),
-            
-            // Display injected content
-            ...stack,
-          ],
-        ),
-      ),
-    );
-  &#125;
-
-  @override
-  Future<void> onInit() async &#123;
-    logger.info('Settings module initialized', ['settings']);
-    
-    // Inject a widget into the home module
-    injector.inject(
-      'home/content',
-      ModularExtension(
-        (context) => Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.purple,
-              child: Icon(Icons.settings, color: Colors.white),
-            ),
-            title: const Text('Settings Quick Access'),
-            subtitle: const Text('Injected from Settings Module'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () &#123;
-              router.goto(ModuleEnum.settings);
-            &#125;,
-          ),
-        ),
-        priority: 2,
-      ),
-    );
-    
-    // Listen to profile updates
-    events.on<Map<String, String>>('profile/updated', (context) &#123;
-      logger.info('Profile updated from settings: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['settings']);
-    &#125;);
-  &#125;
-&#125;
+// Enable/disable modules
+moduleManager.modules['experimental_feature']?.active = false;
 ```
 
-## Step 5: Update Main.dart
+## Best Practices for Modules
 
-Replace the contents of `lib/main.dart`:
+### 1. Keep Modules Focused
+Each module should do one main thing well:
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import 'core/enums/module_enum.dart';
-import 'modules/home/home_module.dart';
-import 'modules/profile/profile_module.dart';
-import 'modules/settings/settings_module.dart';
+// ✅ Good - focused on one feature
+class ChatModule extends Module { /* handles messaging */ }
+class PaymentModule extends Module { /* handles payments */ }
 
-void main() async &#123;
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize logger with multiple dispatchers
-  await logger.init(
-    tags: ['app', 'home', 'profile', 'settings', 'router', 'events'],
-    dispatchers: [
-      ConsoleDispatcher(),
-      // Uncomment to enable file logging
-      // FileLoggerDispatcher(path: 'logs'),
-    ],
-  );
-
-  // Register all modules
-  moduleManager.modules['home'] = HomeModule();
-  moduleManager.modules['profile'] = ProfileModule();
-  moduleManager.modules['settings'] = SettingsModule();
-  moduleManager.defaultModule = 'home';
-
-  // Initialize router with home as default
-  router.init(ModuleEnum.home);
-  
-  // Set up global event listeners
-  _setupGlobalEvents();
-
-  runApp(const MosaicDemoApp());
-&#125;
-
-void _setupGlobalEvents() &#123;
-  // Listen to all greeting events
-  events.on<String>('*/greeting', (context) &#123;
-    logger.info('Global greeting received: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['app']);
-  &#125;);
-  
-  // Listen to authentication events
-  events.on<String>('auth/*', (context) &#123;
-    logger.info('Auth event: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.name&#125; - ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['app']);
-  &#125;);
-  
-  // Listen to settings changes
-  events.on<bool>('settings/notifications', (context) &#123;
-    logger.info('Notifications setting changed: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['app']);
-  &#125;);
-  
-  // Listen to app feedback
-  events.on<String>('app/feedback', (context) &#123;
-    logger.info('User feedback: ```dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
-import '../../core/enums/module_enum.dart';
-
-class HomeModule extends Module &#123;
-  HomeModule#123;context.data&#125;', ['app']);
-  &#125;);
-&#125;
-
-class MosaicDemoApp extends StatelessWidget &#123;
-  const MosaicDemoApp(&#123;Key? key&#125;) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) &#123;
-    return MaterialApp(
-      title: 'Mosaic Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 2,
-        ),
-      ),
-      home: const ModularApp(),
-      debugShowCheckedModeBanner: false,
-    );
-  &#125;
-&#125;
+// ❌ Bad - doing too many things
+class EverythingModule extends Module { /* handles chat, payments, profiles, etc. */ }
 ```
 
-## Step 6: Run Your App
+### 2. Use Clear Names
+Module names should immediately tell you what they do:
 
-```bash
-flutter run
-```
-
-🎉 **Congratulations!** You've just built your first modular Flutter app with Mosaic!
-
-## What You've Learned
-
-In this quick start, you've experienced:
-
-### ✅ **Modular Architecture**
-- Created three independent modules (Home, Profile, Settings)
-- Each module has its own UI and business logic
-- Modules can be developed and tested independently
-
-### ✅ **Event-Driven Communication**
-- Used `events.emit()` to send messages between modules
-- Used `events.on()` to listen for events with wildcard support
-- Demonstrated both specific and global event handling
-
-### ✅ **Dynamic UI Injection**
-- Profile and Settings modules inject widgets into the Home module
-- Used `injector.inject()` with priority ordering
-- Content appears dynamically based on loaded modules
-
-### ✅ **Navigation System**
-- Module-level navigation with `router.goto()`
-- Internal navigation with `router.push()` and `router.pop()`
-- Navigation stack management per module
-
-### ✅ **Logging System**
-- Configured multi-tag logging
-- Module-specific log messages
-- Console output for debugging
-
-## Next Steps
-
-Now that you have a working modular app, explore these advanced features:
-
-### 🚀 **Enhance Your App**
-- **[Event Chains](/docs/events#event-chains)** - Create structured event hierarchies
-- **[Thread Safety](/docs/thread-safety)** - Use Mutex and Semaphore for concurrent operations
-- **[Auto Queue](/docs/auto-queue)** - Add automatic retry mechanisms
-- **[Advanced Logging](/docs/logging)** - Set up file logging and custom dispatchers
-
-### 📚 **Learn More**
-- **[Architecture Guide](/docs/architecture)** - Deep dive into modular patterns
-- **[UI Injection](/docs/ui-injection)** - Advanced dynamic UI techniques
-- **[Testing](/docs/testing)** - Unit and integration testing strategies
-- **[Best Practices](/docs/best-practices)** - Production-ready patterns
-
-### 🛠 **Build Something Real**
-- **[Todo App Example](/docs/examples/todo-app)** - Complete CRUD application
-- **[Authentication Flow](/docs/examples/authentication)** - User management system
-- **[API Integration](/docs/examples/api-integration)** - Network and data handling
-
-## Troubleshooting
-
-**Module not switching?**
 ```dart
-// Make sure router is initialized
-router.init(ModuleEnum.home);
+// ✅ Good - clear purpose
+enum ModuleEnum {
+  userProfile,
+  shoppingCart,
+  messageCenter,
+  accountSettings
+}
+
+// ❌ Bad - unclear purpose
+enum ModuleEnum {
+  module1,
+  stuff,
+  misc,
+  things
+}
 ```
 
-**Events not working?**
-```dart
-// Check event names match exactly
-events.emit<String>('test/event', 'data');
-events.on<String>('test/event', (context) => print(context.data));
-```
+### 3. Clean Up After Yourself
+Always clean up when your module is destroyed:
 
-**UI not injecting?**
 ```dart
-// Ensure injection happens in onInit()
 @override
-Future<void> onInit() async &#123;
-  injector.inject('home/content', widget);
-&#125;
+void onDestroy() {
+  // Cancel any timers
+  _timer?.cancel();
+  
+  // Close any open connections
+  _websocket?.close();
+  
+  // Remove event listeners (Mosaic does this automatically, but you can be explicit)
+  events.off('user/login', _handleLogin);
+  
+  super.onDestroy();
+}
 ```
 
-**Need help?** Join our [Discord community](https://discord.gg/mosaic) or check the [full documentation](/docs)!
+### 4. Handle Errors Gracefully
+Don't let one module crash the whole app:
 
-**Happy modular coding! 🎨**
+```dart
+@override
+Future<void> onInit() async {
+  try {
+    await loadUserData();
+  } catch (error) {
+    logger.error('Failed to load user data: $error');
+    // Show error state instead of crashing
+    showErrorState = true;
+  }
+}
+```
+
+## Testing Modules
+
+Test your modules in isolation:
+
+```dart
+void main() {
+  group('ProfileModule Tests', () {
+    late ProfileModule module;
+    
+    setUp(() {
+      module = ProfileModule();
+    });
+    
+    test('should initialize correctly', () async {
+      await module.onInit();
+      expect(module.name, equals('profile'));
+    });
+    
+    test('should handle user login event', () async {
+      await module.onInit();
+      
+      // Simulate user login
+      events.emit<String>('auth/user_logged_in', 'john_doe');
+      
+      // Give events time to process
+      await Future.delayed(Duration.zero);
+      
+      expect(module.userName, equals('john_doe'));
+    });
+  });
+}
+```
+
+## Common Module Patterns
+
+### 1. Data Loading Module
+```dart
+class DataModule extends Module {
+  bool isLoading = false;
+  String? errorMessage;
+  List<dynamic> data = [];
+
+  @override
+  Future<void> onInit() async {
+    await loadData();
+  }
+  
+  Future<void> loadData() async {
+    isLoading = true;
+    errorMessage = null;
+    
+    try {
+      data = await apiService.fetchData();
+    } catch (error) {
+      errorMessage = error.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+}
+```
+
+### 2. Settings Module
+```dart
+class SettingsModule extends Module {
+  Map<String, dynamic> settings = {};
+
+  @override
+  Future<void> onInit() async {
+    settings = await loadSettings();
+    
+    events.on<Map<String, dynamic>>('settings/update', (context) {
+      updateSetting(context.data);
+    });
+  }
+  
+  void updateSetting(Map<String, dynamic> newSetting) {
+    settings.addAll(newSetting);
+    saveSettings(settings);
+    events.emit<Map<String, dynamic>>('settings/changed', settings);
+  }
+}
+```
+
+### 3. Authentication Module
+```dart
+class AuthModule extends Module {
+  User? currentUser;
+  bool isLoggedIn = false;
+
+  Future<void> login(String username, String password) async {
+    try {
+      currentUser = await authService.login(username, password);
+      isLoggedIn = true;
+      
+      events.emit<String>('auth/user_logged_in', currentUser!.id);
+      router.goto(ModuleEnum.home);
+    } catch (error) {
+      events.emit<String>('auth/login_failed', error.toString());
+    }
+  }
+  
+  void logout() {
+    currentUser = null;
+    isLoggedIn = false;
+    
+    events.emit<void>('auth/user_logged_out', null);
+    router.goto(ModuleEnum.login);
+  }
+}
+```
+
+Modules are the building blocks of your Mosaic app. Start simple, keep them focused, and use events to make them work together. As you get comfortable with basic modules, you can explore more advanced features like UI injection and complex navigation patterns.

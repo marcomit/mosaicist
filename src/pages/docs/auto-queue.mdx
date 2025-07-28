@@ -1,0 +1,128 @@
+---
+layout: ../../layouts/DocsLayout.astro
+title: Auto queue
+description: Handle async operation with retries
+---
+# Auto Queue in Mosaic
+
+Auto Queue automatically retries operations that might fail due to network issues, temporary server problems, or other transient errors. Think of it as a patient assistant that keeps trying until something works (or until it's clear it won't work).
+
+## Why Auto Queue is Useful
+
+In the real world, things fail temporarily:
+- Network connections drop
+- Servers become overloaded
+- APIs return temporary errors
+- User devices lose internet connectivity
+
+Instead of immediately showing an error to users, Auto Queue tries the operation again automatically. This makes your app feel more reliable and user-friendly.
+
+## Understanding the Problem
+
+Without Auto Queue, a single network hiccup could break user experiences:
+
+```dart
+// ❌ Without Auto Queue - fails on first error
+Future<User> getUserProfile(String userId) async {
+  final response = await http.get('/api/users/$userId');
+  
+  if (response.statusCode != 200) {
+    throw Exception('Failed to get user');  // Immediate failure!
+  }
+  
+  return User.fromJson(response.data);
+}
+
+// User sees error immediately, even for temporary network issues
+```
+
+## Basic Auto Queue Usage
+
+```dart
+import 'package:mosaic/mosaic.dart';
+
+class UserService {
+  final InternalAutoQueue _queue = InternalAutoQueue();
+  
+  Future<User> getUserProfile(String userId) async {
+    // Auto Queue will retry this operation if it fails
+    return await _queue.push<User>(() async {
+      final response = await http.get('/api/users/$userId');
+      
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data);
+      } else if (response.statusCode >= 500) {
+        // Server error - should retry
+        throw Exception('Server error: ${response.statusCode}');
+      } else {
+        // Client error (like 404) - don't retry
+        throw NonRetryableException('User not found');
+      }
+    });
+  }
+}
+```
+
+Now if the network is temporarily down, Auto Queue will retry the request automatically instead of immediately failing.
+
+## How Auto Queue Works
+
+Auto Queue follows this process:
+
+1. **Try the operation** - Execute your code
+2. **If it succeeds** - Return the result
+3. **If it fails** - Wait a bit, then try again
+4. **Keep trying** - Up to a maximum number of attempts
+5. **Give up** - If all retries fail, throw the last error
+
+### Retry Strategy
+
+Auto Queue uses exponential backoff by default:
+- First retry: Wait 1 second
+- Second retry: Wait 2 seconds  
+- Third retry: Wait 4 seconds
+- Fourth retry: Wait 8 seconds
+- And so on...
+
+This prevents overwhelming a struggling server with rapid retry attempts.
+
+## Real-World Examples
+
+### API Service with Auto Queue
+
+```dart
+class WeatherService {
+  final InternalAutoQueue _apiQueue = InternalAutoQueue();
+  
+  Future<WeatherData> getCurrentWeather(String city) async {
+    logger.info('Fetching weather for: $city', ['weather', 'api']);
+    
+    return await _apiQueue.push<WeatherData>(() async {
+      final response = await http.get('/api/weather?city=$city');
+      
+      if (response.statusCode == 200) {
+        logger.info('Weather data received for: $city', ['weather', 'api']);
+        return WeatherData.fromJson(response.data);
+      } else if (response.statusCode == 404) {
+        // City not found - don't retry
+        throw NonRetryableException('City not found: $city');
+      } else {
+        // Server error or network issue - retry
+        throw Exception('Weather API error: ${response.statusCode}');
+      }
+    });
+  }
+  
+  Future<List<WeatherData>> getWeatherForMultipleCities(List<String> cities) async {
+    logger.info('Fetching weather for ${cities.length} cities', ['weather']);
+    
+    // Process all cities in parallel - Auto Queue handles each independently
+    final futures = cities.map((city) => getCurrentWeather(city));
+    final results = await Future.wait(futures);
+    
+    logger.info('Weather data fetched for all cities', ['weather']);
+    return results;
+  }
+}
+```
+

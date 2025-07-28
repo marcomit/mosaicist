@@ -3,736 +3,542 @@ layout: ../../layouts/DocsLayout.astro
 title: Event System
 description: Master event-driven communication between modules in Mosaic
 ---
+# The Events System
 
-# Event System
+The events system in Mosaic is like a message board where modules can post messages and read messages from others. It's how modules communicate without needing to know about each other directly.
 
-Mosaic's event system enables powerful, decoupled communication between modules. Think of it as a message bus where modules can send and receive messages without knowing about each other directly.
+## Why Use Events?
 
-## Core Concepts
+Imagine you have a music app with different modules:
+- **Player Module** controls music playback
+- **Playlist Module** manages song lists  
+- **Library Module** shows all your music
 
-The event system is built around three key concepts:
+When a song ends, the Player Module needs to tell the Playlist Module to play the next song. But what if the Player Module doesn't know about the Playlist Module?
 
-- **Events**: Messages sent between modules
-- **Listeners**: Functions that respond to events
-- **Wildcards**: Pattern matching for flexible event handling
+That's where events come in. The Player Module can shout "Song ended!" and any module that cares (like the Playlist Module) can hear it and respond.
 
-## Basic Usage
+## Basic Events
 
-### Emitting Events
+### Sending a Message (Emitting)
 
-Send messages to any listeners:
+To send a message, use `events.emit()`:
 
 ```dart
-// Simple string event
-events.emit<String>('user/login', 'john_doe');
+// Send a simple text message
+events.emit<String>('user/logged_in', 'john_doe');
 
-// Complex data event
-events.emit<Map<String, dynamic>>('user/profile_updated', &#123;
-  'id': '123',
-  'name': 'John Doe',
-  'email': 'john@example.com',
-&#125;);
+// Send a boolean (true/false)
+events.emit<bool>('settings/dark_mode', true);
 
-// Boolean event
-events.emit<bool>('settings/notifications', true);
+// Send numbers
+events.emit<int>('player/volume', 75);
+
+// Send complex data
+events.emit<Map<String, dynamic>>('order/completed', {
+  'orderId': '12345',
+  'total': 99.99,
+  'items': ['coffee', 'sandwich']
+});
 ```
 
-### Listening to Events
+### Listening for Messages
 
-React to specific events:
+To listen for messages, use `events.on()`:
 
 ```dart
-// Listen to login events
-events.on<String>('user/login', (context) &#123;
-  print('User logged in: $&#123;context.data&#125;');
-  logger.info('Login event received', ['auth']);
-&#125;);
+// Listen for user login
+events.on<String>('user/logged_in', (context) {
+  String username = context.data;
+  print('Welcome back, $username!');
+});
 
-// Listen to profile updates
-events.on<Map<String, dynamic>>('user/profile_updated', (context) &#123;
-  final profile = context.data;
-  print('Profile updated: $&#123;profile['name']&#125;');
-&#125;);
+// Listen for settings changes
+events.on<bool>('settings/dark_mode', (context) {
+  bool isDarkMode = context.data;
+  updateTheme(isDarkMode);
+});
+
+// Listen for order completion
+events.on<Map<String, dynamic>>('order/completed', (context) {
+  Map<String, dynamic> orderData = context.data;
+  showThankYouMessage(orderData['orderId']);
+});
 ```
 
-### Event Context
+## Event Names
 
-Every event listener receives an `EventContext` object:
+Event names are like addresses. They help organize messages by topic:
 
 ```dart
-events.on<String>('user/action', (context) &#123;
-  print('Event name: $&#123;context.name&#125;');        // 'user/action'
-  print('Event data: $&#123;context.data&#125;');        // The emitted data
-  print('Timestamp: $&#123;context.timestamp&#125;');    // When event was fired
-  print('Path parts: $&#123;context.params&#125;');      // ['user', 'action']
-&#125;);
+// User-related events
+'user/logged_in'
+'user/logged_out'
+'user/profile_updated'
+
+// Settings events
+'settings/theme_changed'
+'settings/language_changed'
+'settings/notifications_enabled'
+
+// Shopping cart events
+'cart/item_added'
+'cart/item_removed'
+'cart/checkout_started'
 ```
 
-## Wildcard Events
+Think of the `/` as folders on your computer - it helps group related events together.
 
-Mosaic supports powerful wildcard patterns for flexible event handling:
+## Wildcard Listening
 
-### Single Level Wildcard (*)
+Sometimes you want to listen to multiple related events at once:
 
-Listen to all events at a specific level:
+### Single Wildcard (*)
+Listen to immediate children only:
 
 ```dart
-// Listen to all user events
-events.on<String>('user/*', (context) &#123;
-  switch(context.name) &#123;
-    case 'user/login':
-      handleLogin(context.data);
-      break;
-    case 'user/logout':
-      handleLogout();
-      break;
-    case 'user/profile_updated':
-      handleProfileUpdate(context.data);
-      break;
-  &#125;
-&#125;);
+// Listen to all user events at the top level
+events.on<dynamic>('user/*', (context) {
+  print('User event: ${context.name}');
+});
 
-// Listen to all settings events
-events.on<dynamic>('settings/*', (context) &#123;
-  print('Settings changed: $&#123;context.name&#125;');
-&#125;);
+// This catches:
+// user/logged_in ✅
+// user/logged_out ✅
+// user/profile/updated ❌ (too deep)
 ```
 
-### Multi Level Wildcard (#)
-
-Listen to all events under a path:
+### Multi Wildcard (#)
+Listen to all events under a path, no matter how deep:
 
 ```dart
-// Listen to ALL user-related events (any depth)
-events.on<dynamic>('user/#', (context) &#123;
-  print('User event: $&#123;context.name&#125;');
-  logger.info('User activity detected', ['analytics']);
-&#125;);
+// Listen to ALL user-related events
+events.on<dynamic>('user/#', (context) {
+  print('Any user event: ${context.name}');
+});
 
-// This will catch:
-// user/login
-// user/profile/update
-// user/settings/theme/changed
-// user/payments/card/added
+// This catches:
+// user/logged_in ✅
+// user/logged_out ✅
+// user/profile/updated ✅
+// user/settings/theme/changed ✅
 ```
 
-### Practical Wildcard Examples
+## Real-World Example
+
+Let's build a simple notification system:
+
+### Notification Module
 
 ```dart
-class AnalyticsModule extends Module &#123;
-  @override
-  Future<void> onInit() async &#123;
-    // Track all user interactions
-    events.on<dynamic>('user/#', (context) &#123;
-      analytics.trackEvent(context.name, context.data);
-    &#125;);
-    
-    // Monitor all navigation events
-    events.on<dynamic>('navigation/*', (context) &#123;
-      analytics.trackPageView(context.data);
-    &#125;);
-    
-    // Log all error events
-    events.on<dynamic>('*/error', (context) &#123;
-      errorReporting.logError(context.data);
-    &#125;);
-  &#125;
-&#125;
-```
+class NotificationModule extends Module {
+  NotificationModule() : super(name: 'notifications');
 
-## Event Chains & Segments
-
-For complex applications, organize events hierarchically using segments:
-
-### Creating Event Segments
-
-```dart
-class UserSegment extends Segment &#123;
-  UserSegment() : super('user');
-&#125;
-
-class SettingsSegment extends Segment &#123;
-  SettingsSegment() : super('settings');
-&#125;
-
-final userEvents = UserSegment();
-final settingsEvents = SettingsSegment();
-```
-
-### Chained Event Emission
-
-```dart
-// Instead of: events.emit('user/profile/update', data)
-userEvents.$('profile').$('update').emit<Map<String, String>>(&#123;
-  'name': 'John Doe',
-  'email': 'john@example.com'
-&#125;);
-
-// Instead of: events.emit('settings/theme/dark', true)
-settingsEvents.$('theme').$('dark').emit<bool>(true);
-
-// Complex nested events
-userEvents.$('payments').$('card').$('added').emit<String>('card_123');
-```
-
-### Chained Event Listening
-
-```dart
-// Listen to specific nested events
-userEvents.$('profile').$('update').on<Map<String, String>>((context) &#123;
-  updateUserProfile(context.data);
-&#125;);
-
-// Listen to all profile events
-userEvents.$('profile').on<dynamic>((context) &#123;
-  print('Profile event: $&#123;context.name&#125;');
-&#125;);
-
-// Listen to all user events through the segment
-userEvents.on<dynamic>((context) &#123;
-  print('User event: $&#123;context.name&#125;');
-&#125;);
-```
-
-## Advanced Patterns
-
-### Event-Driven State Management
-
-```dart
-class AppStateManager &#123;
-  Map<String, dynamic> _state = &#123;&#125;;
-  
-  void init() &#123;
-    // Listen to state change events
-    events.on<Map<String, dynamic>>('state/update', (context) &#123;
-      _state.addAll(context.data);
-      events.emit<Map<String, dynamic>>('state/changed', _state);
-    &#125;);
-    
-    // Listen to state requests
-    events.on<String>('state/get', (context) &#123;
-      final key = context.data;
-      events.emit<dynamic>('state/response/$key', _state[key]);
-    &#125;);
-  &#125;
-  
-  void updateState(String key, dynamic value) &#123;
-    events.emit<Map<String, dynamic>>('state/update', &#123;key: value&#125;);
-  &#125;
-&#125;
-```
-
-### Module Communication Hub
-
-```dart
-class CommunicationHub &#123;
-  static void init() &#123;
-    // Authentication flow
-    events.on<String>('auth/login_request', (context) &#123;
-      // Validate credentials
-      final success = validateCredentials(context.data);
-      if (success) &#123;
-        events.emit<String>('auth/login_success', context.data);
-        events.emit<String>('navigation/goto', 'home');
-      &#125; else &#123;
-        events.emit<String>('auth/login_failure', 'Invalid credentials');
-      &#125;
-    &#125;);
-    
-    // Profile synchronization
-    events.on<Map<String, dynamic>>('profile/update', (context) &#123;
-      // Update local storage
-      events.emit<Map<String, dynamic>>('storage/save', context.data);
-      // Sync with server
-      events.emit<Map<String, dynamic>>('api/sync', context.data);
-      // Update UI
-      events.emit<Map<String, dynamic>>('ui/refresh', context.data);
-    &#125;);
-  &#125;
-&#125;
-```
-
-### Error Handling & Recovery
-
-```dart
-class ErrorHandler &#123;
-  static void init() &#123;
-    // Catch all error events
-    events.on<dynamic>('*/error', (context) &#123;
-      final error = context.data;
-      logger.error('Error in $&#123;context.name&#125;: $error', ['error']);
-      
-      // Show user-friendly message
-      events.emit<String>('ui/show_error', 'Something went wrong');
-      
-      // Report to crash analytics
-      events.emit<Map<String, dynamic>>('analytics/error', &#123;
-        'source': context.name,
-        'error': error.toString(),
-        'timestamp': DateTime.now().toIso8601String(),
-      &#125;);
-    &#125;);
-    
-    // Network error recovery
-    events.on<String>('network/error', (context) &#123;
-      // Retry failed requests
-      events.emit<String>('network/retry', context.data);
-      
-      // Switch to offline mode
-      events.emit<bool>('app/offline_mode', true);
-    &#125;);
-  &#125;
-&#125;
-```
-
-## Event Lifecycle
-
-### Event Registration in Modules
-
-```dart
-class ShoppingModule extends Module &#123;
-  ShoppingModule() : super(name: 'shopping');
+  List<String> notifications = [];
 
   @override
-  Future<void> onInit() async &#123;
-    // Register event listeners when module initializes
-    _registerEventListeners();
-  &#125;
-  
-  void _registerEventListeners() &#123;
-    // Cart events
-    events.on<Map<String, dynamic>>('cart/add_item', _handleAddItem);
-    events.on<String>('cart/remove_item', _handleRemoveItem);
-    events.on<void>('cart/clear', _handleClearCart);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Notifications')),
+      body: ListView(
+        children: notifications.map((notification) => 
+          ListTile(title: Text(notification))
+        ).toList(),
+      ),
+    );
+  }
+
+  @override
+  Future<void> onInit() async {
+    // Listen for all kinds of events we care about
     
-    // Payment events
-    events.on<Map<String, dynamic>>('payment/process', _handlePayment);
-    events.on<String>('payment/success', _handlePaymentSuccess);
-    events.on<String>('payment/failure', _handlePaymentFailure);
-  &#125;
-  
-  void _handleAddItem(EventContext<Map<String, dynamic>> context) &#123;
-    final item = context.data;
-    // Add item to cart logic
-    cart.addItem(item);
+    // User events
+    events.on<String>('user/logged_in', (context) {
+      addNotification('Welcome back, ${context.data}!');
+    });
     
-    // Notify other modules
-    events.emit<int>('cart/item_count', cart.itemCount);
-    events.emit<double>('cart/total', cart.total);
-  &#125;
+    // Order events
+    events.on<Map<String, dynamic>>('order/completed', (context) {
+      String orderId = context.data['orderId'];
+      addNotification('Your order $orderId is complete!');
+    });
+    
+    // Message events
+    events.on<String>('message/received', (context) {
+      addNotification('New message: ${context.data}');
+    });
+    
+    // Any error from anywhere in the app
+    events.on<String>('*/error', (context) {
+      addNotification('Something went wrong: ${context.data}');
+    });
+  }
+  
+  void addNotification(String message) {
+    notifications.insert(0, message);  // Add to top of list
+    
+    // Keep only the last 20 notifications
+    if (notifications.length > 20) {
+      notifications.removeLast();
+    }
+    
+    logger.info('New notification: $message');
+  }
+}
+```
+
+### Other Modules Sending Events
+
+```dart
+class UserModule extends Module {
+  Future<void> login(String username, String password) async {
+    try {
+      // Do login logic
+      await authService.login(username, password);
+      
+      // Tell everyone the user logged in
+      events.emit<String>('user/logged_in', username);
+      
+    } catch (error) {
+      // Tell everyone there was an error
+      events.emit<String>('user/error', 'Login failed: ${error.toString()}');
+    }
+  }
+}
+
+class ShoppingModule extends Module {
+  Future<void> completeOrder(Order order) async {
+    try {
+      // Process the order
+      await orderService.process(order);
+      
+      // Tell everyone the order is done
+      events.emit<Map<String, dynamic>>('order/completed', {
+        'orderId': order.id,
+        'total': order.total,
+        'customerName': order.customerName,
+      });
+      
+    } catch (error) {
+      events.emit<String>('order/error', 'Order failed: ${error.toString()}');
+    }
+  }
+}
+```
+
+Now the NotificationModule automatically gets notifications whenever users log in, orders complete, or errors happen - without any of the other modules needing to know about it!
+
+## Event Context
+
+When you listen to an event, you get a `context` object with useful information:
+
+```dart
+events.on<String>('user/message', (context) {
+  // The data that was sent
+  String messageText = context.data;
+  
+  // The full event name
+  String eventName = context.name;  // 'user/message'
+  
+  // You can also access event path parts
+  print('Event: $eventName, Data: $messageText');
+});
+```
+
+## Advanced Event Patterns
+
+### Request-Response Pattern
+
+Sometimes you want to ask a question and get an answer:
+
+```dart
+// Module A asks for user data
+events.emit<String>('data/request/user', 'user123');
+
+// Module B responds with the data
+events.on<String>('data/request/user', (context) {
+  String userId = context.data;
+  User user = getUserFromDatabase(userId);
+  
+  // Send the response back
+  events.emit<User>('data/response/user/${userId}', user);
+});
+
+// Module A listens for the response
+events.on<User>('data/response/user/user123', (context) {
+  User userData = context.data;
+  displayUser(userData);
+});
+```
+
+### Broadcast Pattern
+
+Tell everyone about something important:
+
+```dart
+// When the app goes offline
+events.emit<bool>('app/network_status', false);
+
+// Multiple modules can react
+class UIModule extends Module {
+  @override
+  Future<void> onInit() async {
+    events.on<bool>('app/network_status', (context) {
+      bool isOnline = context.data;
+      showOfflineBanner(!isOnline);
+    });
+  }
+}
+
+class DataModule extends Module {
+  @override
+  Future<void> onInit() async {
+    events.on<bool>('app/network_status', (context) {
+      bool isOnline = context.data;
+      if (isOnline) {
+        syncPendingData();
+      } else {
+        pauseDataSync();
+      }
+    });
+  }
+}
+```
+
+### Chain Events
+
+Use events to create workflows:
+
+```dart
+// Step 1: User starts checkout
+events.emit<Map<String, dynamic>>('checkout/started', {
+  'cartId': 'cart123',
+  'userId': 'user456'
+});
+
+// Step 2: Payment module processes payment
+events.on<Map<String, dynamic>>('checkout/started', (context) async {
+  Map<String, dynamic> checkoutData = context.data;
+  
+  try {
+    await processPayment(checkoutData);
+    events.emit<Map<String, dynamic>>('payment/completed', checkoutData);
+  } catch (error) {
+    events.emit<Map<String, dynamic>>('payment/failed', {
+      ...checkoutData,
+      'error': error.toString()
+    });
+  }
+});
+
+// Step 3: Inventory module updates stock
+events.on<Map<String, dynamic>>('payment/completed', (context) {
+  updateInventory(context.data['cartId']);
+  events.emit<Map<String, dynamic>>('inventory/updated', context.data);
+});
+
+// Step 4: Email module sends confirmation
+events.on<Map<String, dynamic>>('inventory/updated', (context) {
+  sendConfirmationEmail(context.data['userId']);
+  events.emit<Map<String, dynamic>>('checkout/completed', context.data);
+});
+```
+
+## Event Best Practices
+
+### 1. Use Clear, Descriptive Names
+
+```dart
+// ✅ Good - clear what happened
+events.emit<String>('user/login_successful', username);
+events.emit<int>('cart/item_count_changed', newCount);
+
+// ❌ Bad - unclear what these mean
+events.emit<String>('user/event1', username);
+events.emit<int>('thing/happened', newCount);
+```
+
+### 2. Group Related Events
+
+```dart
+// ✅ Good - organized by feature
+'auth/login_started'
+'auth/login_completed'
+'auth/login_failed'
+'auth/logout'
+
+'cart/item_added'
+'cart/item_removed'
+'cart/checkout_started'
+
+// ❌ Bad - no organization
+'login_started'
+'item_added'
+'logout'
+'checkout_started'
+```
+
+### 3. Include Useful Data
+
+```dart
+// ✅ Good - includes context
+events.emit<Map<String, dynamic>>('order/created', {
+  'orderId': 'order123',
+  'userId': 'user456',
+  'total': 99.99,
+  'timestamp': DateTime.now().toIso8601String()
+});
+
+// ❌ Bad - not enough information
+events.emit<String>('order/created', 'order123');
+```
+
+### 4. Handle Events in onInit()
+
+```dart
+class MyModule extends Module {
+  @override
+  Future<void> onInit() async {
+    // ✅ Good - set up listeners during initialization
+    events.on<String>('user/logged_in', handleUserLogin);
+    events.on<bool>('app/theme_changed', handleThemeChange);
+  }
+  
+  // ❌ Bad - don't set up listeners in build() method
+  @override
+  Widget build(BuildContext context) {
+    events.on<String>('user/logged_in', handleUserLogin); // This will create duplicate listeners!
+    return Scaffold(/* ... */);
+  }
+}
+```
+
+### 5. Clean Up When Done
+
+```dart
+class MyModule extends Module {
+  late StreamSubscription _userSubscription;
+  late StreamSubscription _themeSubscription;
+
+  @override
+  Future<void> onInit() async {
+    _userSubscription = events.on<String>('user/logged_in', handleUserLogin);
+    _themeSubscription = events.on<bool>('app/theme_changed', handleThemeChange);
+  }
   
   @override
-  void onDestroy() &#123;
-    // Cancel subscription when module is destroyed
-    _eventSubscription.cancel();
+  void onDestroy() {
+    // Clean up listeners
+    _userSubscription.cancel();
+    _themeSubscription.cancel();
     super.onDestroy();
-  &#125;
-&#125;
+  }
+}
+```
+
+## Debugging Events
+
+Sometimes events don't work as expected. Here's how to debug:
+
+### 1. Add Logging
+
+```dart
+class DebugModule extends Module {
+  @override
+  Future<void> onInit() async {
+    // Listen to ALL events for debugging
+    events.on<dynamic>('*/#', (context) {
+      logger.info('Event: ${context.name}, Data: ${context.data}');
+    });
+  }
+}
+```
+
+### 2. Check Event Names
+
+```dart
+// Make sure names match exactly (case-sensitive)
+events.emit<String>('user/logged_in', username);  // Sender
+events.on<String>('user/logged_in', handleLogin); // Receiver - matches ✅
+
+events.emit<String>('user/logged_in', username);   // Sender  
+events.on<String>('user/loggedIn', handleLogin);   // Receiver - doesn't match ❌
+```
+
+### 3. Check Data Types
+
+```dart
+// Make sure types match
+events.emit<String>('user/id', 'user123');        // Sending String
+events.on<String>('user/id', (context) { ... });  // Expecting String ✅
+
+events.emit<int>('user/id', 123);                  // Sending int
+events.on<String>('user/id', (context) { ... });  // Expecting String ❌
 ```
 
 ## Testing Events
 
-### Unit Testing Event Emissions
+Test your event handling:
 
 ```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mosaic/mosaic.dart';
-
-void main() &#123;
-  group('Event System Tests', () &#123;
-    late TestModule testModule;
-    
-    setUp(() &#123;
-      testModule = TestModule();
-    &#125;);
-    
-    tearDown(() &#123;
-      events.clear(); // Clear all listeners
-    &#125;);
-    
-    test('should emit and receive events', () async &#123;
-      String? receivedData;
+void main() {
+  group('Event Tests', () {
+    test('should handle user login event', () async {
+      String? receivedUsername;
       
       // Set up listener
-      events.on<String>('test/event', (context) &#123;
-        receivedData = context.data;
-      &#125;);
+      events.on<String>('user/logged_in', (context) {
+        receivedUsername = context.data;
+      });
       
-      // Emit event
-      events.emit<String>('test/event', 'test data');
+      // Send event
+      events.emit<String>('user/logged_in', 'john_doe');
       
-      // Allow event processing
+      // Give events time to process
       await Future.delayed(Duration.zero);
       
-      expect(receivedData, equals('test data'));
-    &#125;);
-    
-    test('should handle wildcard events', () async &#123;
-      final receivedEvents = <String>[];
-      
-      // Listen to all test events
-      events.on<String>('test/*', (context) &#123;
-        receivedEvents.add(context.name);
-      &#125;);
-      
-      // Emit multiple events
-      events.emit<String>('test/login', 'user1');
-      events.emit<String>('test/logout', 'user1');
-      events.emit<String>('test/update', 'profile');
-      
-      await Future.delayed(Duration.zero);
-      
-      expect(receivedEvents, contains('test/login'));
-      expect(receivedEvents, contains('test/logout'));
-      expect(receivedEvents, contains('test/update'));
-    &#125;);
-    
-    test('should handle event chains', () async &#123;
-      Map<String, dynamic>? receivedData;
-      
-      final userEvents = UserSegment();
-      
-      userEvents.$('profile').$('update').on<Map<String, dynamic>>((context) &#123;
-        receivedData = context.data;
-      &#125;);
-      
-      userEvents.$('profile').$('update').emit<Map<String, dynamic>>(&#123;
-        'name': 'Test User',
-        'email': 'test@example.com',
-      &#125;);
-      
-      await Future.delayed(Duration.zero);
-      
-      expect(receivedData?['name'], equals('Test User'));
-      expect(receivedData?['email'], equals('test@example.com'));
-    &#125;);
-  &#125;);
-&#125;
-
-class TestModule extends Module &#123;
-  TestModule() : super(name: 'test');
-  
-  @override
-  Widget build(BuildContext context) &#123;
-    return Container();
-  &#125;
-&#125;
+      // Check result
+      expect(receivedUsername, equals('john_doe'));
+    });
+  });
+}
 ```
 
-### Integration Testing
+## Common Event Patterns in Apps
 
+### Authentication Flow
 ```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:myapp/main.dart' as app;
-
-void main() &#123;
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  
-  group('Event Integration Tests', () &#123;
-    testWidgets('should communicate between modules via events', (tester) async &#123;
-      app.main();
-      await tester.pumpAndSettle();
-      
-      // Verify home module is displayed
-      expect(find.text('Welcome to Mosaic!'), findsOneWidget);
-      
-      // Tap button that emits event
-      await tester.tap(find.text('Send Greeting Event'));
-      await tester.pumpAndSettle();
-      
-      // Verify event was processed (check logs or UI changes)
-      // This depends on how your app responds to events
-    &#125;);
-  &#125;);
-&#125;
+'auth/login_started'     // User clicked login button
+'auth/login_loading'     // Showing loading spinner
+'auth/login_successful'  // Login worked
+'auth/login_failed'      // Login didn't work
+'auth/logout'           // User logged out
 ```
 
-## Performance Considerations
-
-### Event Throttling
-
+### Shopping Cart
 ```dart
-class ThrottledEventHandler &#123;
-  Timer? _throttleTimer;
-  final Duration _throttleDuration;
-  
-  ThrottledEventHandler(this._throttleDuration);
-  
-  void init() &#123;
-    events.on<String>('search/query', _handleSearchThrottled);
-  &#125;
-  
-  void _handleSearchThrottled(EventContext<String> context) &#123;
-    _throttleTimer?.cancel();
-    _throttleTimer = Timer(_throttleDuration, () &#123;
-      _performSearch(context.data);
-    &#125;);
-  &#125;
-  
-  void _performSearch(String query) &#123;
-    // Actual search logic
-    events.emit<List<String>>('search/results', searchResults);
-  &#125;
-&#125;
+'cart/item_added'       // Item added to cart
+'cart/item_removed'     // Item removed from cart
+'cart/quantity_changed' // Changed item quantity
+'cart/cleared'          // Cart emptied
+'cart/checkout_started' // User started checkout
 ```
 
-### Event Debouncing
-
+### Navigation
 ```dart
-class DebouncedEventHandler &#123;
-  Timer? _debounceTimer;
-  final Duration _debounceDuration;
-  
-  DebouncedEventHandler(this._debounceDuration);
-  
-  void init() &#123;
-    events.on<String>('input/text_changed', _handleTextChangedDebounced);
-  &#125;
-  
-  void _handleTextChangedDebounced(EventContext<String> context) &#123;
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(_debounceDuration, () &#123;
-      _validateInput(context.data);
-    &#125;);
-  &#125;
-  
-  void _validateInput(String text) &#123;
-    final isValid = text.length >= 3;
-    events.emit<bool>('input/validation_result', isValid);
-  &#125;
-&#125;
+'nav/module_changed'    // Switched to different module
+'nav/page_pushed'       // Opened new page within module
+'nav/page_popped'       // Closed page within module
+'nav/back_pressed'      // User pressed back button
 ```
 
-### Memory Management
-
+### App State
 ```dart
-class EventManager &#123;
-  final List<StreamSubscription> _subscriptions = [];
-  
-  void registerListener<T>(String eventName, EventCallback<T> callback) &#123;
-    final subscription = events.on<T>(eventName, callback);
-    _subscriptions.add(subscription);
-  &#125;
-  
-  void dispose() &#123;
-    for (final subscription in _subscriptions) &#123;
-      subscription.cancel();
-    &#125;
-    _subscriptions.clear();
-  &#125;
-&#125;
+'app/started'           // App finished loading
+'app/network_online'    // Internet connection restored
+'app/network_offline'   // Internet connection lost
+'app/background'        // App moved to background
+'app/foreground'        // App brought back to foreground
 ```
 
-## Best Practices
-
-### 1. Event Naming Conventions
-
-Use clear, hierarchical naming:
-
-```dart
-// ✅ Good
-'user/profile/updated'
-'cart/item/added'
-'payment/process/started'
-'navigation/page/changed'
-
-// ❌ Avoid
-'update'
-'changed'
-'event1'
-'userProfileUpdated'
-```
-
-### 2. Type Safety
-
-Always use typed events:
-
-```dart
-// ✅ Good - Type safe
-events.emit<User>('user/updated', userObject);
-events.on<User>('user/updated', (context) &#123;
-  final user = context.data; // Type is User
-&#125;);
-
-// ❌ Avoid - No type safety
-events.emit('user/updated', userObject);
-events.on('user/updated', (context) &#123;
-  final user = context.data; // Type is dynamic
-&#125;);
-```
-
-### 3. Error Handling
-
-Always handle potential errors:
-
-```dart
-events.on<Map<String, dynamic>>('api/response', (context) &#123;
-  try &#123;
-    final data = context.data;
-    processApiResponse(data);
-  &#125; catch (error) &#123;
-    events.emit<String>('api/error', error.toString());
-  &#125;
-&#125;);
-```
-
-### 4. Documentation
-
-Document your event contracts:
-
-```dart
-/// Events emitted by the AuthModule
-/// 
-/// Events:
-/// - 'auth/login_success' (String): User ID when login succeeds
-/// - 'auth/login_failure' (String): Error message when login fails
-/// - 'auth/logout' (void): When user logs out
-/// - 'auth/session_expired' (void): When session expires
-class AuthModule extends Module &#123;
-  // Implementation
-&#125;
-```
-
-### 5. Event Lifecycle
-
-```dart
-class WellBehavedModule extends Module &#123;
-  @override
-  Future<void> onInit() async &#123;
-    // Register listeners in onInit
-    _setupEventListeners();
-  &#125;
-  
-  @override
-  void onActive() &#123;
-    // Resume event handling if needed
-  &#125;
-  
-  @override
-  void onInactive() &#123;
-    // Pause non-critical event handling if needed
-  &#125;
-  
-  @override
-  void onDestroy() &#123;
-    // Clean up event listeners
-    _cleanupEventListeners();
-    super.onDestroy();
-  &#125;
-&#125;
-```
-
-## Common Patterns
-
-### Request-Response Pattern
-
-```dart
-// Module A requests data
-events.emit<String>('data/request/user', userId);
-
-// Module B responds with data
-events.on<String>('data/request/user', (context) &#123;
-  final user = getUserById(context.data);
-  events.emit<User>('data/response/user/  @override
-  void onDestroy() &#123;#123;context.data&#125;', user);
-&#125;);
-
-// Module A receives response
-events.on<User>('data/response/user/$userId', (context) &#123;
-  handleUserData(context.data);
-&#125;);
-```
-
-### Publish-Subscribe Pattern
-
-```dart
-// Publisher
-class NewsModule extends Module &#123;
-  void publishArticle(Article article) &#123;
-    events.emit<Article>('news/article/published', article);
-  &#125;
-&#125;
-
-// Subscribers
-class NotificationModule extends Module &#123;
-  @override
-  Future<void> onInit() async &#123;
-    events.on<Article>('news/article/published', (context) &#123;
-      sendNotification('New article:   @override
-  void onDestroy() &#123;#123;context.data.title&#125;');
-    &#125;);
-  &#125;
-&#125;
-
-class AnalyticsModule extends Module &#123;
-  @override
-  Future<void> onInit() async &#123;
-    events.on<Article>('news/article/published', (context) &#123;
-      trackEvent('article_published', context.data.toMap());
-    &#125;);
-  &#125;
-&#125;
-```
-
-### Command Pattern
-
-```dart
-// Command events
-events.emit<Map<String, dynamic>>('command/execute', &#123;
-  'action': 'save_file',
-  'data': fileData,
-  'options': &#123;'backup': true&#125;,
-&#125;);
-
-// Command handler
-events.on<Map<String, dynamic>>('command/execute', (context) &#123;
-  final command = context.data;
-  final action = command['action'];
-  
-  switch (action) &#123;
-    case 'save_file':
-      saveFile(command['data'], command['options']);
-      break;
-    case 'delete_file':
-      deleteFile(command['data']);
-      break;
-    // Add more commands as needed
-  &#125;
-&#125;);
-```
-
-## Next Steps
-
-Now that you understand Mosaic's event system, explore these related topics:
-
-- **[UI Injection](/docs/ui-injection)** - Combine events with dynamic UI
-- **[Navigation](/docs/navigation)** - Event-driven navigation patterns
-- **[Testing](/docs/testing)** - Advanced testing strategies
-- **[Best Practices](/docs/best-practices)** - Production-ready patterns
-
-The event system is the backbone of modular communication in Mosaic. Master it, and you'll build incredibly flexible and maintainable Flutter applications! 🚀
-    // Clean up event listeners when module is destroyed
-    events.off('cart/add_item', _handleAddItem);
-    events.off('cart/remove_item', _handleRemoveItem);
-    // ... remove other listeners
-  &#125;
-&#125;
-```
-
-### Event Cleanup
-
-```dart
-class TemporaryModule extends Module &#123;
-  late StreamSubscription _eventSubscription;
-  
-  @override
-  Future<void> onInit() async &#123;
-    // For complex cleanup, store subscription references
-    _eventSubscription = events.on<String>('temp/event', (context) &#123;
-      // Handle event
-    &#125;);
-  &#125;
-  
-  @override
-  void onDestroy() &#
+The events system is what makes modules truly independent while still allowing them to work together. Start with simple events and gradually build more complex communication patterns as your app grows!

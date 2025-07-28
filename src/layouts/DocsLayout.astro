@@ -57,48 +57,36 @@ const currentPath = Astro.url.pathname;
                 <li><a href="/docs" class={`nav-link ${currentPath === '/docs' || currentPath === '/docs/' ? 'active' : ''}`}>Overview</a></li>
                 <li><a href="/docs/installation" class={`nav-link ${currentPath === '/docs/installation' ? 'active' : ''}`}>Installation</a></li>
                 <li><a href="/docs/quick-start" class={`nav-link ${currentPath === '/docs/quick-start' ? 'active' : ''}`}>Quick Start</a></li>
+                <li><a href="/docs/configuration" class={`nav-link ${currentPath === '/docs/configuration' ? 'active' : ''}`}>Configuration</a></li>
               </ul>
             </div>
 
-            <!-- Core Concepts -->
+            <!-- Architecture -->
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon architecture-icon"></div>
-                Core Concepts
+                Architecture
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/architecture" class={`nav-link ${currentPath === '/docs/architecture' ? 'active' : ''}`}>Architecture</a></li>
+                <li><a href="/docs/architecture" class={`nav-link ${currentPath === '/docs/architecture' ? 'active' : ''}`}>Overview</a></li>
                 <li><a href="/docs/modules" class={`nav-link ${currentPath === '/docs/modules' ? 'active' : ''}`}>Modules</a></li>
-                <li><a href="/docs/events" class={`nav-link ${currentPath === '/docs/events' ? 'active' : ''}`}>Event System</a></li>
+                <li><a href="/docs/events" class={`nav-link ${currentPath === '/docs/events' ? 'active' : ''}`}>Events</a></li>
+                <li><a href="/docs/routing" class={`nav-link ${currentPath === '/docs/routing' ? 'active' : ''}`}>Routing</a></li>
                 <li><a href="/docs/ui-injection" class={`nav-link ${currentPath === '/docs/ui-injection' ? 'active' : ''}`}>UI Injection</a></li>
-                <li><a href="/docs/navigation" class={`nav-link ${currentPath === '/docs/navigation' ? 'active' : ''}`}>Navigation</a></li>
               </ul>
             </div>
 
-            <!-- Features -->
+            <!-- Guides -->
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
-                <div class="nav-icon core-concepts-icon"></div>
-                Features
+                <div class="nav-icon guides-icon"></div>
+                Guides
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/logging" class={`nav-link ${currentPath === '/docs/logging' ? 'active' : ''}`}>Logging</a></li>
-                <li><a href="/docs/thread-safety" class={`nav-link ${currentPath === '/docs/thread-safety' ? 'active' : ''}`}>Thread Safety</a></li>
-                <li><a href="/docs/auto-queue" class={`nav-link ${currentPath === '/docs/auto-queue' ? 'active' : ''}`}>Auto Queue</a></li>
-                <li><a href="/docs/testing" class={`nav-link ${currentPath === '/docs/testing' ? 'active' : ''}`}>Testing</a></li>
-              </ul>
-            </div>
-
-            <!-- Examples -->
-            <div class="nav-section">
-              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
-                <div class="nav-icon examples-icon"></div>
-                Examples
-              </h3>
-              <ul class="space-y-1">
-                <li><a href="/docs/examples/todo-app" class={`nav-link ${currentPath === '/docs/examples/todo-app' ? 'active' : ''}`}>Todo App</a></li>
-                <li><a href="/docs/examples/authentication" class={`nav-link ${currentPath === '/docs/examples/authentication' ? 'active' : ''}`}>Authentication</a></li>
-                <li><a href="/docs/examples/api-integration" class={`nav-link ${currentPath === '/docs/examples/api-integration' ? 'active' : ''}`}>API Integration</a></li>
+                <li><a href="/docs/guides/creating-modules" class={`nav-link ${currentPath === '/docs/guides/creating-modules' ? 'active' : ''}`}>Creating Modules</a></li>
+                <li><a href="/docs/guides/event-patterns" class={`nav-link ${currentPath === '/docs/guides/event-patterns' ? 'active' : ''}`}>Event Patterns</a></li>
+                <li><a href="/docs/guides/testing" class={`nav-link ${currentPath === '/docs/guides/testing' ? 'active' : ''}`}>Testing</a></li>
+                <li><a href="/docs/guides/best-practices" class={`nav-link ${currentPath === '/docs/guides/best-practices' ? 'active' : ''}`}>Best Practices</a></li>
               </ul>
             </div>
 
@@ -161,62 +149,40 @@ const currentPath = Astro.url.pathname;
         <!-- Table of Contents Sidebar -->
         <aside class="lg:col-span-1 hidden lg:block">
           <div class="sticky top-8">
-            <div class="toc-container p-6 bg-slate-50 border-2 border-slate-200 rounded-lg transform rotate-1">
-              <div class="absolute -top-3 left-6 bg-cream px-2">
+            <!-- Fixed: Removed transform rotation and improved styling -->
+            <div class="toc-container p-6 bg-slate-50/80 backdrop-blur-sm border-2 border-slate-200 rounded-lg shadow-sm">
+              <div class="absolute -top-3 left-6 bg-cream px-3 py-1 rounded">
                 <span class="text-sm font-medium text-slate-600 font-styrene">On this page</span>
               </div>
               
               <!-- Table of Contents will be generated by JavaScript -->
-              <nav class="toc-nav">
+              <nav class="toc-nav mt-2">
                 <ul id="toc-list" class="space-y-1">
                   <!-- TOC items will be inserted here -->
                 </ul>
               </nav>
-              
-              <!-- Progress indicator -->
-              <div class="mt-6 pt-4 border-t border-slate-300">
-                <div class="flex items-center gap-2 text-xs text-slate-500">
-                  <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
-                  <span>Reading progress</span>
-                </div>
-                <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
-                  <div id="reading-progress" class="bg-orange-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-              </div>
             </div>
           </div>
         </aside>
       </div>
     </div>
 
-    <!-- Sketchy Footer -->
-    <footer class="relative px-6 py-12 mt-20 bg-slate-50 border-t-2 border-charcoal">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="flex items-center gap-4 mb-4 md:mb-0">
-            <!-- Footer logo -->
-            <svg width="40" height="40" viewBox="0 0 40 40">
-              <rect x="8" y="8" width="8" height="8" fill="#2B2B2B" transform="rotate(2 12 12)"/>
-              <rect x="16" y="12" width="6" height="6" fill="#2B2B2B" transform="rotate(-1 19 15)"/>
-              <rect x="24" y="10" width="7" height="7" fill="#2B2B2B" transform="rotate(1 27.5 13.5)"/>
-            </svg>
-            <span class="text-slate-600 font-medium font-styrene">
-              Mosaic Framework
-            </span>
-          </div>
+    <!-- Reading progress indicator -->
+    <div class="fixed top-0 left-0 right-0 z-50">
+      <div id="reading-progress" class="h-1 bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-300 ease-out" style="width: 0%"></div>
+    </div>
+
+    <!-- Footer with sketchy elements -->
+    <footer class="bg-slate-50 border-t-2 border-charcoal mt-24 py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center">
+          <p class="text-slate-600 font-tiempos">
+            Built with love for modular Flutter development
+          </p>
           
-          <div class="flex items-center gap-6">
-            <a href="/docs" class="text-slate-600 hover:text-orange-500 text-sm">Documentation</a>
-            <a href="/docs/examples" class="text-slate-600 hover:text-orange-500 text-sm">Examples</a>
-            <a href="https://github.com/marcomit/mosaic" class="text-slate-600 hover:text-orange-500 text-sm">GitHub</a>
-            <a href="https://pub.dev/packages/mosaic" class="text-slate-600 hover:text-orange-500 text-sm">pub.dev</a>
-          </div>
-        </div>
-        
-        <!-- Hand-drawn footer decoration -->
-        <div class="mt-8 pt-6 border-t border-slate-200">
-          <svg width="100%" height="20" viewBox="0 0 800 20" class="opacity-20">
-            <path d="M0 10 Q100 5 200 10 T400 8 T600 12 T800 9" 
+          <!-- Hand-drawn footer decoration -->
+          <svg width="200" height="30" viewBox="0 0 200 30" class="mx-auto mt-8 opacity-40">
+            <path d="M20 15 Q50 5 100 15 T180 12" 
                   stroke="#FB923C" 
                   stroke-width="1.5" 
                   fill="none" 
@@ -246,12 +212,13 @@ const currentPath = Astro.url.pathname;
       transform: translateX(-3px);
     }
 
-    /* Table of Contents Styles */
+    /* Fixed Table of Contents Styles */
     .toc-container {
-      max-height: calc(100vh - 100px);
+      max-height: calc(100vh - 120px);
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: var(--orange-400) var(--slate-100);
+      position: relative;
     }
 
     .toc-container::-webkit-scrollbar {
@@ -274,106 +241,89 @@ const currentPath = Astro.url.pathname;
       margin: 0;
     }
 
+    .toc-nav li {
+      position: relative;
+    }
+
     .toc-nav a {
       color: var(--slate-600);
       text-decoration: none;
       display: block;
-      padding: 6px 0;
+      padding: 8px 12px;
       border-left: 3px solid transparent;
-      padding-left: 12px;
-      transition: all 0.2s ease;
-      font-size: 13px;
+      transition: all 0.3s ease;
+      font-size: 14px;
       line-height: 1.4;
       position: relative;
+      border-radius: 0 4px 4px 0;
     }
 
     .toc-nav a:hover {
-      color: var(--orange-500);
-      border-left-color: var(--orange-300);
-      padding-left: 16px;
-      background-color: rgba(251, 146, 60, 0.05);
-    }
-
-    .toc-nav a.active {
       color: var(--orange-600);
-      border-left-color: var(--orange-400);
-      font-weight: 600;
-      padding-left: 16px;
-      background-color: rgba(251, 146, 60, 0.1);
+      border-left-color: var(--orange-300);
+      background-color: rgba(251, 146, 60, 0.08);
       transform: translateX(2px);
     }
 
+    .toc-nav a.active {
+      color: #FFFFFF !important;
+      background: linear-gradient(135deg, #F97316, #EA580C) !important;
+      border-left-color: #FFFFFF !important;
+      font-weight: 700 !important;
+      transform: translateX(4px) !important;
+      box-shadow: 2px 2px 8px rgba(249, 115, 22, 0.4) !important;
+      border-radius: 0 6px 6px 0 !important;
+    }
+
     .toc-nav a.active::before {
-      content: '';
+      content: '►' !important;
       position: absolute;
-      left: -3px;
+      left: 8px;
       top: 50%;
       transform: translateY(-50%);
-      width: 6px;
-      height: 6px;
-      background-color: var(--orange-400);
-      border-radius: 50%;
+      width: auto !important;
+      height: auto !important;
+      background-color: transparent !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      color: #FFFFFF;
+      font-size: 10px;
     }
 
     /* Nested TOC items for different heading levels */
     .toc-h1 a {
-      font-weight: 500;
-      font-size: 14px;
-      padding: 8px 0;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 12px;
+      color: var(--slate-700);
     }
 
     .toc-h2 a {
-      font-size: 13px;
-      padding: 6px 0;
-      padding-left: 16px;
+      font-size: 14px;
+      padding: 8px 12px 8px 20px;
+      color: var(--slate-600);
     }
 
     .toc-h3 a {
-      font-size: 12px;
-      padding: 4px 0;
-      padding-left: 24px;
+      font-size: 13px;
+      padding: 6px 12px 6px 28px;
       color: var(--slate-500);
       opacity: 0.9;
     }
 
     .toc-h4 a {
-      font-size: 11px;
-      padding: 3px 0;
-      padding-left: 32px;
+      font-size: 12px;
+      padding: 5px 12px 5px 36px;
       color: var(--slate-500);
       opacity: 0.8;
     }
 
     /* Active states for nested items */
-    .toc-h2 a.active {
-      padding-left: 20px;
-    }
-
-    .toc-h3 a.active {
-      padding-left: 28px;
-      opacity: 1;
-      color: var(--orange-600);
-    }
-
+    .toc-h2 a.active,
+    .toc-h3 a.active,
     .toc-h4 a.active {
-      padding-left: 36px;
       opacity: 1;
-      color: var(--orange-600);
-    }
-
-    /* Hover states for nested items */
-    .toc-h2 a:hover {
-      padding-left: 20px;
-    }
-
-    .toc-h3 a:hover {
-      padding-left: 28px;
-      opacity: 1;
-    }
-
-    .toc-h4 a:hover {
-      padding-left: 36px;
-      opacity: 1;
+      color: var(--orange-700);
     }
 
     /* Navigation between pages */
@@ -414,6 +364,12 @@ const currentPath = Astro.url.pathname;
       color: var(--charcoal);
     }
 
+    /* Reading progress indicator */
+    #reading-progress {
+      background: linear-gradient(90deg, #FB923C, #F97316, #EA580C);
+      box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);
+    }
+
     /* Responsive improvements */
     @media (max-width: 1024px) {
       .toc-container {
@@ -448,7 +404,8 @@ const currentPath = Astro.url.pathname;
     @media print {
       .nav-section,
       footer,
-      .toc-container {
+      .toc-container,
+      #reading-progress {
         display: none;
       }
       
@@ -472,13 +429,13 @@ const currentPath = Astro.url.pathname;
     }
   </style>
 
-  <!-- Table of Contents JavaScript -->
+  <!-- Enhanced Table of Contents JavaScript -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       generateTableOfContents();
       setupReadingProgress();
       setupSmoothScrolling();
-      setupIntersectionObserver();
+      setupScrollHighlighting();
     });
 
     function generateTableOfContents() {
@@ -524,18 +481,74 @@ const currentPath = Astro.url.pathname;
           const targetElement = document.getElementById(targetId);
           
           if (targetElement) {
-            targetElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
+            // Calculate offset to account for header
+            const headerOffset = 100;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
             });
             
             // Update active state immediately
             setTimeout(() => {
               updateActiveTocItem(targetId);
-            }, 100);
+            }, 150);
           }
         });
       });
+    }
+
+    function setupScrollHighlighting() {
+      // Simple and reliable scroll-based highlighting
+      let isScrolling = false;
+      
+      function highlightCurrentSection() {
+        const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
+        if (headings.length === 0) return;
+
+        const scrollTop = window.pageYOffset;
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = scrollTop + 150; // 150px from top of viewport
+
+        let currentHeading = null;
+
+        // Find the heading that should be active
+        for (let i = headings.length - 1; i >= 0; i--) {
+          const heading = headings[i];
+          const headingTop = heading.offsetTop;
+          
+          if (headingTop <= triggerPoint) {
+            currentHeading = heading;
+            break;
+          }
+        }
+
+        // If we're at the very top, use the first heading
+        if (!currentHeading && scrollTop < 100) {
+          currentHeading = headings[0];
+        }
+
+        // Update the active TOC item
+        if (currentHeading && currentHeading.id) {
+          updateActiveTocItem(currentHeading.id);
+        }
+      }
+
+      // Throttled scroll listener for better performance
+      window.addEventListener('scroll', function() {
+        if (!isScrolling) {
+          window.requestAnimationFrame(function() {
+            highlightCurrentSection();
+            isScrolling = false;
+          });
+          isScrolling = true;
+        }
+      });
+
+      // Initial highlight on page load
+      setTimeout(highlightCurrentSection, 100);
     }
 
     function setupReadingProgress() {
@@ -552,71 +565,25 @@ const currentPath = Astro.url.pathname;
         const scrollTop = window.pageYOffset;
 
         // Calculate progress
-        const progress = Math.min(
-          Math.max((scrollTop - articleTop + windowHeight * 0.2) / articleHeight, 0),
-          1
-        );
+        const articleBottom = articleTop + articleHeight;
+        const windowBottom = scrollTop + windowHeight;
 
-        progressBar.style.width = (progress * 100) + '%';
-      });
-    }
-
-    function setupIntersectionObserver() {
-      const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
-      if (headings.length === 0) return;
-
-      const observerOptions = {
-        rootMargin: '-10% 0% -80% 0%', // Trigger when heading is in the top 10-20% of viewport
-        threshold: 0
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        let activeHeading = null;
-        let maxRatio = 0;
-
-        entries.forEach(entry => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
-            activeHeading = entry.target;
-          }
-        });
-
-        if (activeHeading) {
-          updateActiveTocItem(activeHeading.id);
-        } else {
-          // Fallback to scroll-based detection
-          updateActiveTocItemOnScroll();
+        let progress = 0;
+        if (scrollTop > articleTop) {
+          const totalReadable = articleHeight - windowHeight + articleTop;
+          const currentProgress = scrollTop - articleTop;
+          progress = Math.min(100, (currentProgress / totalReadable) * 100);
         }
-      }, observerOptions);
 
-      headings.forEach(heading => {
-        observer.observe(heading);
+        progressBar.style.width = `${Math.max(0, progress)}%`;
       });
-    }
-
-    function updateActiveTocItemOnScroll() {
-      const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
-      const tocLinks = document.querySelectorAll('.toc-link');
-      
-      let activeHeading = null;
-      const scrollPosition = window.pageYOffset + 120; // Offset for better UX
-
-      // Find the heading that's currently in view
-      headings.forEach(heading => {
-        if (heading.offsetTop <= scrollPosition) {
-          activeHeading = heading;
-        }
-      });
-
-      if (activeHeading) {
-        updateActiveTocItem(activeHeading.id);
-      }
     }
 
     function updateActiveTocItem(activeId) {
-      const tocLinks = document.querySelectorAll('.toc-link');
-      
+      if (!activeId) return;
+
       // Remove active class from all items
+      const tocLinks = document.querySelectorAll('.toc-link');
       tocLinks.forEach(link => {
         link.classList.remove('active');
       });
@@ -626,8 +593,16 @@ const currentPath = Astro.url.pathname;
       if (activeLink) {
         activeLink.classList.add('active');
         
-        // Scroll TOC to show active item
+        // Visual feedback - you'll see this in console
+        console.log('✅ TOC Updated - Active section:', activeId);
+        
+        // Scroll TOC to show active item smoothly
         scrollTocToActiveItem(activeLink);
+        
+        // Update URL hash without triggering scroll
+        if (history.replaceState) {
+          history.replaceState(null, null, '#' + activeId);
+        }
       }
     }
 
@@ -642,7 +617,7 @@ const currentPath = Astro.url.pathname;
       if (linkRect.top < containerRect.top || linkRect.bottom > containerRect.bottom) {
         const scrollTop = activeLink.offsetTop - tocContainer.offsetTop - (tocContainer.clientHeight / 2);
         tocContainer.scrollTo({
-          top: scrollTop,
+          top: Math.max(0, scrollTop),
           behavior: 'smooth'
         });
       }
@@ -662,15 +637,21 @@ const currentPath = Astro.url.pathname;
           
           if (targetElement) {
             e.preventDefault();
-            targetElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
+            
+            // Calculate offset to account for header
+            const headerOffset = 100;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
             });
             
             // Update TOC after smooth scroll
             setTimeout(() => {
               updateActiveTocItem(targetId);
-            }, 100);
+            }, 150);
           }
         });
       });
@@ -684,12 +665,16 @@ const currentPath = Astro.url.pathname;
         
         if (targetElement) {
           setTimeout(() => {
-            targetElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
+            const headerOffset = 100;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
             });
             updateActiveTocItem(targetId);
-          }, 100);
+          }, 200);
         }
       }
     });

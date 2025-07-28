@@ -3,356 +3,272 @@ layout: ../../layouts/DocsLayout.astro
 title: Installation Guide
 description: Get started with Mosaic framework in your Flutter project
 ---
+# Getting Mosaic Into Your Project
 
-# Installation
+This guide will help you add Mosaic to your Flutter app step by step. Don't worry - it's simpler than it looks!
 
-Welcome to Mosaic! This guide will help you set up the framework in your Flutter project and get you building modular applications in minutes.
+## What You Need
 
-## Prerequisites
+Before starting, make sure you have:
+- Flutter installed on your computer
+- A Flutter project (new or existing)
+- A code editor like VS Code
 
-Before installing Mosaic, make sure you have:
+## Step 1: Add Mosaic to Your Project
 
-- **Flutter SDK** 3.10.0 or higher
-- **Dart SDK** 3.0.0 or higher  
-- A code editor (VS Code, Android Studio, or IntelliJ IDEA)
-
-## Quick Installation
-
-### 1. Add Mosaic to your pubspec.yaml
+Open your `pubspec.yaml` file (it's in the root of your Flutter project) and add Mosaic:
 
 ```yaml
 dependencies:
   flutter:
     sdk: flutter
-  mosaic: ^0.0.1
-  
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  mosaic: ^0.1.2  # Add this line
 ```
 
-### 2. Install Dependencies
-
-Run the following command in your project root:
+Then run this command to download Mosaic:
 
 ```bash
 flutter pub get
 ```
 
-### 3. Verify Installation
+That's it! Mosaic is now part of your project.
 
-Create a simple test to ensure Mosaic is properly installed:
+## Step 2: Test That It Works
+
+Let's make sure everything is working. Create a simple test file to check:
 
 ```dart
+// test/mosaic_test.dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mosaic/mosaic.dart';
 
-void main() &#123;
-  test('Mosaic installation test', () &#123;
-    expect(Events, isNotNull);
-    expect(ModuleManager, isNotNull);
-    expect(InternalRouter, isNotNull);
-  &#125;);
-&#125;
+void main() {
+  test('Mosaic is working', () {
+    // If this doesn't crash, Mosaic is installed correctly
+    expect(events, isNotNull);
+    expect(moduleManager, isNotNull);
+  });
+}
 ```
 
-## Project Structure Setup
+Run the test:
 
-Mosaic follows a specific folder structure to maintain clean architecture principles. Here's the recommended structure:
+```bash
+flutter test test/mosaic_test.dart
+```
+
+If it passes, you're ready to go!
+
+## Step 3: Organize Your Project
+
+Mosaic works best when your project is organized. Here's a simple folder structure:
 
 ```
 lib/
-├── app/                    # Application Layer
-│   ├── di/                # Dependency Injection
-│   │   └── injection.dart
-│   ├── router/            # Navigation
-│   │   └── app_router.dart
-│   └── theme/             # Theming
-│       └── app_theme.dart
-├── core/                  # Core Utilities
-│   ├── constants/         # App Constants
-│   ├── errors/           # Error Handling
-│   ├── network/          # Network Configuration
-│   └── utils/            # Utility Functions
-├── features/             # Feature Modules
-│   └── auth/            # Example: Authentication Feature
-│       ├── data/        # Data Layer
-│       │   ├── datasources/
-│       │   ├── models/
-│       │   └── repositories/
-│       ├── domain/      # Domain Layer
-│       │   ├── entities/
-│       │   ├── repositories/
-│       │   └── usecases/
-│       └── presentation/ # Presentation Layer
-│           ├── bloc/
-│           ├── pages/
-│           └── widgets/
-└── main.dart
+├── main.dart              # Your app's starting point
+├── modules/               # All your modules go here
+│   ├── home/             # Home module
+│   ├── profile/          # Profile module
+│   └── settings/         # Settings module
+└── shared/               # Code shared between modules
+    ├── constants/        # App-wide constants
+    └── utils/           # Helper functions
 ```
 
-## Basic Setup
+You don't need to create all these folders right away - just make the `modules` folder for now.
 
-### 1. Define Your Modules
+## Step 4: Define Your App's Modules
 
-Create an enum for your application modules:
+Think about what main sections your app has. For a simple app, you might have:
 
 ```dart
-// lib/core/enums/module_enum.dart
-enum ModuleEnum &#123;
-  home,
-  profile,
-  settings,
-  auth;
+// lib/shared/module_enum.dart
+enum ModuleEnum {
+  home,     // Main screen users see first
+  profile,  // User profile and account
+  settings; // App settings and preferences
 
-  static ModuleEnum? tryParse(String value) &#123;
-    for (final module in values) &#123;
-      if (module.name == value) return module;
-    &#125;
+  // Helper method to convert strings to modules
+  static ModuleEnum? fromString(String name) {
+    for (ModuleEnum module in ModuleEnum.values) {
+      if (module.name == name) return module;
+    }
     return null;
-  &#125;
-&#125;
+  }
+}
 ```
 
-### 2. Initialize the Framework
+This enum lists all the major sections of your app. Start small - you can always add more later.
 
-Update your `main.dart` file:
+## Step 5: Set Up Logging (Optional but Helpful)
+
+Mosaic includes a logging system that helps you understand what's happening in your app. Set it up early:
+
+```dart
+// In your main.dart, before runApp()
+void main() async {
+  // Initialize logging
+  await logger.init(
+    tags: ['app', 'modules', 'events'],  // Categories for your logs
+    dispatchers: [
+      ConsoleDispatcher(),  // Shows logs in your development console
+    ],
+  );
+
+  runApp(MyApp());
+}
+```
+
+Now when things happen in your app, you can see what's going on. This is especially helpful when learning how modules work.
+
+## Step 6: Create Your First Module
+
+Let's create a simple home module to make sure everything works:
+
+```dart
+// lib/modules/home/home_module.dart
+import 'package:flutter/material.dart';
+import 'package:mosaic/mosaic.dart';
+
+class HomeModule extends Module {
+  // Every module needs a name
+  HomeModule() : super(name: 'home');
+
+  @override
+  Widget build(BuildContext context) {
+    // This is what users see when they're in this module
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Welcome to your modular app!',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Send a message to other modules
+                events.emit<String>('home/button_pressed', 'Hello from Home!');
+              },
+              child: Text('Send Message'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> onInit() async {
+    // This runs once when the module is first set up
+    logger.info('Home module is starting up');
+    
+    // Listen for messages from other modules
+    events.on<String>('app/welcome', (context) {
+      logger.info('Received welcome: ${context.data}');
+    });
+  }
+
+  @override
+  void onActive() {
+    // This runs every time the user switches to this module
+    logger.info('User is now viewing the home screen');
+  }
+}
+```
+
+## Step 7: Connect Everything in main.dart
+
+Now update your main.dart to use modules:
 
 ```dart
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:mosaic/mosaic.dart';
-import 'features/home/home_module.dart';
-import 'features/profile/profile_module.dart';
-import 'core/enums/module_enum.dart';
+import 'modules/home/home_module.dart';
+import 'shared/module_enum.dart';
 
-void main() async &#123;
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize logger
+void main() async {
+  // Set up logging first
   await logger.init(
-    tags: ['app', 'router', 'events'],
-    dispatchers: [
-      ConsoleDispatcher(),
-      FileLoggerDispatcher(path: 'logs'),
-    ],
+    tags: ['app', 'modules', 'events'],
+    dispatchers: [ConsoleDispatcher()],
   );
 
-  // Register modules
+  // Register your modules
   moduleManager.modules['home'] = HomeModule();
-  moduleManager.modules['profile'] = ProfileModule();
-  moduleManager.defaultModule = 'home';
+  moduleManager.defaultModule = 'home';  // Start with home module
 
-  // Initialize router
+  // Initialize the router
   router.init(ModuleEnum.home);
 
   runApp(MyApp());
-&#125;
+}
 
-class MyApp extends StatelessWidget &#123;
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) &#123;
+  Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mosaic Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: ModularApp(),
-      debugShowCheckedModeBanner: false,
+      title: 'My Modular App',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: ModularApp(),  // This displays the current module
     );
-  &#125;
-&#125;
+  }
+}
 ```
 
-### 3. Create Your First Module
+## Step 8: Run Your App
 
-```dart
-// lib/features/home/home_module.dart
-import 'package:flutter/material.dart';
-import 'package:mosaic/mosaic.dart';
+Now run your app:
 
-class HomeModule extends Module &#123;
-  HomeModule() : super(name: 'home');
-
-  @override
-  Widget build(BuildContext context) &#123;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Welcome to Mosaic! 🎉',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const Text(
-            'This is your first modular Flutter app.',
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () &#123;
-              events.emit<String>('user/welcome', 'Hello from Home!');
-            &#125;,
-            child: const Text('Send Event'),
-          ),
-          const SizedBox(height: 20),
-          // Display any injected widgets
-          ...stack,
-        ],
-      ),
-    );
-  &#125;
-
-  @override
-  Future<void> onInit() async &#123;
-    logger.info('Home module initialized', ['home']);
-    
-    // Listen to events
-    events.on<String>('user/welcome', (context) &#123;
-      logger.info('Received welcome event: $&#123;context.data&#125;', ['home']);
-    &#125;);
-  &#125;
-
-  @override
-  void onActive() &#123;
-    logger.info('Home module activated', ['home']);
-  &#125;
-
-  @override
-  void onInactive() &#123;
-    logger.info('Home module deactivated', ['home']);
-  &#125;
-&#125;
+```bash
+flutter run
 ```
 
-## Configuration Options
+You should see:
+- A home screen with welcome text
+- A button that sends messages
+- Log messages in your console showing what's happening
 
-### Logger Configuration
+## What Just Happened?
 
-Customize the logging system for your needs:
+You've created your first modular app! Here's what's happening:
 
-```dart
-await logger.init(
-  tags: ['app', 'network', 'ui', 'auth'],
-  dispatchers: [
-    ConsoleDispatcher(),
-    FileLoggerDispatcher(
-      path: 'logs',
-      fileNameRole: (tag) => '$&#123;tag&#125;_$&#123;DateTime.now().millisecondsSinceEpoch&#125;.log',
-    ),
-  ],
-);
-```
-
-### Event System Configuration
-
-Set up global event listeners:
-
-```dart
-// lib/app/events/app_events.dart
-class AppEvents &#123;
-  static void init() &#123;
-    // Global authentication events
-    events.on<String>('auth/login', (context) &#123;
-      logger.info('User logged in: $&#123;context.data&#125;', ['auth']);
-    &#125;);
-    
-    events.on<String>('auth/logout', (context) &#123;
-      logger.info('User logged out', ['auth']);
-      router.goto(ModuleEnum.auth);
-    &#125;);
-    
-    // Navigation events
-    events.on<ModuleEnum>('navigation/goto', (context) &#123;
-      router.goto(context.data);
-    &#125;);
-  &#125;
-&#125;
-```
-
-### Dependency Injection Setup
-
-Create a centralized dependency injection system:
-
-```dart
-// lib/app/di/injection.dart
-import 'package:get_it/get_it.dart';
-import 'package:mosaic/mosaic.dart';
-
-final sl = GetIt.instance;
-
-Future<void> initializeDependencies() async &#123;
-  // Core
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
-  sl.registerLazySingleton<ApiClient>(() => ApiClient());
-  
-  // Repositories
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
-  sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl());
-  
-  // Use cases
-  sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
-  sl.registerLazySingleton<GetUserUseCase>(() => GetUserUseCase(sl()));
-  
-  // Modules
-  sl.registerFactory<HomeModule>(() => HomeModule());
-  sl.registerFactory<AuthModule>(() => AuthModule());
-&#125;
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**Module not found error:**
-```
-Exception: Module 'home' not found
-```
-**Solution:** Make sure you've registered your modules in `main.dart` before calling `router.init()`.
-
-**Event not firing:**
-```
-Event listener not receiving events
-```
-**Solution:** Ensure you're calling `events.on()` before `events.emit()` and that the event names match exactly.
-
-**Logger not working:**
-```
-Logger messages not appearing
-```
-**Solution:** Initialize the logger before using it and make sure you've added the correct dispatchers.
-
-### Performance Tips
-
-1. **Lazy Loading**: Only initialize modules when they're needed
-2. **Event Cleanup**: Remove event listeners in module's `onDestroy()` method
-3. **Memory Management**: Use weak references for long-lived objects
-4. **Async Operations**: Use `InternalAutoQueue` for retryable operations
+1. **Mosaic is managing modules** - The `moduleManager` keeps track of all your modules
+2. **The router shows the right module** - `ModularApp()` displays whichever module is currently active
+3. **Modules can communicate** - When you press the button, it sends an event that other modules could listen to
+4. **Everything is logged** - You can see what's happening in your development console
 
 ## Next Steps
 
-Now that you have Mosaic installed and configured, you're ready to dive deeper:
+Now that you have the basics working:
 
-- **[Quick Start Guide](/docs/quick-start)** - Build your first app in 5 minutes
-- **[Architecture Overview](/docs/architecture)** - Understand the modular patterns
-- **[Event System](/docs/events)** - Master event-driven communication
-- **[UI Injection](/docs/ui-injection)** - Learn dynamic UI composition
+1. **Add more modules** - Create profile and settings modules
+2. **Learn about navigation** - How to switch between modules
+3. **Try UI injection** - Have one module add widgets to another
+4. **Experiment with events** - Make modules talk to each other
 
-## Getting Help
+The next sections will show you how to do all of these things with simple, clear examples.
 
-If you run into issues during installation:
+## Troubleshooting
 
-1. Check the [FAQ](/docs/faq) for common solutions
-2. Search [GitHub Issues](https://github.com/marcomit/mosaic/issues)
-3. Join our [Discord community](https://discord.gg/mosaic) for real-time help
-4. Create a new issue with your specific problem
+**"Package mosaic not found"**
+- Check that you added it correctly to `pubspec.yaml`
+- Run `flutter pub get` again
 
-**Happy coding! 🚀**
+**"ModularApp() not showing anything"**
+- Make sure you registered your modules in `main.dart`
+- Check that `router.init()` was called with a valid module
+
+**"Events not working"**
+- Verify that the module sending events is different from the one receiving
+- Check that event names match exactly (case-sensitive)
+
+**Still stuck?**
+- Check the console for error messages
+- Make sure your module names in the enum match the names you used when registering modules
