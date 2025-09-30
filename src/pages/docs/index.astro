@@ -1,6 +1,9 @@
 ---
 import Layout from '../../components/Layout.astro';
 import "../../styles/global.css";
+
+
+const currentPath = Astro.url.pathname;
 ---
 
 <Layout title="Documentation - Mosaic Framework" description="Complete guide to building clean architecture Flutter applications with Mosaic">
@@ -30,9 +33,7 @@ import "../../styles/global.css";
         <nav class="flex flex-wrap gap-3">
           <a href="/docs" class="nav-pill active">Overview</a>
           <a href="/docs/installation" class="nav-pill">Installation</a>
-          <a href="/docs/architecture" class="nav-pill">Architecture</a>
-          <a href="/docs/examples" class="nav-pill">Examples</a>
-          <a href="/docs/api" class="nav-pill">API Reference</a>
+          <a href="/docs/modules" class="nav-pill">Architecture</a>
         </nav>
       </div>
     </header>
@@ -46,12 +47,11 @@ import "../../styles/global.css";
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon quick-start-icon"></div>
-                Quick Start
+                Getting started
               </h3>
-              <ul class="space-y-1">
-                <li><a href="/docs/installation" class="nav-link">Installation</a></li>
-                <li><a href="/docs/quick-start" class="nav-link">Quick Start</a></li>
-                <li><a href="/docs/basic-concepts" class="nav-link">Basic Concepts</a></li>
+              <ul class="space-y-1 mt-2">
+                <li><a href="/docs/installation" class={`nav-link ${currentPath === '/docs/installation' ? 'active' : ''}`}>Installation</a></li>
+                <li><a href="/docs/project-structure" class={`nav-link ${currentPath === '/docs/project-structure' ? 'active' : ''}`}>Project structure</a></li>
               </ul>
             </div>
 
@@ -62,38 +62,39 @@ import "../../styles/global.css";
                 Architecture
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/architecture" class="nav-link">Overview</a></li>
-                <li><a href="/docs/modules" class="nav-link">Modules</a></li>
-                <li><a href="/docs/events" class="nav-link">Event System</a></li>
-                <li><a href="/docs/ui-injection" class="nav-link">UI Injection</a></li>
-                <li><a href="/docs/navigation" class="nav-link">Navigation</a></li>
+                <li><a href="/docs/modules" class={`nav-link ${currentPath === '/docs/modules' ? 'active' : ''}`}>Modules</a></li>
+                <li><a href="/docs/events" class={`nav-link ${currentPath === '/docs/events' ? 'active' : ''}`}>Events</a></li>
+                <li><a href="/docs/router" class={`nav-link ${currentPath === '/docs/router' ? 'active' : ''}`}>Router</a></li>
+                <li><a href="/docs/ui-injection" class={`nav-link ${currentPath === '/docs/ui-injection' ? 'active' : ''}`}>UI Injection</a></li>
+                <li><a href="/docs/dependency-injection" class={`nav-link ${currentPath === '/docs/dependency-injection' ? 'active' : ''}`}>Dependency Injection</a></li>
+                <li><a href="/docs/signals" class={`nav-link ${currentPath === '/docs/signals' ? 'active' : ''}`}>Signals</a></li>
+                <li><a href="/docs/logger" class={`nav-link ${currentPath === '/docs/logger' ? 'active' : ''}`}>Logger</a></li>
+                <li><a href="/docs/multithreading" class={`nav-link ${currentPath === '/docs/multithreading' ? 'active' : ''}`}>multithreading</a></li>
               </ul>
             </div>
 
-            <!-- Features -->
+            <!-- CLI -->
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
-                <div class="nav-icon core-concepts-icon"></div>
-                Features
+                <div class="nav-icon architecture-icon"></div>
+               CLI 
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/logging" class="nav-link">Logging</a></li>
-                <li><a href="/docs/thread-safety" class="nav-link">Thread Safety</a></li>
-                <li><a href="/docs/auto-queue" class="nav-link">Auto Queue</a></li>
-                <li><a href="/docs/testing" class="nav-link">Testing</a></li>
+                <li><a href="/docs/cli" class={`nav-link ${currentPath === '/docs/cli' ? 'active' : ''}`}>Getting started</a></li>
+                <li><a href="/docs/profiles" class={`nav-link ${currentPath === '/docs/profiles' ? 'active' : ''}`}>Profiles</a></li>
               </ul>
             </div>
-
-            <!-- Examples -->
+            <!-- Guides -->
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
-                <div class="nav-icon examples-icon"></div>
-                Examples
+                <div class="nav-icon guides-icon"></div>
+                Guides
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/examples/todo-app" class="nav-link">Todo App</a></li>
-                <li><a href="/docs/examples/authentication" class="nav-link">Authentication</a></li>
-                <li><a href="/docs/examples/api-integration" class="nav-link">API Integration</a></li>
+                <li><a href="/docs/guides/creating-modules" class={`nav-link ${currentPath === '/docs/guides/creating-modules' ? 'active' : ''}`}>Creating Modules</a></li>
+                <li><a href="/docs/guides/event-patterns" class={`nav-link ${currentPath === '/docs/guides/event-patterns' ? 'active' : ''}`}>Event Patterns</a></li>
+                <li><a href="/docs/guides/testing" class={`nav-link ${currentPath === '/docs/guides/testing' ? 'active' : ''}`}>Testing</a></li>
+                <li><a href="/docs/guides/best-practices" class={`nav-link ${currentPath === '/docs/guides/best-practices' ? 'active' : ''}`}>Best Practices</a></li>
               </ul>
             </div>
 
@@ -104,10 +105,20 @@ import "../../styles/global.css";
                 API Reference
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/api/core" class="nav-link">Core Classes</a></li>
-                <li><a href="/docs/api/utilities" class="nav-link">Utilities</a></li>
-                <li><a href="/docs/api/widgets" class="nav-link">Widgets</a></li>
+                <li><a href="/docs/api/core" class={`nav-link ${currentPath === '/docs/api/core' ? 'active' : ''}`}>Core Classes</a></li>
+                <li><a href="/docs/api/utilities" class={`nav-link ${currentPath === '/docs/api/utilities' ? 'active' : ''}`}>Utilities</a></li>
+                <li><a href="/docs/api/widgets" class={`nav-link ${currentPath === '/docs/api/widgets' ? 'active' : ''}`}>Widgets</a></li>
               </ul>
+            </div>
+
+            <!-- Hand-drawn decoration -->
+            <div class="mt-12">
+              <svg width="120" height="40" viewBox="0 0 120 40" class="opacity-30">
+                <path d="M10 20 Q30 10 60 20 T110 15" stroke="#FB923C" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <circle cx="20" cy="18" r="2" fill="#FB923C"/>
+                <circle cx="50" cy="22" r="1.5" fill="#60A5FA"/>
+                <circle cx="90" cy="16" r="2.5" fill="#4ADE80"/>
+              </svg>
             </div>
           </nav>
         </aside>
@@ -146,24 +157,6 @@ import "../../styles/global.css";
                 </div>
               </div>
             </div>
-
-            ## What makes Mosaic special?
-
-            Mosaic helps large applications scale with ease by treating each feature as an **isolated unit** that can be enabled, built, and tested independently. Think of it as building with LEGO blocks - each piece fits perfectly together, but can work on its own.
-
-            ### Core Features
-
-            - **🧩 Modular Architecture**: Organize your app into independent, reusable modules
-            - **⚡ Event-Driven Communication**: Decoupled communication between modules using a robust event system  
-            - **🎯 Dynamic UI Injection**: Inject UI components dynamically across different modules
-            - **🧭 Internal Navigation**: Module-specific routing with stack management
-            - **📊 Advanced Logging**: Multi-dispatcher logging system with file and console output
-            - **🔒 Thread Safety**: Built-in mutex and semaphore utilities for concurrent operations
-            - **🔄 Auto Queue**: Automatic retry mechanism for async operations
-            - **✅ Type-Safe Events**: Strongly typed event system with wildcard support
-
-            ## Architecture Overview
-
             Mosaic follows a modular architecture pattern where each feature is encapsulated in its own module. Here's how it works:
 
             <div class="architecture-visual">
@@ -203,24 +196,6 @@ import "../../styles/global.css";
 
             Each module can communicate with others through the centralized event system, inject UI components into other modules, and maintain its own internal navigation stack.
 
-            ## Quick Installation
-
-            Get started with Mosaic in just a few minutes:
-
-            ```yaml
-            dependencies:
-              flutter:
-                sdk: flutter
-              mosaic: ^0.0.1
-            ```
-
-            ```bash
-            flutter pub get
-            ```
-
-            ## Next Steps
-
-            Ready to dive deeper? Here's where to go next:
 
             <div class="next-steps-grid">
               <a href="/docs/installation" class="next-step-card">
@@ -248,18 +223,6 @@ import "../../styles/global.css";
               </a>
             </div>
 
-            ## Community & Support
-
-            Join our growing community of developers who are building amazing things with Mosaic:
-
-            - **📖 Documentation**: Complete guides and API reference
-            - **💬 Discord**: Get help and share your projects  
-            - **🐛 GitHub Issues**: Report bugs and request features
-            - **🎯 Discussions**: Share ideas and best practices
-
-            ---
-
-            **Ready to build something amazing?** [Get started with the installation guide →](/docs/installation)
           </article>
         </main>
       </div>

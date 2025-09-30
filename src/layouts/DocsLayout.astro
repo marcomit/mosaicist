@@ -51,13 +51,11 @@ const currentPath = Astro.url.pathname;
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
                 <div class="nav-icon quick-start-icon"></div>
-                Quick Start
+                Getting started
               </h3>
-              <ul class="space-y-1">
-                <li><a href="/docs" class={`nav-link ${currentPath === '/docs' || currentPath === '/docs/' ? 'active' : ''}`}>Overview</a></li>
+              <ul class="space-y-1 mt-2">
                 <li><a href="/docs/installation" class={`nav-link ${currentPath === '/docs/installation' ? 'active' : ''}`}>Installation</a></li>
-                <li><a href="/docs/quick-start" class={`nav-link ${currentPath === '/docs/quick-start' ? 'active' : ''}`}>Quick Start</a></li>
-                <li><a href="/docs/configuration" class={`nav-link ${currentPath === '/docs/configuration' ? 'active' : ''}`}>Configuration</a></li>
+                <li><a href="/docs/project-structure" class={`nav-link ${currentPath === '/docs/project-structure' ? 'active' : ''}`}>Project structure</a></li>
               </ul>
             </div>
 
@@ -68,14 +66,28 @@ const currentPath = Astro.url.pathname;
                 Architecture
               </h3>
               <ul class="space-y-1">
-                <li><a href="/docs/architecture" class={`nav-link ${currentPath === '/docs/architecture' ? 'active' : ''}`}>Overview</a></li>
                 <li><a href="/docs/modules" class={`nav-link ${currentPath === '/docs/modules' ? 'active' : ''}`}>Modules</a></li>
                 <li><a href="/docs/events" class={`nav-link ${currentPath === '/docs/events' ? 'active' : ''}`}>Events</a></li>
-                <li><a href="/docs/routing" class={`nav-link ${currentPath === '/docs/routing' ? 'active' : ''}`}>Routing</a></li>
+                <li><a href="/docs/router" class={`nav-link ${currentPath === '/docs/router' ? 'active' : ''}`}>Router</a></li>
                 <li><a href="/docs/ui-injection" class={`nav-link ${currentPath === '/docs/ui-injection' ? 'active' : ''}`}>UI Injection</a></li>
+                <li><a href="/docs/dependency-injection" class={`nav-link ${currentPath === '/docs/dependency-injection' ? 'active' : ''}`}>Dependency Injection</a></li>
+                <li><a href="/docs/signals" class={`nav-link ${currentPath === '/docs/signals' ? 'active' : ''}`}>Signals</a></li>
+                <li><a href="/docs/logger" class={`nav-link ${currentPath === '/docs/logger' ? 'active' : ''}`}>Logger</a></li>
+                <li><a href="/docs/multithreading" class={`nav-link ${currentPath === '/docs/multithreading' ? 'active' : ''}`}>multithreading</a></li>
               </ul>
             </div>
 
+            <!-- CLI -->
+            <div class="nav-section">
+              <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
+                <div class="nav-icon architecture-icon"></div>
+               CLI 
+              </h3>
+              <ul class="space-y-1">
+                <li><a href="/docs/cli" class={`nav-link ${currentPath === '/docs/cli' ? 'active' : ''}`}>Getting started</a></li>
+                <li><a href="/docs/profiles" class={`nav-link ${currentPath === '/docs/profiles' ? 'active' : ''}`}>Profiles</a></li>
+              </ul>
+            </div>
             <!-- Guides -->
             <div class="nav-section">
               <h3 class="text-lg font-semibold text-charcoal mb-4 flex items-center gap-3 font-styrene">
@@ -140,7 +152,7 @@ const currentPath = Astro.url.pathname;
           <div class="sticky top-8">
             <!-- Fixed: Removed transform rotation and improved styling -->
             <div class="toc-container p-6 bg-slate-50/80 backdrop-blur-sm border-2 border-slate-200 rounded-lg shadow-sm">
-              <div class="absolute -top-3 left-6 bg-cream px-3 py-1 rounded">
+              <div class="absolute -top-2 left-6 bg-cream px-3 py-1 rounded">
                 <span class="text-sm font-medium text-slate-600 font-styrene">On this page</span>
               </div>
               
@@ -418,4 +430,140 @@ const currentPath = Astro.url.pathname;
     }
   </style>
 
+  <script>
+  // Generate Table of Contents
+  function generateTOC() {
+    const article = document.querySelector('.prose-mosaic');
+    const tocList = document.getElementById('toc-list');
+    
+    if (!article || !tocList) return;
+
+    const headings = article.querySelectorAll('h1, h2, h3, h4');
+    
+    headings.forEach((heading, index) => {
+      // Add ID to heading if it doesn't have one
+      if (!heading.id) {
+        heading.id = `heading-${index}`;
+      }
+
+      const level = heading.tagName.toLowerCase();
+      const li = document.createElement('li');
+      li.className = `toc-${level}`;
+      
+      const a = document.createElement('a');
+      a.href = `#${heading.id}`;
+      a.textContent = heading.textContent;
+      a.className = 'toc-link';
+      
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+  }
+
+  // Highlight active TOC item based on scroll position
+  function updateActiveTOC() {
+    const headings = document.querySelectorAll('.prose-mosaic h1, .prose-mosaic h2, .prose-mosaic h3, .prose-mosaic h4');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    
+    if (headings.length === 0 || tocLinks.length === 0) return;
+
+    // Get current scroll position with offset for header
+    const scrollPosition = window.scrollY + 100;
+    
+    let currentHeading = null;
+    
+    // Find the current heading based on scroll position
+    headings.forEach((heading) => {
+      const headingTop = heading.offsetTop;
+      if (scrollPosition >= headingTop) {
+        currentHeading = heading;
+      }
+    });
+
+    // Remove active class from all TOC links
+    tocLinks.forEach(link => link.classList.remove('active'));
+
+    // Add active class to current heading's TOC link
+    if (currentHeading) {
+      const activeLink = document.querySelector(`.toc-link[href="#${currentHeading.id}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+        
+        // Scroll TOC container to show active item
+        const tocContainer = document.querySelector('.toc-container');
+        if (tocContainer) {
+          const linkTop = activeLink.offsetTop;
+          const containerHeight = tocContainer.clientHeight;
+          const linkHeight = activeLink.clientHeight;
+          
+          // Smooth scroll TOC to center the active link
+          tocContainer.scrollTo({
+            top: linkTop - containerHeight / 2 + linkHeight / 2,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  }
+
+  // Update reading progress bar
+  function updateReadingProgress() {
+    const progressBar = document.getElementById('reading-progress');
+    if (!progressBar) return;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight - windowHeight;
+    const scrolled = window.scrollY;
+    const progress = (scrolled / documentHeight) * 100;
+    
+    progressBar.style.width = `${Math.min(progress, 100)}%`;
+  }
+
+  // Smooth scroll to heading when clicking TOC link
+  function setupSmoothScroll() {
+    document.querySelectorAll('.toc-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          const offset = 80; // Offset for fixed header
+          const targetPosition = targetElement.offsetTop - offset;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  }
+
+  // Initialize everything when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    generateTOC();
+    setupSmoothScroll();
+    updateActiveTOC();
+    updateReadingProgress();
+  });
+
+  // Update on scroll with throttling for performance
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateActiveTOC();
+        updateReadingProgress();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // Update on resize
+  window.addEventListener('resize', () => {
+    updateActiveTOC();
+  });
+</script>
  </Layout>
